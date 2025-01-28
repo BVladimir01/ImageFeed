@@ -15,7 +15,13 @@ class ImagesListViewController: UIViewController {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.rowHeight = 200
+//        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
         // Do any additional setup after loading the view.
+    }
+    
+    func configCell(for cell: ImagesListCell) {
+        
     }
 }
 
@@ -33,7 +39,12 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) as? ImagesListCell else {
+            fatalError("Could not type cast cell to ImagesListCell")
+//            return ImagesListCell()
+        }
+        configCell(for: cell)
+        return cell
     }
     
     
