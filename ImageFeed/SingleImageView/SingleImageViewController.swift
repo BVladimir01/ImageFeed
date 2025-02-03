@@ -13,15 +13,17 @@ class SingleImageViewController: UIViewController {
     
     var image: UIImage? {
         didSet {
-            guard isViewLoaded else { return }
+            guard isViewLoaded, let image else { return }
             imageView.image = image
+            imageView.frame.size = image.size
+            rescaleAndCenterImage()
         }
     }
     
     //MARK: - @IBOutlet vars
     
+    @IBOutlet var scrollView: UIScrollView!
     @IBOutlet private var imageView: UIImageView!
-    
     
     //MARK: - @IBOutlet actions
     
@@ -29,12 +31,40 @@ class SingleImageViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        scrollView.minimumZoomScale = 0.1
+        scrollView.maximumZoomScale = 1.25
         imageView.image = image
-        // Do any additional setup after loading the view.
+        if let image {
+            imageView.frame.size = image.size
+        }
+        rescaleAndCenterImage()
     }
     
+    func rescaleAndCenterImage() {
+        guard let image else {
+            assertionFailure("Tried to center image before assigning it")
+            return
+        }
+        view.layoutIfNeeded()
+        let vScale = scrollView.bounds.height/image.size.height
+        let hScale = scrollView.bounds.width/image.size.width
+        let zoomScale = min(vScale, hScale)
+        let trueScale = min(scrollView.maximumZoomScale, max(scrollView.minimumZoomScale, zoomScale))
+        scrollView.setZoomScale(trueScale, animated: false)
+        view.layoutIfNeeded()
+        let dx = (scrollView.bounds.width - scrollView.contentSize.width)/2
+        let dy = (scrollView.bounds.height - scrollView.contentSize.height)/2
+        print(scrollView.contentOffset)
+        scrollView.setContentOffset(CGPoint(x: dx, y: dy), animated: false)
+        print(scrollView.contentOffset)
+    }
+}
 
+
+extension SingleImageViewController: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        imageView
+    }
 }

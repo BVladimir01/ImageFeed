@@ -187,9 +187,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="eQU-x2-eLx">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4hX-mR-I7q">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                            </imageView>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A8P-fa-PST">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                </subviews>
+                                <viewLayoutGuide key="contentLayoutGuide" id="n0N-hB-aow"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="cZN-bz-aka"/>
+                                <connections>
+                                    <outlet property="delegate" destination="bPy-FP-Jwf" id="2Lk-BJ-Cbw"/>
+                                </connections>
+                            </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yZo-D2-YZX">
                                 <rect key="frame" x="9" y="55" width="24" height="24"/>
                                 <constraints>
@@ -206,22 +217,23 @@
                         <viewLayoutGuide key="safeArea" id="Yzn-Dy-hHY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
-                            <constraint firstItem="eQU-x2-eLx" firstAttribute="leading" secondItem="Yzn-Dy-hHY" secondAttribute="leading" id="66M-T4-yhJ"/>
-                            <constraint firstItem="Yzn-Dy-hHY" firstAttribute="bottom" secondItem="eQU-x2-eLx" secondAttribute="bottom" id="9fx-Aj-W41"/>
-                            <constraint firstItem="Yzn-Dy-hHY" firstAttribute="trailing" secondItem="eQU-x2-eLx" secondAttribute="trailing" id="LGg-ey-7HM"/>
+                            <constraint firstItem="Yzn-Dy-hHY" firstAttribute="trailing" secondItem="4hX-mR-I7q" secondAttribute="trailing" id="3BE-Lo-I1d"/>
+                            <constraint firstItem="4hX-mR-I7q" firstAttribute="leading" secondItem="Yzn-Dy-hHY" secondAttribute="leading" id="G5X-cn-xm6"/>
+                            <constraint firstItem="4hX-mR-I7q" firstAttribute="top" secondItem="Yzn-Dy-hHY" secondAttribute="top" id="K72-bV-isk"/>
                             <constraint firstItem="yZo-D2-YZX" firstAttribute="leading" secondItem="YId-Dq-W0H" secondAttribute="leading" constant="9" id="Nmc-pR-22N"/>
-                            <constraint firstItem="eQU-x2-eLx" firstAttribute="top" secondItem="Yzn-Dy-hHY" secondAttribute="top" id="O3X-Xy-tYi"/>
                             <constraint firstItem="yZo-D2-YZX" firstAttribute="top" secondItem="YId-Dq-W0H" secondAttribute="top" constant="55" id="q75-aK-1h6"/>
+                            <constraint firstItem="Yzn-Dy-hHY" firstAttribute="bottom" secondItem="4hX-mR-I7q" secondAttribute="bottom" id="riF-Ya-hHU"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="RlY-lW-i26"/>
                     <connections>
-                        <outlet property="imageView" destination="eQU-x2-eLx" id="VLv-Kt-apP"/>
+                        <outlet property="imageView" destination="A8P-fa-PST" id="WSJ-ZC-mg6"/>
+                        <outlet property="scrollView" destination="4hX-mR-I7q" id="oSX-KU-fgc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qLV-xH-dBF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="998" y="-457"/>
+            <point key="canvasLocation" x="997.70992366412213" y="-457.04225352112678"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="K4s-f1-gHJ">
@@ -248,7 +260,6 @@
         <!--Navigation Controller-->
         <scene sceneID="uWV-Wh-urf">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Jvg-at-C7x" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="KjQ-g1-FYN" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="TabFeedActive" id="xdI-1y-t4x"/>
                     <toolbarItems/>
@@ -268,6 +279,7 @@
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="mzw-ut-AYV"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Jvg-at-C7x" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-790.07633587786256" y="-457.04225352112678"/>
         </scene>
