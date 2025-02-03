@@ -72,10 +72,10 @@
 			children = (
 				E79889472D50B8BD00608B34 /* Profile */,
 				E7B7003D2D48C72A00A60E57 /* ImagesList */,
-				E7B7003B2D480B0700A60E57 /* Resources */,
 				E7B700272D47DB4100A60E57 /* AppDelegate.swift */,
 				E7B700292D47DB4100A60E57 /* SceneDelegate.swift */,
 				E7B7002D2D47DB4100A60E57 /* Main.storyboard */,
+				E7B7003B2D480B0700A60E57 /* Resources */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";

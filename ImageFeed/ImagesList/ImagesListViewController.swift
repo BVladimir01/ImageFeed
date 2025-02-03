@@ -45,6 +45,7 @@ final class ImagesListViewController: UIViewController {
         cell.cellImageView.layer.masksToBounds = true
         cell.dateLabel.text = dateFormatter.string(from: currentDate)
         cell.likeButton.imageView?.image = indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive")
+        cell.likeButton.setImage(indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive"), for: .normal)
     }
 }
 
