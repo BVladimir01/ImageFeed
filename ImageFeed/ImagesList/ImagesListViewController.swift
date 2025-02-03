@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
     
@@ -23,6 +23,8 @@ class ImagesListViewController: UIViewController {
         return formatter
     }()
     
+    private let currentDate = Date()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
@@ -30,23 +32,22 @@ class ImagesListViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
     
-    func configCell(for cell: ImagesListCell, at indexPath: IndexPath) {
-        guard let image = UIImage(named: imagesNames[indexPath.row]) else {
+    private func configCell(for cell: ImagesListCell, at indexPath: IndexPath) {
+        guard let image = UIImage(named: imagesNames[indexPath.row] + "1") else {
             fatalError("Could not create image for cell")
         }
         cell.cellImageView.image = image
         cell.cellImageView.layer.cornerRadius = 16
         cell.cellImageView.layer.masksToBounds = true
-        cell.dateLabel.text = dateFormatter.string(from: Date())
+        cell.dateLabel.text = dateFormatter.string(from: currentDate)
         cell.likeButton.imageView?.image = indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive")
-        
     }
 }
 
 
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        //TODO: Add tap logic
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -54,11 +55,8 @@ extension ImagesListViewController: UITableViewDelegate {
             fatalError("could not extract image calculating cell's height")
         }
         let tableWidth = tableView.contentSize.width
-//        subtract insets horizontal padding
         let imageViewWidth = tableWidth - 32
-//        calculate with
         let imageViewHeight = imageViewWidth/(image.size.width)*(image.size.height)
-//        add vertical padding
         let rowHeight = imageViewHeight + 8
         return rowHeight
     }
@@ -77,6 +75,4 @@ extension ImagesListViewController: UITableViewDataSource {
         configCell(for: cell, at: indexPath)
         return cell
     }
-    
-    
 }
