@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E79889492D50B8E200608B34 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79889482D50B8E200608B34 /* ProfileViewController.swift */; };
 		E7B700282D47DB4100A60E57 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B700272D47DB4100A60E57 /* AppDelegate.swift */; };
 		E7B7002A2D47DB4100A60E57 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B700292D47DB4100A60E57 /* SceneDelegate.swift */; };
 		E7B7002C2D47DB4100A60E57 /* ImagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B7002B2D47DB4100A60E57 /* ImagesListViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E79889482D50B8E200608B34 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		E7B700242D47DB4100A60E57 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7B700272D47DB4100A60E57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E7B700292D47DB4100A60E57 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -39,6 +41,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E79889472D50B8BD00608B34 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				E79889482D50B8E200608B34 /* ProfileViewController.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
 		E7B7001B2D47DB4100A60E57 = {
 			isa = PBXGroup;
 			children = (
@@ -58,6 +68,7 @@
 		E7B700262D47DB4100A60E57 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				E79889472D50B8BD00608B34 /* Profile */,
 				E7B7003D2D48C72A00A60E57 /* ImagesList */,
 				E7B7003B2D480B0700A60E57 /* Resources */,
 				E7B700272D47DB4100A60E57 /* AppDelegate.swift */,
@@ -157,6 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E79889492D50B8E200608B34 /* ProfileViewController.swift in Sources */,
 				E7B7002C2D47DB4100A60E57 /* ImagesListViewController.swift in Sources */,
 				E7B7003F2D48C74700A60E57 /* ImagesListCell.swift in Sources */,
 				E7B700282D47DB4100A60E57 /* AppDelegate.swift in Sources */,
