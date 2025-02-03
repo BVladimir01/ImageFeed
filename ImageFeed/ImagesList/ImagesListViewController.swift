@@ -30,11 +30,13 @@ final class ImagesListViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        tableView.rowHeight = 200
     }
     
     private func configCell(for cell: ImagesListCell, at indexPath: IndexPath) {
-        guard let image = UIImage(named: imagesNames[indexPath.row] + "1") else {
-            fatalError("Could not create image for cell")
+        guard let image = UIImage(named: imagesNames[indexPath.row] + (indexPath.row > 9 ? "1" : "")) else {
+            assertionFailure("Failed to create image for cell")
+            return
         }
         cell.cellImageView.image = image
         cell.cellImageView.layer.cornerRadius = 16
@@ -51,8 +53,9 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = UIImage(named: imagesNames[indexPath.row]) else {
-            fatalError("could not extract image calculating cell's height")
+        guard let image = UIImage(named: imagesNames[indexPath.row] + (indexPath.row > 9 ? "1" : "")) else {
+            assertionFailure("Failed to extract image for calculating cell's height")
+            return tableView.rowHeight
         }
         let tableWidth = tableView.contentSize.width
         let imageViewWidth = tableWidth - 32
@@ -70,7 +73,8 @@ extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) as? ImagesListCell else {
-            fatalError("Could not type cast cell to ImagesListCell")
+            assertionFailure("Failed to dequeue ImagesListCell")
+            return UITableViewCell()
         }
         configCell(for: cell, at: indexPath)
         return cell
