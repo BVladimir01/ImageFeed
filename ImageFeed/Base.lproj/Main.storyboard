@@ -201,6 +201,18 @@
                                     <outlet property="delegate" destination="bPy-FP-Jwf" id="2Lk-BJ-Cbw"/>
                                 </connections>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="90v-FE-DJA">
+                                <rect key="frame" x="171" y="761" width="51" height="51"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="90v-FE-DJA" secondAttribute="height" multiplier="1:1" id="1QN-we-4MV"/>
+                                    <constraint firstAttribute="width" constant="51" id="PJG-Lh-WMh"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="ShareButton"/>
+                                <connections>
+                                    <action selector="shareButtonTapped" destination="bPy-FP-Jwf" eventType="touchUpInside" id="R8G-kl-Hab"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yZo-D2-YZX">
                                 <rect key="frame" x="9" y="55" width="24" height="24"/>
                                 <constraints>
@@ -221,6 +233,8 @@
                             <constraint firstItem="4hX-mR-I7q" firstAttribute="leading" secondItem="Yzn-Dy-hHY" secondAttribute="leading" id="G5X-cn-xm6"/>
                             <constraint firstItem="4hX-mR-I7q" firstAttribute="top" secondItem="Yzn-Dy-hHY" secondAttribute="top" id="K72-bV-isk"/>
                             <constraint firstItem="yZo-D2-YZX" firstAttribute="leading" secondItem="YId-Dq-W0H" secondAttribute="leading" constant="9" id="Nmc-pR-22N"/>
+                            <constraint firstAttribute="bottom" secondItem="90v-FE-DJA" secondAttribute="bottom" constant="40" id="Q0m-Kq-xsO"/>
+                            <constraint firstItem="90v-FE-DJA" firstAttribute="centerX" secondItem="Yzn-Dy-hHY" secondAttribute="centerX" id="aHt-AT-XLX"/>
                             <constraint firstItem="yZo-D2-YZX" firstAttribute="top" secondItem="YId-Dq-W0H" secondAttribute="top" constant="55" id="q75-aK-1h6"/>
                             <constraint firstItem="Yzn-Dy-hHY" firstAttribute="bottom" secondItem="4hX-mR-I7q" secondAttribute="bottom" id="riF-Ya-hHU"/>
                         </constraints>
@@ -290,6 +304,7 @@
         <image name="FavouritesActive" width="42" height="42"/>
         <image name="LogOut" width="24" height="24"/>
         <image name="ProfilePicStubLarge" width="70" height="70"/>
+        <image name="ShareButton" width="51" height="51"/>
         <image name="TabFeedActive" width="30" height="30"/>
         <image name="TabProfileActive" width="30" height="30"/>
         <namedColor name="YP Black">

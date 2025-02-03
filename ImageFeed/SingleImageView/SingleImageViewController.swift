@@ -27,6 +27,15 @@ class SingleImageViewController: UIViewController {
     
     //MARK: - @IBOutlet actions
     
+    @IBAction func shareButtonTapped() {
+        guard let image else {
+            assertionFailure("Failed to unwrap image")
+            return
+        }
+        let avc = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        present(avc, animated: true, completion: nil)
+    }
+    
     @IBAction func backwardButtonTapped() {
         dismiss(animated: true)
     }
@@ -47,6 +56,7 @@ class SingleImageViewController: UIViewController {
             assertionFailure("Tried to center image before assigning it")
             return
         }
+        //TODO: locate in center
         view.layoutIfNeeded()
         let vScale = scrollView.bounds.height/image.size.height
         let hScale = scrollView.bounds.width/image.size.width
