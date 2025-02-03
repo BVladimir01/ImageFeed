@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BpW-28-6zw">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="W9I-jy-I6Z">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -66,6 +66,7 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="aeV-ez-LyQ"/>
                         <color key="backgroundColor" name="YP Black"/>
+                        <color key="tintColor" name="YP White"/>
                         <constraints>
                             <constraint firstItem="VO9-RA-BkS" firstAttribute="leading" secondItem="HvD-AP-J6N" secondAttribute="leading" constant="16" id="6To-h1-AGa"/>
                             <constraint firstItem="4YG-Ed-Z0W" firstAttribute="top" secondItem="HvD-AP-J6N" secondAttribute="top" constant="99" id="ElU-Aq-CDa"/>
@@ -82,6 +83,7 @@
                             <constraint firstItem="tmo-hx-HOS" firstAttribute="leading" secondItem="HvD-AP-J6N" secondAttribute="leading" constant="16" id="iZa-4x-5fg"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="" image="TabProfileActive" id="7oP-pt-evP"/>
                     <connections>
                         <outlet property="logOutButton" destination="4YG-Ed-Z0W" id="yDs-ja-e3t"/>
                         <outlet property="nameLabel" destination="tmo-hx-HOS" id="jra-oL-qbL"/>
@@ -92,7 +94,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ApG-sp-p4m" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-660.30534351145036" y="-2.1126760563380285"/>
+            <point key="canvasLocation" x="-804" y="271"/>
         </scene>
         <!--Images List View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -105,6 +107,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="XHi-CO-YNk">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <color key="backgroundColor" name="YP Black"/>
+                                <color key="tintColor" name="YP White"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="195" id="eE2-Qo-VJx" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="393" height="195"/>
@@ -166,13 +169,36 @@
                             <constraint firstItem="XHi-CO-YNk" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="uQs-Tx-fip"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="" image="TabFeedActive" id="xdI-1y-t4x"/>
                     <connections>
                         <outlet property="tableView" destination="XHi-CO-YNk" id="mtv-XY-LcZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="125.95419847328243" y="-2.1126760563380285"/>
+            <point key="canvasLocation" x="-790" y="-457"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="K4s-f1-gHJ">
+            <objects>
+                <tabBarController id="W9I-jy-I6Z" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="GX8-o9-k8u">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" name="YP Black"/>
+                        <color key="selectedImageTintColor" name="YP White"/>
+                        <tabBarAppearance key="standardAppearance">
+                            <color key="backgroundColor" name="YP Black"/>
+                        </tabBarAppearance>
+                    </tabBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="9KF-v3-XRv"/>
+                        <segue destination="BpW-28-6zw" kind="relationship" relationship="viewControllers" id="pTZ-ph-WNz"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="I0b-p3-CZF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1732" y="134"/>
         </scene>
     </scenes>
     <resources>
@@ -180,6 +206,8 @@
         <image name="FavouritesActive" width="42" height="42"/>
         <image name="LogOut" width="24" height="24"/>
         <image name="ProfilePicStubLarge" width="70" height="70"/>
+        <image name="TabFeedActive" width="30" height="30"/>
+        <image name="TabProfileActive" width="30" height="30"/>
         <namedColor name="YP Black">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -34,7 +34,7 @@ final class ImagesListViewController: UIViewController {
     }
     
     private func configCell(for cell: ImagesListCell, at indexPath: IndexPath) {
-        guard let image = UIImage(named: imagesNames[indexPath.row] + (indexPath.row > 9 ? "1" : "")) else {
+        guard let image = UIImage(named: imagesNames[indexPath.row]) else {
             assertionFailure("Failed to create image for cell")
             return
         }
@@ -53,7 +53,7 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = UIImage(named: imagesNames[indexPath.row] + (indexPath.row > 9 ? "1" : "")) else {
+        guard let image = UIImage(named: imagesNames[indexPath.row]) else {
             assertionFailure("Failed to extract image for calculating cell's height")
             return tableView.rowHeight
         }
