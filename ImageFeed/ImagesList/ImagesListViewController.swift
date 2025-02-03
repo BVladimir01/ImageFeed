@@ -15,6 +15,8 @@ final class ImagesListViewController: UIViewController {
     
     private let imagesNames: [String] = Array(0..<20).map({"\($0)"})
     
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ru_RU")
@@ -48,8 +50,22 @@ final class ImagesListViewController: UIViewController {
 
 
 extension ImagesListViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //TODO: Add tap logic
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showSingleImageSegueIdentifier {
+            guard let viewController = segue.destination as? SingleImageViewController, let indexPath = sender as? IndexPath else {
+                assertionFailure("Failed to create ViewController or extract indexPath")
+                return
+            }
+            let image = UIImage(named: "\(imagesNames[indexPath.row])")
+            viewController.image = image
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
