@@ -9,6 +9,8 @@ import UIKit
 
 class SingleImageViewController: UIViewController {
     
+    //MARK: - vars
+    
     var image: UIImage? {
         didSet {
             guard isViewLoaded else { return }
@@ -16,11 +18,18 @@ class SingleImageViewController: UIViewController {
         }
     }
     
+    //MARK: - @IBOutlet vars
+    
     @IBOutlet private var imageView: UIImageView!
+    
+    
+    //MARK: - @IBOutlet actions
     
     @IBAction func backwardButtonTapped() {
         dismiss(animated: true)
     }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.image = image

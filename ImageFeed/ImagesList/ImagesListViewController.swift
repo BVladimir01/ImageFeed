@@ -10,14 +10,13 @@ import Foundation
 import UIKit
 
 final class ImagesListViewController: UIViewController {
-
-    @IBOutlet private var tableView: UITableView!
+    
+    //MARK: - private let vars
     
     private let imagesNames: [String] = Array(0..<20).map({"\($0)"})
-    
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    
-    private lazy var dateFormatter: DateFormatter = {
+    private let currentDate = Date()
+    private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ru_RU")
         formatter.dateStyle = .long
@@ -25,7 +24,9 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    private let currentDate = Date()
+    //MARK: - @IBoutlet vars
+    
+    @IBOutlet private var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
