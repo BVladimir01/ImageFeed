@@ -41,9 +41,21 @@ final class ImagesListViewController: UIViewController {
             assertionFailure("Failed to create image for cell")
             return
         }
+        //renew imageViews' sizes, since layer mask will be added
+        view.layoutIfNeeded()
+        //configure image
         cell.cellImageView.image = image
         cell.cellImageView.layer.cornerRadius = 16
         cell.cellImageView.layer.masksToBounds = true
+        //configure gradient
+        cell.cellImageView.layer.sublayers = []
+        let gradient = CAGradientLayer()
+        gradient.frame = cell.cellImageView.bounds
+        gradient.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
+        let gradientStart = NSNumber(value: 1 - 30/Float(cell.cellImageView.bounds.height))
+        gradient.locations = [gradientStart, 1]
+        cell.cellImageView.layer.addSublayer(gradient)
+        //configure everything else
         cell.dateLabel.text = dateFormatter.string(from: currentDate)
         cell.likeButton.imageView?.image = indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive")
         cell.likeButton.setImage(indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive"), for: .normal)
