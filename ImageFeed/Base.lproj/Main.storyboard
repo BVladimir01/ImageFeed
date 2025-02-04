@@ -157,14 +157,14 @@
                         <viewLayoutGuide key="safeArea" id="Yzn-Dy-hHY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
-                            <constraint firstItem="Yzn-Dy-hHY" firstAttribute="trailing" secondItem="4hX-mR-I7q" secondAttribute="trailing" id="3BE-Lo-I1d"/>
-                            <constraint firstItem="4hX-mR-I7q" firstAttribute="leading" secondItem="Yzn-Dy-hHY" secondAttribute="leading" id="G5X-cn-xm6"/>
-                            <constraint firstItem="4hX-mR-I7q" firstAttribute="top" secondItem="Yzn-Dy-hHY" secondAttribute="top" id="K72-bV-isk"/>
+                            <constraint firstAttribute="trailing" secondItem="4hX-mR-I7q" secondAttribute="trailing" id="3BE-Lo-I1d"/>
+                            <constraint firstItem="4hX-mR-I7q" firstAttribute="leading" secondItem="YId-Dq-W0H" secondAttribute="leading" id="G5X-cn-xm6"/>
+                            <constraint firstItem="4hX-mR-I7q" firstAttribute="top" secondItem="YId-Dq-W0H" secondAttribute="top" id="K72-bV-isk"/>
                             <constraint firstItem="yZo-D2-YZX" firstAttribute="leading" secondItem="YId-Dq-W0H" secondAttribute="leading" constant="9" id="Nmc-pR-22N"/>
                             <constraint firstAttribute="bottom" secondItem="90v-FE-DJA" secondAttribute="bottom" constant="40" id="Q0m-Kq-xsO"/>
                             <constraint firstItem="90v-FE-DJA" firstAttribute="centerX" secondItem="Yzn-Dy-hHY" secondAttribute="centerX" id="aHt-AT-XLX"/>
                             <constraint firstItem="yZo-D2-YZX" firstAttribute="top" secondItem="YId-Dq-W0H" secondAttribute="top" constant="55" id="q75-aK-1h6"/>
-                            <constraint firstItem="Yzn-Dy-hHY" firstAttribute="bottom" secondItem="4hX-mR-I7q" secondAttribute="bottom" id="riF-Ya-hHU"/>
+                            <constraint firstAttribute="bottom" secondItem="4hX-mR-I7q" secondAttribute="bottom" id="riF-Ya-hHU"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="RlY-lW-i26"/>
