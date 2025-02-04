@@ -56,14 +56,12 @@ class SingleImageViewController: UIViewController {
             assertionFailure("Tried to center image before assigning it")
             return
         }
-        //TODO: locate in center
         view.layoutIfNeeded()
         let vScale = scrollView.bounds.height/image.size.height
         let hScale = scrollView.bounds.width/image.size.width
         let zoomScale = min(vScale, hScale)
         let trueScale = min(scrollView.maximumZoomScale, max(scrollView.minimumZoomScale, zoomScale))
         scrollView.setZoomScale(trueScale, animated: false)
-        view.layoutIfNeeded()
         adjustInsets()
     }
     
