@@ -142,10 +142,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yZo-D2-YZX">
-                                <rect key="frame" x="9" y="55" width="24" height="24"/>
+                                <rect key="frame" x="-1" y="45" width="44" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="yZo-D2-YZX" secondAttribute="height" multiplier="1:1" id="DJZ-YZ-l6U"/>
-                                    <constraint firstAttribute="width" constant="24" id="ogm-U1-c1T"/>
+                                    <constraint firstAttribute="width" constant="44" id="ogm-U1-c1T"/>
                                 </constraints>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="Backward"/>
@@ -160,10 +160,10 @@
                             <constraint firstAttribute="trailing" secondItem="4hX-mR-I7q" secondAttribute="trailing" id="3BE-Lo-I1d"/>
                             <constraint firstItem="4hX-mR-I7q" firstAttribute="leading" secondItem="YId-Dq-W0H" secondAttribute="leading" id="G5X-cn-xm6"/>
                             <constraint firstItem="4hX-mR-I7q" firstAttribute="top" secondItem="YId-Dq-W0H" secondAttribute="top" id="K72-bV-isk"/>
-                            <constraint firstItem="yZo-D2-YZX" firstAttribute="leading" secondItem="YId-Dq-W0H" secondAttribute="leading" constant="9" id="Nmc-pR-22N"/>
+                            <constraint firstItem="yZo-D2-YZX" firstAttribute="leading" secondItem="YId-Dq-W0H" secondAttribute="leading" constant="-1" id="Nmc-pR-22N"/>
                             <constraint firstAttribute="bottom" secondItem="90v-FE-DJA" secondAttribute="bottom" constant="40" id="Q0m-Kq-xsO"/>
                             <constraint firstItem="90v-FE-DJA" firstAttribute="centerX" secondItem="Yzn-Dy-hHY" secondAttribute="centerX" id="aHt-AT-XLX"/>
-                            <constraint firstItem="yZo-D2-YZX" firstAttribute="top" secondItem="YId-Dq-W0H" secondAttribute="top" constant="55" id="q75-aK-1h6"/>
+                            <constraint firstItem="yZo-D2-YZX" firstAttribute="top" secondItem="YId-Dq-W0H" secondAttribute="top" constant="45" id="q75-aK-1h6"/>
                             <constraint firstAttribute="bottom" secondItem="4hX-mR-I7q" secondAttribute="bottom" id="riF-Ya-hHU"/>
                         </constraints>
                     </view>
