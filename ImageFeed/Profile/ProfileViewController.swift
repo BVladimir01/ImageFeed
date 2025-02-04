@@ -108,8 +108,8 @@ class ProfileViewController: UIViewController {
         view.addSubview(button)
         NSLayoutConstraint.activate([
             button.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            button.heightAnchor.constraint(equalToConstant: 24),
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -14),
+            button.heightAnchor.constraint(equalToConstant: 44),
             button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: 1)
         ])
         logOutButton = button

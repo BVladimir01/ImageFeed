@@ -41,7 +41,7 @@ final class ImagesListViewController: UIViewController {
             assertionFailure("Failed to create image for cell")
             return
         }
-        //renew imageViews' sizes, since layer mask will be added
+        //update imageViews' sizes, since layer mask will be added
         view.layoutIfNeeded()
         //configure image
         cell.cellImageView.image = image
