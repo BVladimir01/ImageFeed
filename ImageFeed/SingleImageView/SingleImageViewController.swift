@@ -22,12 +22,12 @@ class SingleImageViewController: UIViewController {
     
     //MARK: - @IBOutlet vars
     
-    @IBOutlet var scrollView: UIScrollView!
+    @IBOutlet private var scrollView: UIScrollView!
     @IBOutlet private var imageView: UIImageView!
     
     //MARK: - @IBOutlet actions
     
-    @IBAction func shareButtonTapped() {
+    @IBAction private func shareButtonTapped() {
         guard let image else {
             assertionFailure("Failed to unwrap image")
             return
@@ -36,7 +36,7 @@ class SingleImageViewController: UIViewController {
         present(avc, animated: true, completion: nil)
     }
     
-    @IBAction func backwardButtonTapped() {
+    @IBAction private func backwardButtonTapped() {
         dismiss(animated: true)
     }
     
@@ -51,9 +51,13 @@ class SingleImageViewController: UIViewController {
         rescaleAndCenterImage()
     }
     
-    func rescaleAndCenterImage() {
+    private func rescaleAndCenterImage() {
         guard let image else {
             assertionFailure("Tried to center image before assigning it")
+            return
+        }
+        guard image.size.height != 0, image.size.width != 0 else {
+            assertionFailure("Failed to scale image. Either side of image is zero")
             return
         }
         view.layoutIfNeeded()
