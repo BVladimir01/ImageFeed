@@ -10,12 +10,13 @@ import Foundation
 import UIKit
 
 final class ImagesListViewController: UIViewController {
-
-    @IBOutlet private var tableView: UITableView!
+    
+    //MARK: - private let vars
     
     private let imagesNames: [String] = Array(0..<20).map({"\($0)"})
-    
-    private lazy var dateFormatter: DateFormatter = {
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    private let currentDate = Date()
+    private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ru_RU")
         formatter.dateStyle = .long
@@ -23,7 +24,9 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    private let currentDate = Date()
+    //MARK: - @IBoutlet vars
+    
+    @IBOutlet private var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,26 +37,53 @@ final class ImagesListViewController: UIViewController {
     }
     
     private func configCell(for cell: ImagesListCell, at indexPath: IndexPath) {
-        guard let image = UIImage(named: imagesNames[indexPath.row] + (indexPath.row > 9 ? "1" : "")) else {
+        guard let image = UIImage(named: imagesNames[indexPath.row]) else {
             assertionFailure("Failed to create image for cell")
             return
         }
+        //update imageViews' sizes, since layer mask will be added
+        view.layoutIfNeeded()
+        //configure image
         cell.cellImageView.image = image
         cell.cellImageView.layer.cornerRadius = 16
         cell.cellImageView.layer.masksToBounds = true
+        //configure gradient
+        cell.cellImageView.layer.sublayers = []
+        let gradient = CAGradientLayer()
+        gradient.frame = cell.cellImageView.bounds
+        gradient.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
+        let gradientStart = NSNumber(value: 1 - 30/Float(cell.cellImageView.bounds.height))
+        gradient.locations = [gradientStart, 1]
+        cell.cellImageView.layer.addSublayer(gradient)
+        //configure everything else
         cell.dateLabel.text = dateFormatter.string(from: currentDate)
         cell.likeButton.imageView?.image = indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive")
+        cell.likeButton.setImage(indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive"), for: .normal)
     }
 }
 
 
 extension ImagesListViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //TODO: Add tap logic
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showSingleImageSegueIdentifier {
+            guard let viewController = segue.destination as? SingleImageViewController, let indexPath = sender as? IndexPath else {
+                assertionFailure("Failed to create ViewController or extract indexPath")
+                return
+            }
+            let image = UIImage(named: "\(imagesNames[indexPath.row])")
+            viewController.image = image
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = UIImage(named: imagesNames[indexPath.row] + (indexPath.row > 9 ? "1" : "")) else {
+        guard let image = UIImage(named: imagesNames[indexPath.row]) else {
             assertionFailure("Failed to extract image for calculating cell's height")
             return tableView.rowHeight
         }
