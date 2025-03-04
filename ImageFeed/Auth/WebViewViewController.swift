@@ -1,0 +1,77 @@
+//
+//  WebViewViewController.swift
+//  ImageFeed
+//
+//  Created by Vladimir on 03.03.2025.
+//
+
+import UIKit
+import WebKit
+
+class WebViewViewController: UIViewController {
+    
+    @IBOutlet var webView: WKWebView!
+    weak var delegate: WebViewViewControllerDelegate? = nil
+    
+    enum WebViewConstants {
+        static let unsplashAuthorizeUrlString = "https://unsplash.com/oauth/authorize"
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        loadAuthView()
+        webView.navigationDelegate = self
+    }
+    
+    private func loadAuthView() {
+        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeUrlString) else {
+            assertionFailure("Failed to create URLComponents for authorization")
+            return
+        }
+        urlComponents.queryItems = [
+            .init(name: "client_id", value: Constants.accessKey),
+            .init(name: "redirect_uri", value: Constants.redirectURI),
+            .init(name: "resonse_type", value: "code"),
+            .init(name: "scope", value: Constants.accessScope)
+        ]
+        guard let url = urlComponents.url else {
+            assertionFailure("Faield to create URL from URLComponents for authorization")
+            return
+        }
+        print(url.absoluteString)
+        
+        let request = URLRequest(url: url)
+        webView.load(request)
+    }
+}
+
+
+extension WebViewViewController: WKNavigationDelegate {
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if let code = code(from: navigationAction) {
+            //TODO: implement success
+            decisionHandler(.cancel)
+            print(code)
+        } else {
+            decisionHandler(.allow)
+            print("fail to receive code")
+        }
+    }
+    
+    private func code(from navigationAction: WKNavigationAction) -> String? {
+        if let url = navigationAction.request.url,
+              let urlComponents = URLComponents(string: url.absoluteString),
+              urlComponents.path == "/oauth/authorize/native",
+              let items = urlComponents.queryItems,
+           let codeItem = items.first(where: { $0.name == "code"})
+        {
+            print(url.absoluteString)
+            return codeItem.value
+        } else {
+            return nil
+        }
+              
+              
+    }
+}
