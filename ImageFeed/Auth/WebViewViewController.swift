@@ -49,7 +49,7 @@ final class WebViewViewController: UIViewController {
     
     private func loadAuthView() {
         guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeUrlString) else {
-            assertionFailure("Failed to create URLComponents for authorization")
+            assertionFailure("Failed to create URLComponents for authorization (token request)")
             return
         }
         urlComponents.queryItems = [
@@ -59,7 +59,7 @@ final class WebViewViewController: UIViewController {
             .init(name: "scope", value: Constants.accessScope)
         ]
         guard let url = urlComponents.url else {
-            assertionFailure("Faield to create URL from URLComponents for authorization")
+            assertionFailure("Faield to create URL from URLComponents for authorization (token request)")
             return
         }
         print(url.absoluteString)
@@ -76,10 +76,9 @@ extension WebViewViewController: WKNavigationDelegate {
         if let code = code(from: navigationAction) {
             //TODO: implement success
             decisionHandler(.cancel)
-            print(code)
+            OAuth2Service.shared.fetchOAuthToken(from: code)
         } else {
             decisionHandler(.allow)
-            print("didnt receive code")
         }
     }
     
@@ -90,7 +89,6 @@ extension WebViewViewController: WKNavigationDelegate {
               let items = urlComponents.queryItems,
            let codeItem = items.first(where: { $0.name == "code"} )
         {
-            print(url.absoluteString)
             return codeItem.value
         } else {
             return nil
