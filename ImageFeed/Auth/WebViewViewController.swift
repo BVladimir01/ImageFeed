@@ -76,7 +76,14 @@ extension WebViewViewController: WKNavigationDelegate {
         if let code = code(from: navigationAction) {
             //TODO: implement success
             decisionHandler(.cancel)
-            OAuth2Service.shared.fetchOAuthToken(from: code)
+            OAuth2Service.shared.fetchOAuthToken(from: code) { result in
+                switch result {
+                case .success(let token):
+                    OAuth2TokenStorage.shared.token = token
+                case .failure(let error):
+                    break
+                }
+            }
         } else {
             decisionHandler(.allow)
         }

@@ -34,7 +34,7 @@ final class OAuth2Service {
                 completion(.failure(error))
             }
         }
-//        task.resume()
+        task.resume()
     }
     
     private func assembleURLRequest(from code: String) -> URLRequest? {
