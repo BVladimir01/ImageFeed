@@ -17,10 +17,24 @@ final class OAuth2Service {
     
     static let shared = OAuth2Service()
     
-    func fetchOAuthToken(from code: String) {
+    func fetchOAuthToken(from code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let request = assembleURLRequest(from: code) else { return }
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let jsonDecoder = JSONDecoder()
+        let task = URLSession.shared.data(for: request) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let responseBody = try jsonDecoder.decode(OAuthTokenResponseBody.self, from: data)
+                    completion(.success(responseBody.accessToken))
+                } catch {
+                    assertionFailure("Failed to decode token")
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
+//        task.resume()
     }
     
     private func assembleURLRequest(from code: String) -> URLRequest? {
