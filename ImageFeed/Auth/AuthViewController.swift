@@ -34,11 +34,22 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: UIViewController, didAuthenticateWith code: String) {
-        //TODO: implement authentication
+//        vc.navigationController?.popViewController(animated: true)
+        vc.dismiss(animated: true)
+        dismiss(animated: true)
+        //TODO: implement rendering result
+        OAuth2Service.shared.fetchOAuthToken(from: code) { result in
+            switch result {
+            case .success(let token):
+                OAuth2TokenStorage.shared.token = token
+            case .failure(let error):
+                break
+            }
+        }
     }
     
     func webViewViewControllerDidCancel(_ vc: UIViewController) {
-        vc.dismiss(animated: true)
+        dismiss(animated: true)
     }
     
     

@@ -74,16 +74,8 @@ extension WebViewViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let code = code(from: navigationAction) {
-            //TODO: implement success
             decisionHandler(.cancel)
-            OAuth2Service.shared.fetchOAuthToken(from: code) { result in
-                switch result {
-                case .success(let token):
-                    OAuth2TokenStorage.shared.token = token
-                case .failure(let error):
-                    break
-                }
-            }
+            delegate?.webViewViewController(self, didAuthenticateWith: code)
         } else {
             decisionHandler(.allow)
         }
