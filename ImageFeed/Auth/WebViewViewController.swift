@@ -8,9 +8,10 @@
 import UIKit
 import WebKit
 
-class WebViewViewController: UIViewController {
+final class WebViewViewController: UIViewController {
     
     @IBOutlet var webView: WKWebView!
+    @IBOutlet var progressView: UIProgressView!
     weak var delegate: WebViewViewControllerDelegate? = nil
     
     enum WebViewConstants {
@@ -19,8 +20,31 @@ class WebViewViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         loadAuthView()
         webView.navigationDelegate = self
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == #keyPath(WKWebView.estimatedProgress) {
+            updateProgressView()
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
+    }
+    
+    private func updateProgressView() {
+        progressView.setProgress(Float(webView.estimatedProgress), animated: true)
+        progressView.isHidden = abs(progressView.progress - 1) < 0.0001
     }
     
     private func loadAuthView() {
@@ -31,7 +55,7 @@ class WebViewViewController: UIViewController {
         urlComponents.queryItems = [
             .init(name: "client_id", value: Constants.accessKey),
             .init(name: "redirect_uri", value: Constants.redirectURI),
-            .init(name: "resonse_type", value: "code"),
+            .init(name: "response_type", value: "code"),
             .init(name: "scope", value: Constants.accessScope)
         ]
         guard let url = urlComponents.url else {
@@ -55,7 +79,7 @@ extension WebViewViewController: WKNavigationDelegate {
             print(code)
         } else {
             decisionHandler(.allow)
-            print("fail to receive code")
+            print("didnt receive code")
         }
     }
     
@@ -64,7 +88,7 @@ extension WebViewViewController: WKNavigationDelegate {
               let urlComponents = URLComponents(string: url.absoluteString),
               urlComponents.path == "/oauth/authorize/native",
               let items = urlComponents.queryItems,
-           let codeItem = items.first(where: { $0.name == "code"})
+           let codeItem = items.first(where: { $0.name == "code"} )
         {
             print(url.absoluteString)
             return codeItem.value
