@@ -10,13 +10,19 @@ import WebKit
 
 final class WebViewViewController: UIViewController {
     
-    @IBOutlet var webView: WKWebView!
-    @IBOutlet var progressView: UIProgressView!
+    //MARK: - outlets
+    
+    @IBOutlet private var webView: WKWebView!
+    @IBOutlet private var progressView: UIProgressView!
+    
+    //MARK: - vars
     weak var delegate: WebViewViewControllerDelegate? = nil
     
     enum WebViewConstants {
         static let unsplashAuthorizeUrlString = "https://unsplash.com/oauth/authorize"
     }
+    
+    //MARK: - overriden methods
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -37,6 +43,8 @@ final class WebViewViewController: UIViewController {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
+    
+    //MARK: - private methods
     
     private func updateProgressView() {
         progressView.setProgress(Float(webView.estimatedProgress), animated: true)
@@ -63,6 +71,7 @@ final class WebViewViewController: UIViewController {
     }
 }
 
+//MARK: - WKNavigationDelegate conformance
 
 extension WebViewViewController: WKNavigationDelegate {
     

@@ -116,6 +116,7 @@ final class ProfileViewController: UIViewController {
     }
     
     //MARK: - Intentions
+    
     @objc
     private func logOut() {
         //TODO: log out logic

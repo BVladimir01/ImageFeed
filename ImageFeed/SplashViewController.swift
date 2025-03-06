@@ -9,8 +9,12 @@ import UIKit
 
 class SplashViewController: UIViewController {
     
+    //MARK: - vars
+    
     private let tabBarStoryboardID = "TabBarVC"
     private let showAuthSegueID = "ShowAuthVC"
+    
+    //MARK: - overriden methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +47,8 @@ class SplashViewController: UIViewController {
         authVC.delegate = self
     }
     
+    //MARK: - private methods
+    
     private func switchToTabBarViewController() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
             assertionFailure("Failed to get windowScene or its window when switching to TabBarVC from splashscreen")
@@ -55,6 +61,8 @@ class SplashViewController: UIViewController {
         window.rootViewController = tabBarVC
     }
 }
+
+//MARK: - AuthVCDelegate conformance
 
 extension SplashViewController: AuthViewContollerDelegate {
     func didAuthenticate(_ vc: UIViewController) {

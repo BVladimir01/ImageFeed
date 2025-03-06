@@ -40,6 +40,8 @@ class SingleImageViewController: UIViewController {
         dismiss(animated: true)
     }
     
+    //MARK: - overriden methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.minimumZoomScale = 0.1
@@ -50,6 +52,8 @@ class SingleImageViewController: UIViewController {
         }
         rescaleAndCenterImage()
     }
+    
+    //MARK: - private methods
     
     private func rescaleAndCenterImage() {
         guard let image else {
@@ -76,6 +80,7 @@ class SingleImageViewController: UIViewController {
     }
 }
 
+//MARK: - UIScrollViewDelegate conformance
 
 extension SingleImageViewController: UIScrollViewDelegate {
     
