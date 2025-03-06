@@ -12,8 +12,7 @@ final class OAuth2Service {
     
     private let baseUrlAuthString = "https://unsplash.com/oauth/token"
     
-    private init() {
-    }
+    private init() { }
     
     static let shared = OAuth2Service()
     
