@@ -9,7 +9,7 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     
-    private let showWebViewSegueID = "ShowWebView"
+    private let showWebViewVCSegueID = "ShowWebView"
     weak var delegate: AuthViewContollerDelegate?
 
     override func viewDidLoad() {
@@ -21,34 +21,35 @@ final class AuthViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showWebViewSegueID {
+        defer {
+            super.prepare(for: segue, sender: sender)
+        }
+        if segue.identifier == showWebViewVCSegueID {
             guard let webViewVC = segue.destination as? WebViewViewController else {
-                assertionFailure("Failed to create WebViewContoller during authentication")
+                assertionFailure("Failed to create WebViewVC as a segue destination from AuthViewVC")
                 return
             }
             webViewVC.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
         }
     }
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: UIViewController, didAuthenticateWith code: String) {
-        //TODO: implement rendering result
+        //TODO: implement result processing
         OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self, weak vc] result in
             guard let self, let vc else { return }
             switch result {
             case .success(let token):
                 OAuth2TokenStorage.shared.token = token
+                vc.dismiss(animated: true)
                 guard let delegate = self.delegate else {
                     assertionFailure("Failed to get AuthVC's delegate")
                     return
                 }
-                vc.dismiss(animated: true)
                 delegate.didAuthenticate(self)
             case .failure(let error):
-                break
+                print(error)
             }
         }
     }
