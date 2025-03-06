@@ -12,11 +12,16 @@ class SplashViewController: UIViewController {
     private let tabBarStoryboardID = "TabBarVC"
     private let showAuthSegueID = "ShowAuthVC"
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+//        for testing purpose only
+//        OAuth2TokenStorage.shared.token = nil
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         let storage = OAuth2TokenStorage.shared
-//        storage.token = nil
-        if let _ = storage.token {
-            switchToFeedViewController()
+        if storage.token != nil {
+            switchToTabBarViewController()
         } else {
             performSegue(withIdentifier: showAuthSegueID, sender: nil)
         }
@@ -28,32 +33,32 @@ class SplashViewController: UIViewController {
         }
         guard segue.identifier == showAuthSegueID else { return }
         guard let navigationVC = segue.destination as? UINavigationController else {
-            assertionFailure("Failed to typecast navigationController during authentication")
+            assertionFailure("Failed to typecast NavigationController of authenctication flow from SplashVC")
             return
         }
         guard let authVC = navigationVC.viewControllers.first as? AuthViewController else {
-            assertionFailure("Failed to get or typecast AuthViewController")
+            assertionFailure("Failed to get or typecast AuthVC from NavigationController of authentication flow")
             return
         }
         authVC.delegate = self
     }
     
-    private func switchToFeedViewController() {
+    private func switchToTabBarViewController() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
-            assertionFailure("Failed to get windowScene or window")
+            assertionFailure("Failed to get windowScene or its window when switching to TabBarVC from splashscreen")
             return
         }
-        guard let feedVC = storyboard?.instantiateViewController(withIdentifier: tabBarStoryboardID) else {
-            assertionFailure("Failed to instantiate \(tabBarStoryboardID) from storyboard")
+        guard let tabBarVC = storyboard?.instantiateViewController(withIdentifier: tabBarStoryboardID) else {
+            assertionFailure("Failed to instantiate \(tabBarStoryboardID) from storyboard when switching to TabBarVC from splashscreen")
             return
         }
-        window.rootViewController = feedVC
+        window.rootViewController = tabBarVC
     }
 }
 
 extension SplashViewController: AuthViewContollerDelegate {
     func didAuthenticate(_ vc: UIViewController) {
         vc.dismiss(animated: true)
-        switchToFeedViewController()
+        switchToTabBarViewController()
     }
 }
