@@ -48,8 +48,8 @@ extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: UIViewController, didAuthenticateWith code: String) {
         //TODO: implement result processing
-        OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self] result in
-            guard let self else { return }
+        OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self, weak vc] result in
+            guard let self, let vc else { return }
             guard let delegate = self.delegate else {
                 assertionFailure("Failed to get AuthVC's delegate")
                 return
