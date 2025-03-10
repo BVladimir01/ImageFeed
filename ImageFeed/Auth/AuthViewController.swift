@@ -44,16 +44,16 @@ extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: UIViewController, didAuthenticateWith code: String) {
         //TODO: implement result processing
-        OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self, weak vc] result in
-            guard let self, let vc else { return }
+        OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self] result in
+            guard let self else { return }
+            guard let delegate = self.delegate else {
+                assertionFailure("Failed to get AuthVC's delegate")
+                return
+            }
             switch result {
             case .success(let token):
                 OAuth2TokenStorage.shared.token = token
                 vc.dismiss(animated: true)
-                guard let delegate = self.delegate else {
-                    assertionFailure("Failed to get AuthVC's delegate")
-                    return
-                }
                 delegate.didAuthenticate(self)
             case .failure(let error):
                 print(error)
@@ -62,7 +62,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
     }
     
     func webViewViewControllerDidCancel(_ vc: UIViewController) {
-        dismiss(animated: true)
+        vc.dismiss(animated: true)
     }
     
 }

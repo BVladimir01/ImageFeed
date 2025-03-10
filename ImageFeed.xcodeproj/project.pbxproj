@@ -101,13 +101,13 @@
 				E7DAE6542D78959E008E9D0F /* Models */,
 				E7DAE6512D788E63008E9D0F /* Extensions */,
 				E7EBC6742D75F12B00311D2E /* Auth */,
+				E7DAE6592D78B008008E9D0F /* SplashViewController.swift */,
 				E798894C2D50F09500608B34 /* SingleImageView */,
 				E79889472D50B8BD00608B34 /* Profile */,
 				E7B7003D2D48C72A00A60E57 /* ImagesList */,
 				E7B700272D47DB4100A60E57 /* AppDelegate.swift */,
 				E7B700292D47DB4100A60E57 /* SceneDelegate.swift */,
 				E7EBC64D2D71CC6B00311D2E /* Constants.swift */,
-				E7DAE6592D78B008008E9D0F /* SplashViewController.swift */,
 				E7B7002D2D47DB4100A60E57 /* Main.storyboard */,
 				E7B7003B2D480B0700A60E57 /* Resources */,
 			);
@@ -149,15 +149,23 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		E7DAE65D2D79D70A008E9D0F /* AuthServices */ = {
+			isa = PBXGroup;
+			children = (
+				E7DAE64F2D787DDA008E9D0F /* OAuth2Service.swift */,
+				E7DAE6572D789957008E9D0F /* OAuth2TokenStorage.swift */,
+			);
+			path = AuthServices;
+			sourceTree = "<group>";
+		};
 		E7EBC6742D75F12B00311D2E /* Auth */ = {
 			isa = PBXGroup;
 			children = (
 				E7EBC6752D75F15300311D2E /* AuthViewController.swift */,
 				E7EBC6772D75F26B00311D2E /* WebViewViewController.swift */,
 				E7EBC6792D7605F700311D2E /* WebViewViewControllerDelegate.swift */,
-				E7DAE64F2D787DDA008E9D0F /* OAuth2Service.swift */,
-				E7DAE6572D789957008E9D0F /* OAuth2TokenStorage.swift */,
 				E7DAE65B2D78E375008E9D0F /* AuthViewContollerDelegate.swift */,
+				E7DAE65D2D79D70A008E9D0F /* AuthServices */,
 			);
 			path = Auth;
 			sourceTree = "<group>";

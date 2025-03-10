@@ -356,12 +356,18 @@
                                 <rect key="frame" x="0.0" y="44" width="393" height="4"/>
                                 <color key="progressTintColor" name="YP Black"/>
                             </progressView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="mgS-BL-Xoe">
+                                <rect key="frame" x="178" y="429.66666666666669" width="37" height="37"/>
+                                <color key="color" name="YP Black"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="FSD-dO-ixK"/>
                         <color key="backgroundColor" name="YP White"/>
                         <constraints>
+                            <constraint firstItem="mgS-BL-Xoe" firstAttribute="centerX" secondItem="FSD-dO-ixK" secondAttribute="centerX" id="PYc-2j-g8k"/>
                             <constraint firstAttribute="trailing" secondItem="2Tn-iy-QUs" secondAttribute="trailing" id="Sgm-i8-OYY"/>
                             <constraint firstItem="NJV-Ub-BaZ" firstAttribute="leading" secondItem="FSD-dO-ixK" secondAttribute="leading" id="Vxs-47-934"/>
+                            <constraint firstItem="mgS-BL-Xoe" firstAttribute="centerY" secondItem="FSD-dO-ixK" secondAttribute="centerY" id="b6W-LU-gce"/>
                             <constraint firstItem="2Tn-iy-QUs" firstAttribute="leading" secondItem="BSN-vb-2c0" secondAttribute="leading" id="f6i-Hm-Hen"/>
                             <constraint firstItem="NJV-Ub-BaZ" firstAttribute="top" secondItem="FSD-dO-ixK" secondAttribute="top" id="hQE-XL-hBz"/>
                             <constraint firstAttribute="bottom" secondItem="2Tn-iy-QUs" secondAttribute="bottom" id="j72-Ng-1kW"/>
@@ -371,13 +377,14 @@
                     </view>
                     <navigationItem key="navigationItem" id="vZU-Gy-dDI"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="mgS-BL-Xoe" id="ath-uh-N3h"/>
                         <outlet property="progressView" destination="NJV-Ub-BaZ" id="yvM-Hn-Edt"/>
                         <outlet property="webView" destination="2Tn-iy-QUs" id="bA4-oT-7Qs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UY1-4Z-suW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="903" y="-1298"/>
+            <point key="canvasLocation" x="901.52671755725191" y="-1298.5915492957747"/>
         </scene>
     </scenes>
     <resources>

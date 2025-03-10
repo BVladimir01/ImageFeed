@@ -12,6 +12,11 @@ final class WebViewViewController: UIViewController {
     
     //MARK: - outlets
     
+//    comments for review
+//    progressView disappears, when get request for code is done
+//    wevView is hanging blank, when post request for token is being processed
+//    decided to add activityIndicator
+    @IBOutlet private var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private var webView: WKWebView!
     @IBOutlet private var progressView: UIProgressView!
     
@@ -27,6 +32,7 @@ final class WebViewViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadAuthView()
+        setActivityIndicator(active: false)
         webView.navigationDelegate = self
         webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
     }
@@ -69,6 +75,14 @@ final class WebViewViewController: UIViewController {
         let request = URLRequest(url: url)
         webView.load(request)
     }
+    
+    private func setActivityIndicator(active: Bool) {
+        if active {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
+    }
 }
 
 //MARK: - WKNavigationDelegate conformance
@@ -78,7 +92,10 @@ extension WebViewViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let code = code(from: navigationAction) {
             decisionHandler(.cancel)
-            delegate?.webViewViewController(self, didAuthenticateWith: code)
+//            who is responsible for starting indicator?
+//            prensentedViewController(self) or presentingViewController(AuthViewController)
+            setActivityIndicator(active: true)
+            self.delegate?.webViewViewController(self, didAuthenticateWith: code)
         } else {
             decisionHandler(.allow)
         }

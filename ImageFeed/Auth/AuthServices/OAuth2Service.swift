@@ -23,9 +23,11 @@ final class OAuth2Service {
     //MARK: - internal methods
     
     func fetchOAuthToken(from code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        print("fetching token")
         guard let request = assembleURLRequest(from: code) else { return }
         let jsonDecoder = JSONDecoder()
         let task = URLSession.shared.data(for: request) { result in
+            print("managing resuls of urlrequest")
             switch result {
             case .success(let data):
                 do {
@@ -36,6 +38,7 @@ final class OAuth2Service {
                     completion(.failure(error))
                 }
             case .failure(let error):
+                print(error)
                 completion(.failure(error))
             }
         }
