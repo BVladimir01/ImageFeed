@@ -8,6 +8,12 @@
 import UIKit
 import WebKit
 
+
+protocol WebViewViewControllerDelegate: AnyObject {
+    func webViewViewController(_ vc: UIViewController, didAuthenticateWith code: String)
+    func webViewViewControllerDidCancel(_ vc: UIViewController)
+}
+
 final class WebViewViewController: UIViewController {
     
     //MARK: - outlets

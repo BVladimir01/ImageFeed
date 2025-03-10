@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol AuthViewContollerDelegate: AnyObject {
+    func didAuthenticate(_ vc: UIViewController)
+}
+
 final class AuthViewController: UIViewController {
     
     //MARK: - vars
