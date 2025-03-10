@@ -120,6 +120,7 @@ final class ProfileViewController: UIViewController {
     @objc
     private func logOut() {
         //TODO: log out logic
+        OAuth2TokenStorage.shared.token = nil
     }
 
 }
