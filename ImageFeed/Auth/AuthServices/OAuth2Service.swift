@@ -38,7 +38,6 @@ final class OAuth2Service {
                     completion(.failure(error))
                 }
             case .failure(let error):
-                print(error)
                 completion(.failure(error))
             }
         }

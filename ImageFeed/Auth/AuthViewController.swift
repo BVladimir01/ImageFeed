@@ -74,7 +74,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 vc.dismiss(animated: true)
                 delegate.didAuthenticate(self)
             case .failure(let error):
-                print(error)
+                break
             }
         }
     }
