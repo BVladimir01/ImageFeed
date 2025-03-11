@@ -7,13 +7,16 @@
 
 import Foundation
 
+
 enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
     case urlSessionError
 }
 
+
 extension URLSession {
+    
     func data(for request: URLRequest, completion: @escaping (Result<Data,Error>) -> Void) -> URLSessionDataTask {
         let mainThreadCompletionHandler: (Result<Data, Error>) -> Void = { result in
             DispatchQueue.main.async {
@@ -35,4 +38,5 @@ extension URLSession {
         }
         return task
     }
+    
 }

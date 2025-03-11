@@ -10,17 +10,19 @@ import Foundation
 
 final class OAuth2Service {
     
-    //MARK: - vars
-    
-    private let baseUrlAuthString = "https://unsplash.com/oauth/token"
-    
-    //MARK: - singletone
-    
-    private init() { }
+    //MARK: - Internal Properties
     
     static let shared = OAuth2Service()
     
-    //MARK: - internal methods
+    //MARK: - Private Properties
+    
+    private let baseUrlAuthString = "https://unsplash.com/oauth/token"
+    
+    //MARK: - Initializers
+    
+    private init() { }
+    
+    //MARK: - Internal Methods
     
     func fetchOAuthToken(from code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let request = assembleURLRequest(from: code) else { return }
@@ -43,7 +45,7 @@ final class OAuth2Service {
         task.resume()
     }
     
-    //MARK: - private methods
+    //MARK: - Private Methods
     
     private func assembleURLRequest(from code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: baseUrlAuthString) else {
@@ -63,4 +65,5 @@ final class OAuth2Service {
         }
         return URLRequest(url: url)
     }
+    
 }

@@ -7,28 +7,18 @@
 
 import UIKit
 
-class SplashViewController: UIViewController {
+
+final class SplashViewController: UIViewController {
     
-    //MARK: - vars
+    //MARK: - Private Properties
     
     private let tabBarStoryboardID = "TabBarVC"
     private let showAuthSegueID = "ShowAuthVC"
     
-    //MARK: - overriden methods
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-//        for testing purpose only
-//        OAuth2TokenStorage.shared.token = nil
-    }
+    //MARK: - Lifycycle
     
     override func viewDidAppear(_ animated: Bool) {
-        let storage = OAuth2TokenStorage.shared
-        if storage.token != nil {
-            switchToTabBarViewController()
-        } else {
-            performSegue(withIdentifier: showAuthSegueID, sender: nil)
-        }
+        checkToken()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -47,7 +37,7 @@ class SplashViewController: UIViewController {
         authVC.delegate = self
     }
     
-    //MARK: - private methods
+    //MARK: - Private Methods
     
     private func switchToTabBarViewController() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
@@ -60,13 +50,25 @@ class SplashViewController: UIViewController {
         }
         window.rootViewController = tabBarVC
     }
+    
+    private func checkToken() {
+        let storage = OAuth2TokenStorage.shared
+        if storage.token != nil {
+            switchToTabBarViewController()
+        } else {
+            performSegue(withIdentifier: showAuthSegueID, sender: nil)
+        }
+    }
+    
 }
 
-//MARK: - AuthVCDelegate conformance
 
+//MARK: - AuthViewContollerDelegate
 extension SplashViewController: AuthViewContollerDelegate {
+    
     func didAuthenticate(_ vc: UIViewController) {
         vc.dismiss(animated: true)
         switchToTabBarViewController()
     }
+    
 }

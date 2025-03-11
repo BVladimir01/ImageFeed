@@ -9,31 +9,33 @@ import UIKit
 import WebKit
 
 
+//MARK: - WebViewViewControllerDelegate
 protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewController(_ vc: UIViewController, didAuthenticateWith code: String)
     func webViewViewControllerDidCancel(_ vc: UIViewController)
 }
 
+
+//MARK: - WebViewViewController
 final class WebViewViewController: UIViewController {
     
-    //MARK: - outlets
-    
-//    comments for review
-//    progressView disappears, when get request for code is done
-//    wevView is hanging blank, when post request for token is being processed
-//    decided to add activityIndicator
+    //MARK: - IBOutlets
     @IBOutlet private var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private var webView: WKWebView!
     @IBOutlet private var progressView: UIProgressView!
     
-    //MARK: - vars
+    //MARK: - Internal Properties
+    
     weak var delegate: WebViewViewControllerDelegate? = nil
     
-    enum WebViewConstants {
+    
+    //MARK: - Private Properties
+    
+    private enum WebViewConstants {
         static let unsplashAuthorizeUrlString = "https://unsplash.com/oauth/authorize"
     }
     
-    //MARK: - overriden methods
+    //MARK: - Lifecycle
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -56,7 +58,7 @@ final class WebViewViewController: UIViewController {
         }
     }
     
-    //MARK: - private methods
+    //MARK: - Private Methods
     
     private func updateProgressView() {
         progressView.setProgress(Float(webView.estimatedProgress), animated: true)
@@ -89,17 +91,16 @@ final class WebViewViewController: UIViewController {
             activityIndicator.stopAnimating()
         }
     }
+    
 }
 
-//MARK: - WKNavigationDelegate conformance
 
+//MARK: - WKNavigationDelegate
 extension WebViewViewController: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let code = code(from: navigationAction) {
             decisionHandler(.cancel)
-//            who is responsible for starting indicator?
-//            prensentedViewController(self) or presentingViewController(AuthViewController)
             setActivityIndicator(active: true)
             self.delegate?.webViewViewController(self, didAuthenticateWith: code)
         } else {

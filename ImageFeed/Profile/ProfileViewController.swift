@@ -7,9 +7,10 @@
 
 import UIKit
 
+
 final class ProfileViewController: UIViewController {
 
-    //MARK: - Private label vars
+    //MARK: - Private Properties
     
     private var profileImageView: UIImageView!
     private var tagLabel: UILabel!
@@ -18,10 +19,12 @@ final class ProfileViewController: UIViewController {
     private var logOutButton: UIButton!
     
     private struct SymbolNames {
-        private init() {}
         static let profileImage = "ProfilePicStubLarge"
         static let logoutButton = "LogOut"
+        private init() {}
     }
+    
+    //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +32,7 @@ final class ProfileViewController: UIViewController {
         configureSubViews()
     }
     
-    //MARK: - Configuration
+    //MARK: - Private Methods - Configuration
     
     private func configureSubViews() {
         configureProfileImageView()
@@ -115,7 +118,7 @@ final class ProfileViewController: UIViewController {
         logOutButton = button
     }
     
-    //MARK: - Intentions
+    //MARK: - Private Methods - UIActions
     
     @objc
     private func logOut() {

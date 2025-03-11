@@ -7,25 +7,29 @@
 
 import UIKit
 
+
+//MARK: - AuthViewContollerDelegate
 protocol AuthViewContollerDelegate: AnyObject {
     func didAuthenticate(_ vc: UIViewController)
 }
 
+
+//MARK: - AuthViewController
 final class AuthViewController: UIViewController {
     
-    //MARK: - vars
+    //MARK: - Internal Properties
     
-    private let showWebViewVCSegueID = "ShowWebView"
     weak var delegate: AuthViewContollerDelegate?
     
-    //MARK: - overriden methond
+    //MARK: - Private Properties
+    
+    private let showWebViewVCSegueID = "ShowWebView"
+    
+    //MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.backIndicatorImage = UIImage(resource: .backward)
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(resource: .backward)
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem?.tintColor = .ypBlack
+        setupNavigationBar()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -40,10 +44,20 @@ final class AuthViewController: UIViewController {
             webViewVC.delegate = self
         }
     }
+    
+    //MARK: - Private Methods
+    
+    private func setupNavigationBar() {
+        navigationController?.navigationBar.backIndicatorImage = UIImage(resource: .backward)
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(resource: .backward)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = .ypBlack
+    }
+    
 }
 
-//MARK: - WebViewVCDelegate conformance
 
+//MARK: - WebViewViewControllerDelegate
 extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: UIViewController, didAuthenticateWith code: String) {
