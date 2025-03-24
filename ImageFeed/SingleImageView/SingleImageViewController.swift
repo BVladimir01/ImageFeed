@@ -7,9 +7,15 @@
 
 import UIKit
 
-class SingleImageViewController: UIViewController {
+
+final class SingleImageViewController: UIViewController {
     
-    //MARK: - vars
+    //MARK: - IBOutlets
+    
+    @IBOutlet private var scrollView: UIScrollView!
+    @IBOutlet private var imageView: UIImageView!
+    
+    //MARK: - Internal Properties
     
     var image: UIImage? {
         didSet {
@@ -20,35 +26,27 @@ class SingleImageViewController: UIViewController {
         }
     }
     
-    //MARK: - @IBOutlet vars
-    
-    @IBOutlet private var scrollView: UIScrollView!
-    @IBOutlet private var imageView: UIImageView!
-    
-    //MARK: - @IBOutlet actions
-    
-    @IBAction private func shareButtonTapped() {
-        guard let image else {
-            assertionFailure("Failed to unwrap image")
-            return
-        }
-        let avc = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        present(avc, animated: true, completion: nil)
-    }
-    
-    @IBAction private func backwardButtonTapped() {
-        dismiss(animated: true)
-    }
+    //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupScrollView()
+        setupImageView()
+        rescaleAndCenterImage()
+    }
+    
+    //MARK: - Private Methods
+    
+    private func setupScrollView() {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
+    }
+    
+    private func setupImageView() {
         if let image {
             imageView.frame.size = image.size
             imageView.image = image
         }
-        rescaleAndCenterImage()
     }
     
     private func rescaleAndCenterImage() {
@@ -74,9 +72,26 @@ class SingleImageViewController: UIViewController {
         let dy = (scrollView.bounds.height - scrollView.contentSize.height)/2
         scrollView.contentInset = .init(top: max(dy, 0), left: max(dx, 0), bottom: max(scrollView.bounds.height - scrollView.contentSize.height - dy, 0), right: max(scrollView.bounds.width - scrollView.contentSize.width - dx, 0))
     }
+    
+    //MARK: - IBActions
+    
+    @IBAction private func shareButtonTapped() {
+        guard let image else {
+            assertionFailure("Failed to unwrap image")
+            return
+        }
+        let avc = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        present(avc, animated: true, completion: nil)
+    }
+    
+    @IBAction private func backwardButtonTapped() {
+        dismiss(animated: true)
+    }
+    
 }
 
 
+//MARK: - UIScrollViewDelegate
 extension SingleImageViewController: UIScrollViewDelegate {
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {

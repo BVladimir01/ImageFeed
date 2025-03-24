@@ -5,13 +5,17 @@
 //  Created by Vladimir on 27.01.2025.
 //
 
-
 import Foundation
 import UIKit
 
+
 final class ImagesListViewController: UIViewController {
     
-    //MARK: - private let vars
+    //MARK: - IBOutlets
+    
+    @IBOutlet private var tableView: UITableView!
+    
+    //MARK: - Private Properties
     
     private let imagesNames: [String] = Array(0..<20).map({"\($0)"})
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
@@ -24,19 +28,23 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    //MARK: - @IBoutlet vars
-    
-    @IBOutlet private var tableView: UITableView!
+    //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTableView()
+    }
+    
+    //MARK: - Private Methods
+    
+    private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         tableView.rowHeight = 200
     }
     
-    private func configCell(for cell: ImagesListCell, at indexPath: IndexPath) {
+    private func configCell(_ cell: ImagesListCell, at indexPath: IndexPath) {
         guard let image = UIImage(named: imagesNames[indexPath.row]) else {
             assertionFailure("Failed to create image for cell")
             return
@@ -60,9 +68,11 @@ final class ImagesListViewController: UIViewController {
         cell.likeButton.imageView?.image = indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive")
         cell.likeButton.setImage(indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive"), for: .normal)
     }
+    
 }
 
 
+//MARK: - UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -93,10 +103,13 @@ extension ImagesListViewController: UITableViewDelegate {
         let rowHeight = imageViewHeight + 8
         return rowHeight
     }
+    
 }
 
 
+//MARK: - UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         imagesNames.count
     }
@@ -106,7 +119,8 @@ extension ImagesListViewController: UITableViewDataSource {
             assertionFailure("Failed to dequeue ImagesListCell")
             return UITableViewCell()
         }
-        configCell(for: cell, at: indexPath)
+        configCell(cell, at: indexPath)
         return cell
     }
+    
 }

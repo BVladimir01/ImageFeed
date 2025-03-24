@@ -10,13 +10,14 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     
-    // MARK: - Static properties
-    
-    static let reuseIdentifier = "ImagesListCell"
-    
-    // MARK: - @IBOutletproperties
+    // MARK: - IBOutlets
     
     @IBOutlet var cellImageView: UIImageView!
     @IBOutlet var dateLabel: UILabel!
     @IBOutlet var likeButton: UIButton!
+    
+    // MARK: - Public Properties
+    
+    static let reuseIdentifier = "ImagesListCell"
+    
 }
