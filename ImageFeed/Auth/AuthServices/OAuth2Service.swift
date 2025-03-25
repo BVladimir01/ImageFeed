@@ -8,6 +8,14 @@
 import Foundation
 
 
+// MARK: - AuthServiceError
+enum AuthServiceError: Error {
+    case duplicateRequest
+    case invalidRequest
+}
+
+
+// MARK: - OAuth2Service
 final class OAuth2Service {
     
     //MARK: - Internal Properties
@@ -17,6 +25,9 @@ final class OAuth2Service {
     //MARK: - Private Properties
     
     private let baseUrlAuthString = "https://unsplash.com/oauth/token"
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask? = nil
+    private var latestCode: String? = nil
     
     //MARK: - Initializers
     
@@ -25,9 +36,24 @@ final class OAuth2Service {
     //MARK: - Internal Methods
     
     func fetchOAuthToken(from code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let request = assembleURLRequest(from: code) else { return }
+        assert(Thread.isMainThread, "Calling from secondary thread")
+        guard let request = assembleURLRequest(from: code) else {
+            assertionFailure("Failed to create request for token fetching")
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        guard code != latestCode else {
+            completion(.failure(AuthServiceError.duplicateRequest))
+            return
+        }
+        latestCode = code
+        task?.cancel()
         let jsonDecoder = JSONDecoder()
-        let task = URLSession.shared.data(for: request) { result in
+        let task = urlSession.data(for: request) { [weak self] result in
+            defer {
+                self?.task = nil
+                self?.latestCode = nil
+            }
             switch result {
             case .success(let data):
                 do {
@@ -41,6 +67,7 @@ final class OAuth2Service {
                 completion(.failure(error))
             }
         }
+        self.task = task
         task.resume()
     }
     
