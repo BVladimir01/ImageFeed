@@ -12,6 +12,7 @@ import Foundation
 enum AuthServiceError: Error {
     case duplicateRequest
     case invalidRequest
+    case wrongThread
 }
 
 
@@ -36,7 +37,11 @@ final class OAuth2Service {
     //MARK: - Internal Methods
     
     func fetchOAuthToken(from code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        assert(Thread.isMainThread, "Calling from secondary thread")
+        guard Thread.isMainThread else {
+            assertionFailure("trying to fetch token from secondary thread")
+            completion(.failure(AuthServiceError.wrongThread))
+            return
+        }
         guard let request = assembleURLRequest(from: code) else {
             assertionFailure("Failed to create request for token fetching")
             completion(.failure(AuthServiceError.invalidRequest))
