@@ -14,6 +14,8 @@ final class SplashViewController: UIViewController {
     
     private let tabBarStoryboardID = "TabBarVC"
     private let showAuthSegueID = "ShowAuthVC"
+    private let tokenStorage = OAuth2TokenStorage.shared
+    private let profileService = ProfileService.shared
     
     //MARK: - Lifycycle
     
@@ -52,9 +54,8 @@ final class SplashViewController: UIViewController {
     }
     
     private func checkToken() {
-        let storage = OAuth2TokenStorage.shared
-        if storage.token != nil {
-            switchToTabBarViewController()
+        if let token = tokenStorage.token {
+            fetchProfile(for: token)
         } else {
             performSegue(withIdentifier: showAuthSegueID, sender: nil)
         }
@@ -68,7 +69,25 @@ extension SplashViewController: AuthViewContollerDelegate {
     
     func didAuthenticate(_ vc: UIViewController) {
         vc.dismiss(animated: true)
-        switchToTabBarViewController()
+        guard let token = tokenStorage.token else {
+            assertionFailure("Failed to load token after authentication")
+            return
+        }
+        fetchProfile(for: token)
+    }
+    
+    private func fetchProfile(for token: String) {
+        UIBlockingHUD.show()
+        profileService.fetchProfile(for: token) { [weak self] result in
+            switch result {
+            case .success(let profile):
+                UIBlockingHUD.dismiss()
+                self?.switchToTabBarViewController()
+            case .failure(let error):
+                //TODO: implement failure
+                break
+            }
+        }
     }
     
 }

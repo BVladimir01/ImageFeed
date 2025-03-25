@@ -8,8 +8,11 @@
 import UIKit
 
 
-// MARK: - ProfileService
 final class ProfileService {
+    
+    // MARK: - Internal Properties
+    static let shared = ProfileService()
+    private(set) var profile: Profile? = nil
     
     // MARK: - Private Properties
     
@@ -17,6 +20,10 @@ final class ProfileService {
     private let urlSession = URLSession.shared
     private var task: URLSessionDataTask? = nil
     private var latestToken: String?
+    
+    // MARK: - Initializers
+    
+    private init () { }
     
     // MARK: - Internal Methods
     
@@ -36,6 +43,7 @@ final class ProfileService {
             completion(.failure(ProfileServiceError.invalidRequest))
             return
         }
+        latestToken = token
         task?.cancel()
         let task = urlSession.data(for: request) { [weak self] result in
             defer {
@@ -47,6 +55,7 @@ final class ProfileService {
                 do {
                     let profileResult = try JSONDecoder().decode(ProfileResult.self, from: data)
                     let profile = Profile(profileResult: profileResult)
+                    self?.profile = profile
                     completion(.success(profile))
                 } catch {
                     print(error)

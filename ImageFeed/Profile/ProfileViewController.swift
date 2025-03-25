@@ -17,8 +17,7 @@ final class ProfileViewController: UIViewController {
     private var nameLabel: UILabel!
     private var profileDescriptionLabel: UILabel!
     private var logOutButton: UIButton!
-    private let profileService = ProfileService()
-    private let tokenStorage = OAuth2TokenStorage.shared
+    private let profileService = ProfileService.shared
     
     private struct SymbolNames {
         static let profileImage = "ProfilePicStubLarge"
@@ -122,28 +121,24 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setUpProfile() {
-        guard let token = tokenStorage.token else {
-            assertionFailure("Failed to get token from storage")
+        guard let profile = profileService.profile else {
+            assertionFailure("Failed to get profile from service when setting up users profile")
             return
         }
-        profileService.fetchProfile(for: token) { [weak self] result in
-            switch result {
-            case .success(let profile):
-                self?.nameLabel.text =  profile.name
-                self?.profileDescriptionLabel.text = profile.bio
-                self?.tagLabel.text = profile.loginName
-            case .failure(let error):
-                //TODO: implement failure
-                break
-            }
-        }
+        updateProfileDetails(profile: profile)
+    }
+    
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        tagLabel.text = profile.loginName
+        profileDescriptionLabel.text = profile.bio
     }
     
     //MARK: - Private Methods - UIActions
     
     @objc
     private func logOut() {
-        //TODO: log out logic
+        //TODO: log out implementation
         OAuth2TokenStorage.shared.token = nil
     }
 
