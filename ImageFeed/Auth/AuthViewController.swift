@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import ProgressHUD
 
 //MARK: - AuthViewContollerDelegate
 protocol AuthViewContollerDelegate: AnyObject {
@@ -61,9 +61,12 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: UIViewController, didAuthenticateWith code: String) {
+        //use pop since whole stack is presented modally
+        navigationController?.popViewController(animated: true)
+        ProgressHUD.animate()
         //TODO: implement result processing
-        OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self, weak vc] result in
-            guard let self, let vc else { return }
+        OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self] result in
+            guard let self else { return }
             guard let delegate = self.delegate else {
                 assertionFailure("Failed to get AuthVC's delegate")
                 return
@@ -71,9 +74,10 @@ extension AuthViewController: WebViewViewControllerDelegate {
             switch result {
             case .success(let token):
                 OAuth2TokenStorage.shared.token = token
-                vc.dismiss(animated: true)
+                ProgressHUD.dismiss()
                 delegate.didAuthenticate(self)
             case .failure(let error):
+                print(error)
                 break
             }
         }
