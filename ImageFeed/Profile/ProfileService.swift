@@ -34,7 +34,6 @@ final class ProfileService {
             return
         }
         guard token != latestToken else {
-            assertionFailure("Already fetching profile")
             completion(.failure(ProfileServiceError.duplicateRequest))
             return
         }
