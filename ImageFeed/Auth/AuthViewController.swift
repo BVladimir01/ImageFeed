@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import ProgressHUD
+
 
 //MARK: - AuthViewContollerDelegate
 protocol AuthViewContollerDelegate: AnyObject {
@@ -63,7 +63,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: UIViewController, didAuthenticateWith code: String) {
         //use pop since whole stack is presented modally
         navigationController?.popViewController(animated: true)
-        ProgressHUD.animate()
+        UIBlockingHUD.show()
         //TODO: implement result processing
         OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self] result in
             guard let self else { return }
@@ -74,7 +74,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             switch result {
             case .success(let token):
                 OAuth2TokenStorage.shared.token = token
-                ProgressHUD.dismiss()
+                UIBlockingHUD.dismiss()
                 delegate.didAuthenticate(self)
             case .failure(let error):
                 print(error)
