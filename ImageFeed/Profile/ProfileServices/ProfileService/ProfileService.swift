@@ -18,7 +18,7 @@ final class ProfileService {
     
     private let pathString = "/me"
     private let urlSession = URLSession.shared
-    private var task: URLSessionDataTask? = nil
+    private var task: URLSessionTask? = nil
     private var latestToken: String?
     
     // MARK: - Initializers
@@ -44,22 +44,16 @@ final class ProfileService {
         }
         latestToken = token
         task?.cancel()
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             defer {
                 self?.task = nil
                 self?.latestToken = nil
             }
             switch result {
-            case .success(let data):
-                do {
-                    let profileResult = try JSONDecoder().decode(ProfileResult.self, from: data)
-                    let profile = Profile(profileResult: profileResult)
-                    self?.profile = profile
-                    completion(.success(profile))
-                } catch {
-                    print(error)
-                    completion(.failure(error))
-                }
+            case .success(let profileResult):
+                let profile = Profile(profileResult: profileResult)
+                self?.profile = profile
+                completion(.success(profile))
             case .failure(let error):
                 completion(.failure(error))
             }

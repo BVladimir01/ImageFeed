@@ -22,7 +22,7 @@ final class ProfileImageService {
     private let tokenStorage = OAuth2TokenStorage.shared
     private let urlSession = URLSession.shared
     private var latestUsername: String?
-    private var task: URLSessionDataTask?
+    private var task: URLSessionTask?
     
     // MARK: - Initializers
     
@@ -47,23 +47,16 @@ final class ProfileImageService {
         }
         latestUsername = username
         task?.cancel()
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             defer {
                 self?.task = nil
                 self?.latestUsername = nil
             }
             switch result {
-            case .success(let data):
-                do {
-                    let userResult = try JSONDecoder().decode(UserResult.self, from: data)
-                    let avatarURL = userResult.profileImage.small
-                    self?.avatarURL = avatarURL
-                    completion(.success(avatarURL))
-                    NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL": avatarURL])
-                } catch {
-                    print(error)
-                    completion(.failure(error))
-                }
+            case .success(let userResult):
+                let avatarURL = userResult.profileImage.small
+                self?.avatarURL = avatarURL
+                completion(.success(avatarURL))
             case .failure(let error):
                 completion(.failure(error))
             }

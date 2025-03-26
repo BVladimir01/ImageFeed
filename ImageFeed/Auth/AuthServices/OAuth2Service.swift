@@ -54,20 +54,14 @@ final class OAuth2Service {
         latestCode = code
         task?.cancel()
         let jsonDecoder = JSONDecoder()
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self](result: Result<OAuthTokenResponseBody, Error>) in
             defer {
                 self?.task = nil
                 self?.latestCode = nil
             }
             switch result {
-            case .success(let data):
-                do {
-                    let responseBody = try jsonDecoder.decode(OAuthTokenResponseBody.self, from: data)
-                    completion(.success(responseBody.accessToken))
-                } catch {
-                    assertionFailure("Failed to decode token")
-                    completion(.failure(error))
-                }
+            case .success(let resposeBody):
+                completion(.success(resposeBody.accessToken))
             case .failure(let error):
                 completion(.failure(error))
             }

@@ -152,6 +152,7 @@ final class ProfileViewController: UIViewController {
             return
         }
         // TODO: change avatar
+        print("avatar changed with \(url)")
     }
     
     //MARK: - Private Methods - UIActions
