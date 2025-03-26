@@ -24,12 +24,14 @@ final class AuthViewController: UIViewController {
     //MARK: - Private Properties
     
     private let showWebViewVCSegueID = "ShowWebView"
+    private let alertPresenter = SimpleAlertPresenter()
     
     //MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
+        setupAlertPresenter()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -54,6 +56,10 @@ final class AuthViewController: UIViewController {
         navigationItem.backBarButtonItem?.tintColor = .ypBlack
     }
     
+    private func setupAlertPresenter() {
+        alertPresenter.delegate = self
+    }
+    
 }
 
 
@@ -75,10 +81,9 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 OAuth2TokenStorage.shared.token = token
                 UIBlockingHUD.dismiss()
                 delegate.didAuthenticate(self)
-            case .failure(let error):
-                // TODO: implement failure
-                print(error)
-                break
+            case .failure:
+                UIBlockingHUD.dismiss()
+                alertPresenter.presentAlert(SimpleAlertModel(title: "Что-то пошло не так", message: "Не удалось войти в систему", buttonText: "Ок"))
             }
         }
     }
