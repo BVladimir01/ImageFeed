@@ -47,7 +47,6 @@ final class ProfileImageService {
         }
         latestUsername = username
         task?.cancel()
-        print(request)
         let task = urlSession.data(for: request) { [weak self] result in
             defer {
                 self?.task = nil
