@@ -46,7 +46,7 @@ final class ProfileImageService: Fetcher<String, String> {
             }
             switch result {
             case .success(let userResult):
-                let avatarURL = userResult.profileImage.small
+                let avatarURL = userResult.profileImage.large
                 self?.avatarURL = avatarURL
                 completion(.success(avatarURL))
             case .failure(let error):

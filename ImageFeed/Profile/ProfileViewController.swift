@@ -5,6 +5,7 @@
 //  Created by Vladimir on 03.02.2025.
 //
 
+import Kingfisher
 import UIKit
 
 
@@ -46,7 +47,7 @@ final class ProfileViewController: UIViewController {
         configureProfileDescriptionLabel()
         configureLogOutButton()
         addProfileImageServiceObserver()
-        updateAvatar()
+        updateProfileImage()
     }
     
     private func configureProfileImageView() {
@@ -59,6 +60,11 @@ final class ProfileViewController: UIViewController {
             imageView.heightAnchor.constraint(equalToConstant: 70),
             imageView.widthAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 1)
         ])
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = imageView.frame.width/2
+        print(imageView.layer.cornerRadius)
+        imageView.layer.masksToBounds = true
         profileImageView = imageView
     }
     
@@ -141,18 +147,32 @@ final class ProfileViewController: UIViewController {
     
     private func addProfileImageServiceObserver() {
         let profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            self?.updateAvatar()
+            self?.updateProfileImage()
         }
         self.profileImageServiceObserver = profileImageServiceObserver
     }
     
-    private func updateAvatar() {
+    private func updateProfileImage() {
         guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
             assertionFailure("ProfileViewController: Failed to create url for fetching avatar image")
             return
         }
         // TODO: change avatar
-        print("avatar changed with \(url)")
+        profileImageView.kf.setImage(with: url) { [weak self] _ in
+            guard let self else { return }
+            self.adjustProfileImageSize()
+        }
+    }
+    
+    private func adjustProfileImageSize() {
+        guard let image = profileImageView.image, let cgImage = image.cgImage else { return }
+        let width = image.size.width
+        let height = image.size.height
+        let vScale = 70/height
+        let hScale = 70/width
+        let trueScale = max(vScale, hScale)
+        let newImage = UIImage(cgImage: cgImage, scale: 1/trueScale, orientation: .up)
+        profileImageView.image = newImage
     }
     
     //MARK: - Private Methods - UIActions
