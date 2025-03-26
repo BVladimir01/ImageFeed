@@ -64,7 +64,6 @@ extension AuthViewController: WebViewViewControllerDelegate {
         //use pop since whole stack is presented modally
         navigationController?.popViewController(animated: true)
         UIBlockingHUD.show()
-        //TODO: implement result processing
         OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self] result in
             guard let self else { return }
             guard let delegate = self.delegate else {
@@ -77,6 +76,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 UIBlockingHUD.dismiss()
                 delegate.didAuthenticate(self)
             case .failure(let error):
+                // TODO: implement failure
                 print(error)
                 break
             }

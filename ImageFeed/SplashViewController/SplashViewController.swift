@@ -16,8 +16,9 @@ final class SplashViewController: UIViewController {
     private let showAuthSegueID = "ShowAuthVC"
     private let tokenStorage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
-    //MARK: - Lifycycle
+    //MARK: - Lifecycle
     
     override func viewDidAppear(_ animated: Bool) {
         checkToken()
@@ -82,6 +83,7 @@ extension SplashViewController: AuthViewContollerDelegate {
             switch result {
             case .success(let profile):
                 UIBlockingHUD.dismiss()
+                self?.profileImageService.fetchProfileImageURL(username: profile.username, completion: { _ in })
                 self?.switchToTabBarViewController()
             case .failure(let error):
                 //TODO: implement failure

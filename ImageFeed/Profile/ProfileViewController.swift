@@ -17,7 +17,10 @@ final class ProfileViewController: UIViewController {
     private var nameLabel: UILabel!
     private var profileDescriptionLabel: UILabel!
     private var logOutButton: UIButton!
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     private struct SymbolNames {
         static let profileImage = "ProfilePicStubLarge"
@@ -42,6 +45,8 @@ final class ProfileViewController: UIViewController {
         configureTagLabel()
         configureProfileDescriptionLabel()
         configureLogOutButton()
+        addProfileImageServiceObserver()
+        updateAvatar()
     }
     
     private func configureProfileImageView() {
@@ -132,6 +137,21 @@ final class ProfileViewController: UIViewController {
         nameLabel.text = profile.name
         tagLabel.text = profile.loginName
         profileDescriptionLabel.text = profile.bio
+    }
+    
+    private func addProfileImageServiceObserver() {
+        let profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.updateAvatar()
+        }
+        self.profileImageServiceObserver = profileImageServiceObserver
+    }
+    
+    private func updateAvatar() {
+        guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
+            assertionFailure("Failed to create url for fetching avatar image")
+            return
+        }
+        // TODO: change avatar
     }
     
     //MARK: - Private Methods - UIActions
