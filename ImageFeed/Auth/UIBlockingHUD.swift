@@ -15,7 +15,7 @@ class UIBlockingHUD {
     
     private static var window: UIWindow? {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
-            assertionFailure("Failed to get windowScene or its window when showing HUD")
+            assertionFailure("UIBlockingHud: Failed to get windowScene or its window when showing HUD")
             return nil
         }
         return window

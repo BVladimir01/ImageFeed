@@ -32,16 +32,17 @@ final class ProfileImageService {
     
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard Thread.isMainThread else {
-            assertionFailure("Trying to fetch profile from secondary thread")
+            assertionFailure("ProfileImageService: Trying to fetch profile from secondary thread")
             completion(.failure(ProfileImageServiceError.wrongThread))
             return
         }
         guard username != latestUsername else {
+            print("ProfileImageService: Duplicating request")
             completion(.failure(ProfileImageServiceError.duplicateRequest))
             return
         }
         guard let request = urlRequest(username: username) else {
-            assertionFailure("Failed to create request for fetching avatar url")
+            assertionFailure("ProfileImageService: Failed to create request for fetching avatar url")
             completion(.failure(ProfileImageServiceError.invalidRequest))
             return
         }
@@ -69,11 +70,11 @@ final class ProfileImageService {
     
     private func urlRequest(username: String) -> URLRequest? {
         guard let url = URL(string: Constants.defatultBaseURLString + pathString + username) else {
-            assertionFailure("Failed to create url for profile request")
+            assertionFailure("ProfileImageService: Failed to create url for profile request")
             return nil
         }
         guard let token = tokenStorage.token else {
-            assertionFailure("Failed to load token for avatar url request")
+            assertionFailure("ProfileImageService: Failed to load token for avatar url request")
             return nil
         }
         var request = URLRequest(url: url)

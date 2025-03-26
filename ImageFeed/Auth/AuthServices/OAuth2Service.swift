@@ -38,22 +38,22 @@ final class OAuth2Service {
     
     func fetchOAuthToken(from code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard Thread.isMainThread else {
-            assertionFailure("trying to fetch token from secondary thread")
+            assertionFailure("OAuth2Service: trying to fetch token from secondary thread")
             completion(.failure(AuthServiceError.wrongThread))
             return
         }
         guard let request = assembleURLRequest(from: code) else {
-            assertionFailure("Failed to create request for token fetching")
+            assertionFailure("OAuth2Service: Failed to create request for token fetching")
             completion(.failure(AuthServiceError.invalidRequest))
             return
         }
         guard code != latestCode else {
+            print("OAuth2Service: duplicating request for token")
             completion(.failure(AuthServiceError.duplicateRequest))
             return
         }
         latestCode = code
         task?.cancel()
-        let jsonDecoder = JSONDecoder()
         let task = urlSession.objectTask(for: request) { [weak self](result: Result<OAuthTokenResponseBody, Error>) in
             defer {
                 self?.task = nil
@@ -74,7 +74,7 @@ final class OAuth2Service {
     
     private func assembleURLRequest(from code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: baseUrlAuthString) else {
-            assertionFailure("Failed to create url for user authorization (post request)")
+            assertionFailure("OAuth2Service: Failed to create url for user authorization (post request)")
             return nil
         }
         urlComponents.queryItems = [
@@ -85,7 +85,7 @@ final class OAuth2Service {
             .init(name: "grant_type", value: "authorization_code")
         ]
         guard let url = urlComponents.url else {
-            assertionFailure("Failed to create url from urlComponents for user authorization (post request)")
+            assertionFailure("OAuth2Service: Failed to create url from urlComponents for user authorization (post request)")
             return nil
         }
         return URLRequest(url: url)

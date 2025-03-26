@@ -29,16 +29,17 @@ final class ProfileService {
     
     func fetchProfile(for token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         guard Thread.isMainThread else {
-            assertionFailure("Trying to fetch profile from secondary thread")
+            assertionFailure("ProfileService: Trying to fetch profile from secondary thread")
             completion(.failure(ProfileServiceError.wrongThread))
             return
         }
         guard token != latestToken else {
+            print("ProfileService: Duplicating request")
             completion(.failure(ProfileServiceError.duplicateRequest))
             return
         }
         guard let request = urlRequest(for: token) else {
-            assertionFailure("Failed to create request for fetching profile")
+            assertionFailure("ProfileService: Failed to create request for fetching profile")
             completion(.failure(ProfileServiceError.invalidRequest))
             return
         }

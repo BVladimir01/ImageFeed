@@ -127,7 +127,7 @@ final class ProfileViewController: UIViewController {
     
     private func setUpProfile() {
         guard let profile = profileService.profile else {
-            assertionFailure("Failed to get profile from service when setting up users profile")
+            assertionFailure("ProfileViewController: Failed to get profile from service when setting up users profile")
             return
         }
         updateProfileDetails(profile: profile)
@@ -148,7 +148,7 @@ final class ProfileViewController: UIViewController {
     
     private func updateAvatar() {
         guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
-            assertionFailure("Failed to create url for fetching avatar image")
+            assertionFailure("ProfileViewController: Failed to create url for fetching avatar image")
             return
         }
         // TODO: change avatar

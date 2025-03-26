@@ -51,11 +51,11 @@ final class SingleImageViewController: UIViewController {
     
     private func rescaleAndCenterImage() {
         guard let image else {
-            assertionFailure("Tried to center image before assigning it")
+            assertionFailure("SingleImageViewController: Tried to center image before assigning it")
             return
         }
         guard image.size.height != 0, image.size.width != 0 else {
-            assertionFailure("Failed to scale image. Either side of image is zero")
+            assertionFailure("SingleImageViewController: Failed to scale image. Either side of image is zero")
             return
         }
         view.layoutIfNeeded()
@@ -77,7 +77,7 @@ final class SingleImageViewController: UIViewController {
     
     @IBAction private func shareButtonTapped() {
         guard let image else {
-            assertionFailure("Failed to unwrap image")
+            assertionFailure("SingleImageViewController: Failed to unwrap image")
             return
         }
         let avc = UIActivityViewController(activityItems: [image], applicationActivities: nil)

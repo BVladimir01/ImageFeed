@@ -28,14 +28,14 @@ extension URLSession {
                 if 200..<300 ~= statusCode {
                     mainThreadCompletionHandler(.success(data))
                 } else {
-                    print(NetworkError.httpStatusCode(statusCode))
+                    print("URLSession.data: \(NetworkError.httpStatusCode(statusCode))")
                     mainThreadCompletionHandler(.failure(NetworkError.httpStatusCode(statusCode)))
                 }
             } else if let error {
-                print(NetworkError.urlRequestError(error))
+                print("URLSession.data: \(NetworkError.urlRequestError(error))")
                 mainThreadCompletionHandler(.failure(NetworkError.urlRequestError(error)))
             } else {
-                print(NetworkError.urlSessionError)
+                print("URLSession.data: \(NetworkError.urlSessionError)")
                 mainThreadCompletionHandler(.failure(NetworkError.urlSessionError))
             }
         }
@@ -54,7 +54,7 @@ extension URLSession {
                     let object = try JSONDecoder().decode(T.self, from: data)
                     completion(.success(object))
                 } catch {
-                    print(error)
+                    print("URLSession.objectTask: decoding error - \(error)")
                     completion(.failure(error))
                 }
             case .failure(let error):
