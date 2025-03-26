@@ -8,7 +8,7 @@
 import UIKit
 
 
-final class ProfileService {
+final class ProfileService: Fetcher<String, Profile> {
     
     // MARK: - Internal Properties
     static let shared = ProfileService()
@@ -23,26 +23,17 @@ final class ProfileService {
     
     // MARK: - Initializers
     
-    private init () { }
+    override private init () { }
     
     // MARK: - Internal Methods
     
     func fetchProfile(for token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
-        guard Thread.isMainThread else {
-            assertionFailure("ProfileService: Trying to fetch profile from secondary thread")
-            completion(.failure(ProfileServiceError.wrongThread))
-            return
-        }
-        guard token != latestToken else {
-            print("ProfileService: Duplicating request")
-            completion(.failure(ProfileServiceError.duplicateRequest))
-            return
-        }
-        guard let request = urlRequest(for: token) else {
-            assertionFailure("ProfileService: Failed to create request for fetching profile")
-            completion(.failure(ProfileServiceError.invalidRequest))
-            return
-        }
+        guard let request = checkConditionsAndReturnRequest(
+            newValue: token,
+            latestValue: latestToken,
+            task: task,
+            request: urlRequest(for: token),
+            completion: completion) else { return }
         latestToken = token
         task?.cancel()
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in

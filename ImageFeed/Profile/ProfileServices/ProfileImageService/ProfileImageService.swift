@@ -8,7 +8,7 @@
 import UIKit
 
 
-final class ProfileImageService {
+final class ProfileImageService: Fetcher<String, String> {
     
     // MARK: - Internal Properties
     
@@ -26,26 +26,17 @@ final class ProfileImageService {
     
     // MARK: - Initializers
     
-    private init() { }
+    override private init() { }
     
     // MARK: - Internal Methods
     
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard Thread.isMainThread else {
-            assertionFailure("ProfileImageService: Trying to fetch profile from secondary thread")
-            completion(.failure(ProfileImageServiceError.wrongThread))
-            return
-        }
-        guard username != latestUsername else {
-            print("ProfileImageService: Duplicating request")
-            completion(.failure(ProfileImageServiceError.duplicateRequest))
-            return
-        }
-        guard let request = urlRequest(username: username) else {
-            assertionFailure("ProfileImageService: Failed to create request for fetching avatar url")
-            completion(.failure(ProfileImageServiceError.invalidRequest))
-            return
-        }
+        guard let request = checkConditionsAndReturnRequest(
+            newValue: username,
+            latestValue: latestUsername,
+            task: task,
+            request: urlRequest(username: username),
+            completion: completion) else { return }
         latestUsername = username
         task?.cancel()
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in

@@ -17,7 +17,7 @@ enum AuthServiceError: Error {
 
 
 // MARK: - OAuth2Service
-final class OAuth2Service {
+final class OAuth2Service: Fetcher<String, String> {
     
     //MARK: - Internal Properties
     
@@ -32,26 +32,17 @@ final class OAuth2Service {
     
     //MARK: - Initializers
     
-    private init() { }
+    override private init() { }
     
     //MARK: - Internal Methods
     
     func fetchOAuthToken(from code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard Thread.isMainThread else {
-            assertionFailure("OAuth2Service: trying to fetch token from secondary thread")
-            completion(.failure(AuthServiceError.wrongThread))
-            return
-        }
-        guard let request = assembleURLRequest(from: code) else {
-            assertionFailure("OAuth2Service: Failed to create request for token fetching")
-            completion(.failure(AuthServiceError.invalidRequest))
-            return
-        }
-        guard code != latestCode else {
-            print("OAuth2Service: duplicating request for token")
-            completion(.failure(AuthServiceError.duplicateRequest))
-            return
-        }
+        guard let request = checkConditionsAndReturnRequest(
+            newValue: code,
+            latestValue: latestCode,
+            task: task,
+            request: assembleURLRequest(from: code),
+            completion: completion) else { return }
         latestCode = code
         task?.cancel()
         let task = urlSession.objectTask(for: request) { [weak self](result: Result<OAuthTokenResponseBody, Error>) in
