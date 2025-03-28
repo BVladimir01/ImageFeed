@@ -47,6 +47,8 @@ final class ProfileService: Fetcher<String, Profile> {
                 self?.profile = profile
                 completion(.success(profile))
             case .failure(let error):
+                // other error details are printed in URLSession extension methods
+                print("ProfileImageService.fetchProfile error")
                 completion(.failure(error))
             }
         }
@@ -58,7 +60,7 @@ final class ProfileService: Fetcher<String, Profile> {
     
     private func urlRequest(for token: String) -> URLRequest? {
         guard let url = URL(string: Constants.defatultBaseURLString + pathString) else {
-            assertionFailure("Failed to create url for profile request")
+            assertionFailure("ProfileServie.urlRequest: Failed to create url for profile request")
             return nil
         }
         var request = URLRequest(url: url)

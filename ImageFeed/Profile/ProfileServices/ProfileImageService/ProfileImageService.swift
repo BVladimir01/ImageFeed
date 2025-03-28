@@ -52,6 +52,8 @@ final class ProfileImageService: Fetcher<String, String> {
                 completion(.success(avatarURL))
                 NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL": avatarURL])
             case .failure(let error):
+                // other error details are printed in URLSession extension methods
+                print("ProfileImageService.fetchProfileImageURL error")
                 completion(.failure(error))
             }
         }
@@ -63,11 +65,11 @@ final class ProfileImageService: Fetcher<String, String> {
     
     private func urlRequest(username: String) -> URLRequest? {
         guard let url = URL(string: Constants.defatultBaseURLString + pathString + username) else {
-            assertionFailure("ProfileImageService: Failed to create url for profile request")
+            assertionFailure("ProfileImageService.urlRequest: Failed to create url for profile request")
             return nil
         }
         guard let token = tokenStorage.token else {
-            assertionFailure("ProfileImageService: Failed to load token for avatar url request")
+            assertionFailure("ProfileImageService.urlRequest: Failed to load token for avatar url request")
             return nil
         }
         var request = URLRequest(url: url)

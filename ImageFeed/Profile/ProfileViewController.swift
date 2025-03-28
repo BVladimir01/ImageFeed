@@ -132,7 +132,7 @@ final class ProfileViewController: UIViewController {
     
     private func setUpProfile() {
         guard let profile = profileService.profile else {
-            assertionFailure("ProfileViewController: Failed to get profile from service when setting up users profile")
+            assertionFailure("ProfileViewController.setUpProfile: Failed to get profile from service when setting up users profile")
             return
         }
         updateProfileDetails(profile: profile)
@@ -153,7 +153,7 @@ final class ProfileViewController: UIViewController {
     
     private func updateProfileImage() {
         guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
-            print("ProfileViewController: Failed to get url for fetching avatar image")
+            print("ProfileViewController.updateProfileImage: Failed to get url for fetching avatar image")
             return
         }
         profileImageView.kf.setImage(with: url) { [weak self] _ in

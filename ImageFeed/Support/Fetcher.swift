@@ -25,17 +25,17 @@ class Fetcher<T: Comparable, U> {
     
     func checkConditionsAndReturnRequest(newValue: T, latestValue: T?, task: URLSessionTask?, request: URLRequest?, completion: @escaping (Result<U, Error>) -> Void) -> URLRequest? {
         guard Thread.isMainThread else {
-            assertionFailure("\(Self.self): Trying to fetch profile from secondary thread")
+            assertionFailure("\(Self.self).checkConditionsAndReturnRequest: Trying to fetch profile from secondary thread")
             completion(.failure(FetcherError.wrongThread))
             return request
         }
         guard newValue != latestValue else {
-            print("\(Self.self): Duplicating request")
+            print("\(Self.self).checkConditionsAndReturnRequest: Duplicating request")
             completion(.failure(FetcherError.duplicateRequest))
             return request
         }
         guard let request else {
-            assertionFailure("\(Self.self): Failed to create request for fetching profile")
+            assertionFailure("\(Self.self).checkConditionsAndReturnRequest: Failed to create request for fetching profile")
             completion(.failure(FetcherError.invalidRequest))
             return request
         }

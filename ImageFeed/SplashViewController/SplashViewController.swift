@@ -47,7 +47,7 @@ final class SplashViewController: UIViewController {
     
     private func switchToTabBarViewController() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
-            assertionFailure("SplashViewController: Failed to get windowScene or its window when switching to TabBarVC from splashscreen")
+            assertionFailure("SplashViewController.switchToTabBarViewController: Failed to get windowScene or its window when switching to TabBarVC from splashscreen")
             return
         }
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
@@ -58,11 +58,11 @@ final class SplashViewController: UIViewController {
     private func switchToAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         guard let authNavigationController = (storyboard.instantiateViewController(withIdentifier: authNavigationControllerID) as? UINavigationController) else {
-            assertionFailure("SplashViewController: Failed to instantiate \(authNavigationControllerID) from storyboard when switching to AuthVC from splashscreen")
+            assertionFailure("SplashViewController.switchToAuthViewController: Failed to instantiate \(authNavigationControllerID) from storyboard when switching to AuthVC from splashscreen")
             return
         }
         guard let authVC = authNavigationController.topViewController as? AuthViewController else {
-            assertionFailure("SplashViewController: failed to get AuthViewController as top view controller of \(authNavigationControllerID)")
+            assertionFailure("SplashViewController.switchToAuthViewController: failed to get AuthViewController as top view controller of \(authNavigationControllerID)")
             return
         }
         authVC.delegate = self
@@ -87,7 +87,7 @@ extension SplashViewController: AuthViewContollerDelegate {
     func didAuthenticate(_ vc: UIViewController) {
         vc.dismiss(animated: true)
         guard let token = tokenStorage.token else {
-            assertionFailure("SplashViewController: Failed to load token after authentication")
+            assertionFailure("SplashViewController.didAuthenticate: Failed to load token after authentication")
             return
         }
         // profile is being fetched here and

@@ -54,6 +54,8 @@ final class OAuth2Service: Fetcher<String, String> {
             case .success(let resposeBody):
                 completion(.success(resposeBody.accessToken))
             case .failure(let error):
+                // other error details are printed in URLSession extension methods
+                print("OAuth2Service.fecthOAuthToken error")
                 completion(.failure(error))
             }
         }
@@ -65,7 +67,7 @@ final class OAuth2Service: Fetcher<String, String> {
     
     private func assembleURLRequest(from code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: baseUrlAuthString) else {
-            assertionFailure("OAuth2Service: Failed to create url for user authorization (post request)")
+            assertionFailure("OAuth2Service.assembleURLRequest: Failed to create url for user authorization (post request)")
             return nil
         }
         urlComponents.queryItems = [
@@ -76,7 +78,7 @@ final class OAuth2Service: Fetcher<String, String> {
             .init(name: "grant_type", value: "authorization_code")
         ]
         guard let url = urlComponents.url else {
-            assertionFailure("OAuth2Service: Failed to create url from urlComponents for user authorization (post request)")
+            assertionFailure("OAuth2Service.assembleURLRequest: Failed to create url from urlComponents for user authorization (post request)")
             return nil
         }
         return URLRequest(url: url)

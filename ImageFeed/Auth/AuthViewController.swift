@@ -40,7 +40,7 @@ final class AuthViewController: UIViewController {
         }
         if segue.identifier == showWebViewVCSegueID {
             guard let webViewVC = segue.destination as? WebViewViewController else {
-                assertionFailure("Failed to create WebViewVC as a segue destination from AuthViewVC")
+                assertionFailure("AuthViewController.prepare: Failed to create WebViewVC as a segue destination from AuthViewVC")
                 return
             }
             webViewVC.delegate = self
@@ -73,7 +73,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
         OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self] result in
             guard let self else { return }
             guard let delegate = self.delegate else {
-                assertionFailure("AuthViewController: Failed to get AuthVC's delegate")
+                assertionFailure("AuthViewController.webViewViewCotroller: Failed to get AuthVC's delegate")
                 return
             }
             switch result {
