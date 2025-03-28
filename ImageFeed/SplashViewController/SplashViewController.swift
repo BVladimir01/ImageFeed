@@ -14,51 +14,67 @@ final class SplashViewController: UIViewController {
     
     private let tabBarStoryboardID = "TabBarVC"
     private let showAuthSegueID = "ShowAuthVC"
+    private let authNavigationControllerID = "AuthRootViewController"
     private let tokenStorage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     
     //MARK: - Lifecycle
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupImageView()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         checkToken()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        defer {
-            super.prepare(for: segue, sender: sender)
-        }
-        guard segue.identifier == showAuthSegueID else { return }
-        guard let navigationVC = segue.destination as? UINavigationController else {
-            assertionFailure("SplashViewController: Failed to typecast NavigationController of authenctication flow from SplashVC")
-            return
-        }
-        guard let authVC = navigationVC.viewControllers.first as? AuthViewController else {
-            assertionFailure("SplashViewController: Failed to get or typecast AuthVC from NavigationController of authentication flow")
-            return
-        }
-        authVC.delegate = self
-    }
-    
     //MARK: - Private Methods
+    
+    private func setupImageView() {
+        let imageView = UIImageView(image: UIImage(resource: .splashScreenLogo))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(imageView)
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 75)
+        ])
+        view.backgroundColor = .ypBlack
+    }
     
     private func switchToTabBarViewController() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
             assertionFailure("SplashViewController: Failed to get windowScene or its window when switching to TabBarVC from splashscreen")
             return
         }
-        guard let tabBarVC = storyboard?.instantiateViewController(withIdentifier: tabBarStoryboardID) else {
-            assertionFailure("SplashViewController: Failed to instantiate \(tabBarStoryboardID) from storyboard when switching to TabBarVC from splashscreen")
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        let tabBarVC = storyboard.instantiateViewController(withIdentifier: tabBarStoryboardID)
+        window.rootViewController = tabBarVC
+    }
+    
+    private func switchToAuthViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        guard let authNavigationController = (storyboard.instantiateViewController(withIdentifier: authNavigationControllerID) as? UINavigationController) else {
+            assertionFailure("SplashViewController: Failed to instantiate \(authNavigationControllerID) from storyboard when switching to AuthVC from splashscreen")
             return
         }
-        window.rootViewController = tabBarVC
+        guard let authVC = authNavigationController.topViewController as? AuthViewController else {
+            assertionFailure("SplashViewController: failed to get AuthViewController as top view controller of \(authNavigationControllerID)")
+            return
+        }
+        authVC.delegate = self
+        authNavigationController.modalPresentationStyle = .fullScreen
+        present(authNavigationController, animated: true)
     }
     
     private func checkToken() {
         if let token = tokenStorage.token {
             fetchProfile(for: token)
         } else {
-            performSegue(withIdentifier: showAuthSegueID, sender: nil)
+            switchToAuthViewController()
         }
     }
     
