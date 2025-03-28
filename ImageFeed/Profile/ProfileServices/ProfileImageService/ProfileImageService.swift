@@ -44,11 +44,13 @@ final class ProfileImageService: Fetcher<String, String> {
                 self?.task = nil
                 self?.latestUsername = nil
             }
+            guard let self else { return }
             switch result {
             case .success(let userResult):
                 let avatarURL = userResult.profileImage.large
-                self?.avatarURL = avatarURL
+                self.avatarURL = avatarURL
                 completion(.success(avatarURL))
+                NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL": avatarURL])
             case .failure(let error):
                 completion(.failure(error))
             }

@@ -36,6 +36,8 @@ final class ProfileViewController: UIViewController {
         view.backgroundColor = .ypBlack
         configureSubViews()
         setUpProfile()
+        addProfileImageServiceObserver()
+        updateProfileImage()
     }
     
     //MARK: - Private Methods - Configuration
@@ -46,8 +48,6 @@ final class ProfileViewController: UIViewController {
         configureTagLabel()
         configureProfileDescriptionLabel()
         configureLogOutButton()
-        addProfileImageServiceObserver()
-        updateProfileImage()
     }
     
     private func configureProfileImageView() {
@@ -153,10 +153,9 @@ final class ProfileViewController: UIViewController {
     
     private func updateProfileImage() {
         guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
-            assertionFailure("ProfileViewController: Failed to create url for fetching avatar image")
+            print("ProfileViewController: Failed to get url for fetching avatar image")
             return
         }
-        // TODO: change avatar
         profileImageView.kf.setImage(with: url) { [weak self] _ in
             guard let self else { return }
             self.adjustProfileImageSize()
