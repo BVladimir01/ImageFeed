@@ -10,8 +10,7 @@ import UIKit
 final class TabBarViewController: UITabBarController {
     
     // MARK: - Private Properties
-    
-    let profileVCID = "ProfileViewController"
+
     let imagesListNavigationControllerID = "ImagesListNavigationViewController"
 
     // MARK: - Lifecycle
