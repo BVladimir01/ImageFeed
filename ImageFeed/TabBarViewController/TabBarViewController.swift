@@ -9,9 +9,13 @@ import UIKit
 
 final class TabBarViewController: UITabBarController {
     
+    // MARK: - Private Properties
+    
     let profileVCID = "ProfileViewController"
-    let imagesListNavigationVCID = "ImagesListNavigationViewController"
+    let imagesListNavigationControllerID = "ImagesListNavigationViewController"
 
+    // MARK: - Lifecycle
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -19,8 +23,9 @@ final class TabBarViewController: UITabBarController {
         
         let profileVC = ProfileViewController()
         profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(resource: .tabProfileNonActive), selectedImage: UIImage(resource: .tabProfileActive))
-        let imagesListNavigation = storyboard.instantiateViewController(withIdentifier: imagesListNavigationVCID)
+        let imagesListNavigation = storyboard.instantiateViewController(withIdentifier: imagesListNavigationControllerID)
         
         viewControllers = [imagesListNavigation, profileVC]
     }
+    
 }

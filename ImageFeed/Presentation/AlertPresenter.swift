@@ -9,8 +9,13 @@ import UIKit
 
 
 // MARK: - AlertPresenter
-class SimpleAlertPresenter {
+final class SimpleAlertPresenter {
+    
+    //MARK: - Internal Properties
+    
     weak var delegate: UIViewController?
+    
+    // MARK: - Internal Methods
     
     func presentAlert(_ alert: SimpleAlertModel) {
         let ac = UIAlertController(title: alert.title, message: alert.message, preferredStyle: .alert)

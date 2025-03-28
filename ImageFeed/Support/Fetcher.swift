@@ -17,7 +17,7 @@ enum FetcherError: Error {
 /**
  Helper Class
  
- All serviceClasses that fetch some data must satisfy same conditions.
+ All service classes that fetch some data must satisfy same conditions.
  These conditions prevent race condition.
  The conditions are checked in `checkConditionsAndReturnRequest(newValue:latestValue:task:request:completion:)`.
  */

@@ -9,7 +9,7 @@ import UIKit
 import ProgressHUD
 
 
-class UIBlockingHUD {
+final class UIBlockingHUD {
     
     // MARK: - Private Properties
     

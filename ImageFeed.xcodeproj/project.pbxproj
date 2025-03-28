@@ -125,15 +125,15 @@
 		E7B700262D47DB4100A60E57 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				E738D4D52D969FFA002ACA10 /* TabBarViewController */,
-				E7D81AA82D9438C7003CBF81 /* Support */,
-				E7D81AA32D940F7D003CBF81 /* Presentation */,
-				E7DAE6512D788E63008E9D0F /* Extensions */,
 				E7EBC6742D75F12B00311D2E /* Auth */,
-				E7DAE65E2D7F233C008E9D0F /* SplashViewController */,
-				E798894C2D50F09500608B34 /* SingleImageView */,
-				E79889472D50B8BD00608B34 /* Profile */,
+				E7DAE6512D788E63008E9D0F /* Extensions */,
 				E7B7003D2D48C72A00A60E57 /* ImagesList */,
+				E7D81AA32D940F7D003CBF81 /* Presentation */,
+				E79889472D50B8BD00608B34 /* Profile */,
+				E798894C2D50F09500608B34 /* SingleImageView */,
+				E7DAE65E2D7F233C008E9D0F /* SplashViewController */,
+				E7D81AA82D9438C7003CBF81 /* Support */,
+				E738D4D52D969FFA002ACA10 /* TabBarViewController */,
 				E7B700272D47DB4100A60E57 /* AppDelegate.swift */,
 				E7B700292D47DB4100A60E57 /* SceneDelegate.swift */,
 				E7EBC64D2D71CC6B00311D2E /* Constants.swift */,

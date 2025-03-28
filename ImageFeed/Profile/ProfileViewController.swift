@@ -63,7 +63,6 @@ final class ProfileViewController: UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = imageView.frame.width/2
-        print(imageView.layer.cornerRadius)
         imageView.layer.masksToBounds = true
         profileImageView = imageView
     }
