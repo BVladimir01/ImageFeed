@@ -90,6 +90,11 @@ extension SplashViewController: AuthViewContollerDelegate {
             assertionFailure("SplashViewController: Failed to load token after authentication")
             return
         }
+        // profile is being fetched here and
+        // when top view is dismissed, since
+        // viewDidLoad and checkToken will be executed
+        // does not seem to be a bug, more like
+        // intentional behaviour
         fetchProfile(for: token)
     }
     
