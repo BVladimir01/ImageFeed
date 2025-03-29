@@ -8,7 +8,16 @@
 import Foundation
 
 
-final class OAuth2Service {
+// MARK: - AuthServiceError
+enum AuthServiceError: Error {
+    case duplicateRequest
+    case invalidRequest
+    case wrongThread
+}
+
+
+// MARK: - OAuth2Service
+final class OAuth2Service: Fetcher<String, String> {
     
     //MARK: - Internal Properties
     
@@ -17,30 +26,40 @@ final class OAuth2Service {
     //MARK: - Private Properties
     
     private let baseUrlAuthString = "https://unsplash.com/oauth/token"
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask? = nil
+    private var latestCode: String? = nil
     
     //MARK: - Initializers
     
-    private init() { }
+    override private init() { }
     
     //MARK: - Internal Methods
     
     func fetchOAuthToken(from code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let request = assembleURLRequest(from: code) else { return }
-        let jsonDecoder = JSONDecoder()
-        let task = URLSession.shared.data(for: request) { result in
+        guard let request = checkConditionsAndReturnRequest(
+            newValue: code,
+            latestValue: latestCode,
+            task: task,
+            request: assembleURLRequest(from: code),
+            completion: completion) else { return }
+        latestCode = code
+        task?.cancel()
+        let task = urlSession.objectTask(for: request) { [weak self](result: Result<OAuthTokenResponseBody, Error>) in
+            defer {
+                self?.task = nil
+                self?.latestCode = nil
+            }
             switch result {
-            case .success(let data):
-                do {
-                    let responseBody = try jsonDecoder.decode(OAuthTokenResponseBody.self, from: data)
-                    completion(.success(responseBody.accessToken))
-                } catch {
-                    assertionFailure("Failed to decode token")
-                    completion(.failure(error))
-                }
+            case .success(let responseBody):
+                completion(.success(responseBody.accessToken))
             case .failure(let error):
+                // other error details are printed in URLSession extension methods
+                print("OAuth2Service.fetchOAuthToken error")
                 completion(.failure(error))
             }
         }
+        self.task = task
         task.resume()
     }
     
@@ -48,7 +67,7 @@ final class OAuth2Service {
     
     private func assembleURLRequest(from code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: baseUrlAuthString) else {
-            assertionFailure("Failed to create url for user authorization (post request)")
+            assertionFailure("OAuth2Service.assembleURLRequest: Failed to create url for user authorization (post request)")
             return nil
         }
         urlComponents.queryItems = [
@@ -59,10 +78,12 @@ final class OAuth2Service {
             .init(name: "grant_type", value: "authorization_code")
         ]
         guard let url = urlComponents.url else {
-            assertionFailure("Failed to create url from urlComponents for user authorization (post request)")
+            assertionFailure("OAuth2Service.assembleURLRequest: Failed to create url from urlComponents for user authorization (post request)")
             return nil
         }
-        return URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.post.rawValue
+        return request
     }
     
 }

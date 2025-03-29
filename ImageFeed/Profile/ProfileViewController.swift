@@ -5,6 +5,7 @@
 //  Created by Vladimir on 03.02.2025.
 //
 
+import Kingfisher
 import UIKit
 
 
@@ -18,6 +19,10 @@ final class ProfileViewController: UIViewController {
     private var profileDescriptionLabel: UILabel!
     private var logOutButton: UIButton!
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
+    
     private struct SymbolNames {
         static let profileImage = "ProfilePicStubLarge"
         static let logoutButton = "LogOut"
@@ -30,6 +35,9 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypBlack
         configureSubViews()
+        setUpProfile()
+        addProfileImageServiceObserver()
+        updateProfileImage()
     }
     
     //MARK: - Private Methods - Configuration
@@ -52,6 +60,10 @@ final class ProfileViewController: UIViewController {
             imageView.heightAnchor.constraint(equalToConstant: 70),
             imageView.widthAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 1)
         ])
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = imageView.frame.width/2
+        imageView.layer.masksToBounds = true
         profileImageView = imageView
     }
     
@@ -118,11 +130,54 @@ final class ProfileViewController: UIViewController {
         logOutButton = button
     }
     
+    private func setUpProfile() {
+        guard let profile = profileService.profile else {
+            assertionFailure("ProfileViewController.setUpProfile: Failed to get profile from service when setting up users profile")
+            return
+        }
+        updateProfileDetails(profile: profile)
+    }
+    
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        tagLabel.text = profile.loginName
+        profileDescriptionLabel.text = profile.bio
+    }
+    
+    private func addProfileImageServiceObserver() {
+        let profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.updateProfileImage()
+        }
+        self.profileImageServiceObserver = profileImageServiceObserver
+    }
+    
+    private func updateProfileImage() {
+        guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
+            print("ProfileViewController.updateProfileImage: Failed to get url for fetching avatar image")
+            return
+        }
+        profileImageView.kf.setImage(with: url) { [weak self] _ in
+            guard let self else { return }
+            self.adjustProfileImageSize()
+        }
+    }
+    
+    private func adjustProfileImageSize() {
+        guard let image = profileImageView.image, let cgImage = image.cgImage else { return }
+        let width = image.size.width
+        let height = image.size.height
+        let vScale = 70/height
+        let hScale = 70/width
+        let trueScale = max(vScale, hScale)
+        let newImage = UIImage(cgImage: cgImage, scale: 1/trueScale, orientation: .up)
+        profileImageView.image = newImage
+    }
+    
     //MARK: - Private Methods - UIActions
     
     @objc
     private func logOut() {
-        //TODO: log out logic
+        //TODO: log out implementation
         OAuth2TokenStorage.shared.token = nil
     }
 

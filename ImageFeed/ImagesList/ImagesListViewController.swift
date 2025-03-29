@@ -46,7 +46,7 @@ final class ImagesListViewController: UIViewController {
     
     private func configCell(_ cell: ImagesListCell, at indexPath: IndexPath) {
         guard let image = UIImage(named: imagesNames[indexPath.row]) else {
-            assertionFailure("Failed to create image for cell")
+            assertionFailure("ImagesListViewController.confiCell: Failed to create image for cell")
             return
         }
         //update imageViews' sizes, since layer mask will be added
@@ -82,7 +82,7 @@ extension ImagesListViewController: UITableViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showSingleImageSegueIdentifier {
             guard let viewController = segue.destination as? SingleImageViewController, let indexPath = sender as? IndexPath else {
-                assertionFailure("Failed to create ViewController or extract indexPath")
+                assertionFailure("ImagesListViewController.prepare: Failed to create ViewController or extract indexPath")
                 return
             }
             let image = UIImage(named: "\(imagesNames[indexPath.row])")
@@ -94,7 +94,7 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let image = UIImage(named: imagesNames[indexPath.row]) else {
-            assertionFailure("Failed to extract image for calculating cell's height")
+            assertionFailure("ImagesListViewController.tableView: Failed to extract image for calculating cell's height")
             return tableView.rowHeight
         }
         let tableWidth = tableView.contentSize.width
@@ -116,7 +116,7 @@ extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) as? ImagesListCell else {
-            assertionFailure("Failed to dequeue ImagesListCell")
+            assertionFailure("ImagesListViewController.tableView: Failed to dequeue ImagesListCell")
             return UITableViewCell()
         }
         configCell(cell, at: indexPath)
