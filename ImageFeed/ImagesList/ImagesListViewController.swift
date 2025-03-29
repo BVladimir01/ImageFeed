@@ -46,7 +46,7 @@ final class ImagesListViewController: UIViewController {
     
     private func configCell(_ cell: ImagesListCell, at indexPath: IndexPath) {
         guard let image = UIImage(named: imagesNames[indexPath.row]) else {
-            assertionFailure("ImagesListViewController.confiCell: Failed to create image for cell")
+            assertionFailure("ImagesListViewController.configCell: Failed to create image for cell")
             return
         }
         //update imageViews' sizes, since layer mask will be added
@@ -102,6 +102,10 @@ extension ImagesListViewController: UITableViewDelegate {
         let imageViewHeight = imageViewWidth/(image.size.width)*(image.size.height)
         let rowHeight = imageViewHeight + 8
         return rowHeight
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // TODO: load URLs for next photos
     }
     
 }
