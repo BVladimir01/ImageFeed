@@ -24,7 +24,7 @@ final class ImagesListService {
         //TODO: implement fetching photos
         let nextPageNumber = (lastLoadedPage ?? 0) + 1
         guard let request = urlRequest(page: nextPageNumber) else { return }
-        if let task {
+        if task != nil {
             print("ImagesListService.fetchPhotosNextPage: duplicating request for photos")
             return
         }
@@ -66,7 +66,7 @@ final class ImagesListService {
         }
         var urlRequest = URLRequest(url: assembledURL)
         urlRequest.httpMethod = HTTPMethod.get.rawValue
-        urlRequest.setValue("Bearer ", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return urlRequest
     }
 }
