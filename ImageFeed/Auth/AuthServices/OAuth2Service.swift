@@ -81,7 +81,9 @@ final class OAuth2Service: Fetcher<String, String> {
             assertionFailure("OAuth2Service.assembleURLRequest: Failed to create url from urlComponents for user authorization (post request)")
             return nil
         }
-        return URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.post.rawValue
+        return request
     }
     
 }

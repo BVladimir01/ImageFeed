@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E738D4D42D9698D8002ACA10 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = E738D4D32D9698D8002ACA10 /* SwiftKeychainWrapper */; };
 		E738D4D72D96A022002ACA10 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D4D62D96A022002ACA10 /* TabBarViewController.swift */; };
+		E738D4D92D97D10A002ACA10 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D4D82D97D10A002ACA10 /* HTTPMethod.swift */; };
 		E7788AC62D91D04900B35461 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = E7788AC52D91D04900B35461 /* ProgressHUD */; };
 		E79889492D50B8E200608B34 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79889482D50B8E200608B34 /* ProfileViewController.swift */; };
 		E798894B2D50E04D00608B34 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E798894A2D50E04D00608B34 /* SingleImageViewController.swift */; };
@@ -39,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		E738D4D62D96A022002ACA10 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
+		E738D4D82D97D10A002ACA10 /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		E79889482D50B8E200608B34 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		E798894A2D50E04D00608B34 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 		E7B700242D47DB4100A60E57 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,7 +138,6 @@
 				E738D4D52D969FFA002ACA10 /* TabBarViewController */,
 				E7B700272D47DB4100A60E57 /* AppDelegate.swift */,
 				E7B700292D47DB4100A60E57 /* SceneDelegate.swift */,
-				E7EBC64D2D71CC6B00311D2E /* Constants.swift */,
 				E7B7002D2D47DB4100A60E57 /* Main.storyboard */,
 				E7B7003B2D480B0700A60E57 /* Resources */,
 			);
@@ -200,7 +201,9 @@
 		E7D81AA82D9438C7003CBF81 /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				E7EBC64D2D71CC6B00311D2E /* Constants.swift */,
 				E7D81AA62D941716003CBF81 /* Fetcher.swift */,
+				E738D4D82D97D10A002ACA10 /* HTTPMethod.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -343,6 +346,7 @@
 				E7D81AA52D940F9F003CBF81 /* AlertPresenter.swift in Sources */,
 				E7D81A9B2D92D095003CBF81 /* AuthModels.swift in Sources */,
 				E7D81A9E2D93DF88003CBF81 /* ProfileImageService.swift in Sources */,
+				E738D4D92D97D10A002ACA10 /* HTTPMethod.swift in Sources */,
 				E7EBC6782D75F26B00311D2E /* WebViewViewController.swift in Sources */,
 				E7B7002A2D47DB4100A60E57 /* SceneDelegate.swift in Sources */,
 			);
