@@ -59,8 +59,8 @@ final class ProfileService: Fetcher<String, Profile> {
     // MARK: - Private Methods
     
     private func urlRequest(for token: String) -> URLRequest? {
-        guard let url = URL(string: Constants.defatultBaseURLString + pathString) else {
-            assertionFailure("ProfileServie.urlRequest: Failed to create url for profile request")
+        guard let url = URL(string: Constants.defaultBaseURLString + pathString) else {
+            assertionFailure("ProfileService.urlRequest: Failed to create url for profile request")
             return nil
         }
         var request = URLRequest(url: url)

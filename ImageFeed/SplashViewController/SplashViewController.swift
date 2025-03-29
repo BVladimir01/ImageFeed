@@ -81,8 +81,8 @@ final class SplashViewController: UIViewController {
 }
 
 
-//MARK: - AuthViewContollerDelegate
-extension SplashViewController: AuthViewContollerDelegate {
+//MARK: - AuthViewControllerDelegate
+extension SplashViewController: AuthViewControllerDelegate {
     
     func didAuthenticate(_ vc: UIViewController) {
         vc.dismiss(animated: true)
@@ -94,7 +94,7 @@ extension SplashViewController: AuthViewContollerDelegate {
         // when top view is dismissed, since
         // viewDidLoad and checkToken will be executed
         // does not seem to be a bug, more like
-        // intentional behaviour
+        // intentional behavior
         fetchProfile(for: token)
     }
     

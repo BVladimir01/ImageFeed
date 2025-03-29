@@ -9,7 +9,7 @@ import UIKit
 
 
 //MARK: - AuthViewContollerDelegate
-protocol AuthViewContollerDelegate: AnyObject {
+protocol AuthViewControllerDelegate: AnyObject {
     func didAuthenticate(_ vc: UIViewController)
 }
 
@@ -19,7 +19,7 @@ final class AuthViewController: UIViewController {
     
     //MARK: - Internal Properties
     
-    weak var delegate: AuthViewContollerDelegate?
+    weak var delegate: AuthViewControllerDelegate?
     
     //MARK: - Private Properties
     

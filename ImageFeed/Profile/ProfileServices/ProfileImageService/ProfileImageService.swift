@@ -64,7 +64,7 @@ final class ProfileImageService: Fetcher<String, String> {
     // MARK: - Private Methods
     
     private func urlRequest(username: String) -> URLRequest? {
-        guard let url = URL(string: Constants.defatultBaseURLString + pathString + username) else {
+        guard let url = URL(string: Constants.defaultBaseURLString + pathString + username) else {
             assertionFailure("ProfileImageService.urlRequest: Failed to create url for profile request")
             return nil
         }

@@ -51,11 +51,11 @@ final class OAuth2Service: Fetcher<String, String> {
                 self?.latestCode = nil
             }
             switch result {
-            case .success(let resposeBody):
-                completion(.success(resposeBody.accessToken))
+            case .success(let responseBody):
+                completion(.success(responseBody.accessToken))
             case .failure(let error):
                 // other error details are printed in URLSession extension methods
-                print("OAuth2Service.fecthOAuthToken error")
+                print("OAuth2Service.fetchOAuthToken error")
                 completion(.failure(error))
             }
         }

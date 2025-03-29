@@ -80,8 +80,8 @@ final class SingleImageViewController: UIViewController {
             assertionFailure("SingleImageViewController.shareButtonTapped: Failed to unwrap image")
             return
         }
-        let avc = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        present(avc, animated: true, completion: nil)
+        let aVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        present(aVC, animated: true, completion: nil)
     }
     
     @IBAction private func backwardButtonTapped() {
