@@ -28,7 +28,7 @@ struct PhotoResult: Decodable {
     let createdAt: String
     let width: Double
     let height: Double
-    let description: String
+    let description: String?
     let likedByUser: Bool
     let urls: URLResult
     

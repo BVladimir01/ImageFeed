@@ -30,7 +30,7 @@ final class ImagesListService {
         }
         // just in case
         task?.cancel()
-        task = urlSession.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
+        task = urlSession.objectTask(for: request, convertFromSnakeCase: true) { [weak self] (result: Result<[PhotoResult], Error>) in
             guard let self else { return }
             switch result {
             case .success(let photoResults):
