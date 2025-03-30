@@ -73,32 +73,22 @@ final class ImagesListViewController: UIViewController {
         // prevent calling tableView.reloadRows recursively
         if cell.imageIsLoaded { return }
         // TODO: try to set up gradient
-        //update imageViews' sizes, since layer mask will be added
-//        view.layoutIfNeeded()
         //configure image
         cell.cellImageView.kf.indicatorType = .activity
         cell.cellImageView.kf.setImage(with: thumbImageURL, placeholder: UIImage(resource: .imagesListStub)) { [weak self, weak cell] _ in
             cell?.imageIsLoaded = true
-            print("loading image at \(indexPath.row)")
             self?.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
         cell.layer.cornerRadius = 16
+        cell.cellImageView.layer.cornerRadius = 16
         cell.cellImageView.layer.masksToBounds = true
-        //configure gradient
-//        cell.cellImageView.layer.sublayers = []
-//        let gradient = CAGradientLayer()
-//        gradient.frame = cell.cellImageView.bounds
-//        gradient.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
-//        let gradientStart = NSNumber(value: 1 - 30/Float(cell.cellImageView.bounds.height))
-//        gradient.locations = [gradientStart, 1]
-//        cell.cellImageView.layer.addSublayer(gradient)
         //configure everything else
         if let photoDate = photo.createdAt {
             cell.dateLabel.text = dateFormatter.string(from: photoDate)
         } else {
             cell.dateLabel.text = ""
         }
-        cell.likeButton.imageView?.image = photo.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive)
+        cell.likeButton.setImage(photo.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive), for: .normal)
     }
     
     private func updateTableViewAnimated(with newPhotos: [Photo]) {
