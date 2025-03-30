@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct Photo {
+struct Photo: Hashable {
     
     static let dateFormatter = ISO8601DateFormatter()
     
@@ -19,6 +19,15 @@ struct Photo {
     let thumbImageURL: String
     let largeImageURL: String
     let isLiked: Bool
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Photo, rhs: Photo) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
 }
 
 
