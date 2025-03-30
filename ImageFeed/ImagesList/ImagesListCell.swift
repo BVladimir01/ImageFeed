@@ -16,12 +16,16 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet var dateLabel: UILabel!
     @IBOutlet var likeButton: UIButton!
     
-    // MARK: - Public Properties
+    // MARK: - Internal Properties
     
     static let reuseIdentifier = "ImagesListCell"
+    var imageIsLoaded = false
+    
+    // MARK: - Lifecycle
     
     override func prepareForReuse() {
         super.prepareForReuse()
         cellImageView.kf.cancelDownloadTask()
+        imageIsLoaded = false
     }
 }

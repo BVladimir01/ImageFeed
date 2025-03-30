@@ -29,7 +29,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="195"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="EYn-Z4-19r" userLabel="Cell Image">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ImagesListStubImage" translatesAutoresizingMaskIntoConstraints="NO" id="EYn-Z4-19r" userLabel="Cell Image">
                                                     <rect key="frame" x="16" y="4" width="361" height="187"/>
                                                     <color key="backgroundColor" name="YP Black"/>
                                                 </imageView>
@@ -338,9 +338,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="0" width="1600" height="1059"/>
         <image name="Backward" width="24" height="24"/>
         <image name="FavouritesActive" width="42" height="42"/>
+        <image name="ImagesListStubImage" width="168" height="224"/>
         <image name="Logo_of_Unsplash" width="60" height="60"/>
         <image name="ShareButton" width="51" height="51"/>
         <image name="TabFeedActive" width="30" height="30"/>

@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-
+import Kingfisher
 
 final class ImagesListViewController: UIViewController {
     
@@ -17,9 +17,7 @@ final class ImagesListViewController: UIViewController {
     
     //MARK: - Private Properties
     
-    private let imagesNames: [String] = Array(0..<20).map({"\($0)"})
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    private let currentDate = Date()
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ru_RU")
@@ -27,12 +25,16 @@ final class ImagesListViewController: UIViewController {
         formatter.timeStyle = .none
         return formatter
     }()
+    private var observation: NSObjectProtocol?
+    private let imagesListService = ImagesListService.shared
     
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        addObserver()
+        imagesListService.fetchPhotosNextPage()
     }
     
     //MARK: - Private Methods
@@ -41,32 +43,72 @@ final class ImagesListViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-        tableView.rowHeight = 200
+        let stubImage = UIImage(resource: .imagesListStub)
+        let tableWidth = tableView.frame.size.width
+        let imageViewWidth = tableWidth - 32
+        let imageViewHeight = imageViewWidth/(stubImage.size.width)*(stubImage.size.height)
+        let rowHeight = imageViewHeight + 8
+        tableView.rowHeight = rowHeight
+    }
+    
+    private func addObserver() {
+        observation = NotificationCenter.default.addObserver(
+            forName: ImagesListService.didChangeNotification,
+            object: nil,
+            queue: .main) { [weak self] notification in
+                guard let userInfo = notification.userInfo as? [String: [Photo]], let newPhotos = userInfo["newPhotos"] else {
+                    assertionFailure("ImagesListViewController.addObserver: failed to get newPhotos from notification")
+                    return
+                }
+                self?.updateTableViewAnimated(with: newPhotos)
+        }
     }
     
     private func configCell(_ cell: ImagesListCell, at indexPath: IndexPath) {
-        guard let image = UIImage(named: imagesNames[indexPath.row]) else {
-            assertionFailure("ImagesListViewController.configCell: Failed to create image for cell")
+        let photo = imagesListService.photos[indexPath.row]
+        guard let thumbImageURL = URL(string: photo.thumbImageURL) else {
+            assertionFailure("ImagesListViewController.configCell")
             return
         }
+        // prevent calling tableView.reloadRows recursively
+        if cell.imageIsLoaded { return }
+        // TODO: try to set up gradient
         //update imageViews' sizes, since layer mask will be added
-        view.layoutIfNeeded()
+//        view.layoutIfNeeded()
         //configure image
-        cell.cellImageView.image = image
-        cell.cellImageView.layer.cornerRadius = 16
+        cell.cellImageView.kf.indicatorType = .activity
+        cell.cellImageView.kf.setImage(with: thumbImageURL, placeholder: UIImage(resource: .imagesListStub)) { [weak self, weak cell] _ in
+            cell?.imageIsLoaded = true
+            print("loading image at \(indexPath.row)")
+            self?.tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+        cell.layer.cornerRadius = 16
         cell.cellImageView.layer.masksToBounds = true
         //configure gradient
-        cell.cellImageView.layer.sublayers = []
-        let gradient = CAGradientLayer()
-        gradient.frame = cell.cellImageView.bounds
-        gradient.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
-        let gradientStart = NSNumber(value: 1 - 30/Float(cell.cellImageView.bounds.height))
-        gradient.locations = [gradientStart, 1]
-        cell.cellImageView.layer.addSublayer(gradient)
+//        cell.cellImageView.layer.sublayers = []
+//        let gradient = CAGradientLayer()
+//        gradient.frame = cell.cellImageView.bounds
+//        gradient.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
+//        let gradientStart = NSNumber(value: 1 - 30/Float(cell.cellImageView.bounds.height))
+//        gradient.locations = [gradientStart, 1]
+//        cell.cellImageView.layer.addSublayer(gradient)
         //configure everything else
-        cell.dateLabel.text = dateFormatter.string(from: currentDate)
-        cell.likeButton.imageView?.image = indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive")
-        cell.likeButton.setImage(indexPath.row.isMultiple(of: 2) ? UIImage(named: "FavouritesActive") : UIImage(named: "FavouritesNonActive"), for: .normal)
+        if let photoDate = photo.createdAt {
+            cell.dateLabel.text = dateFormatter.string(from: photoDate)
+        } else {
+            cell.dateLabel.text = ""
+        }
+        cell.likeButton.imageView?.image = photo.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive)
+    }
+    
+    private func updateTableViewAnimated(with newPhotos: [Photo]) {
+        let newCount = imagesListService.photos.count
+        let oldCount = newCount - newPhotos.count
+        let range = oldCount..<newCount
+        let indexPaths = range.map({ IndexPath(row: $0, section: 0)})
+        tableView.performBatchUpdates {
+            tableView.insertRows(at: indexPaths, with: .automatic)
+        }
     }
     
 }
@@ -85,7 +127,7 @@ extension ImagesListViewController: UITableViewDelegate {
                 assertionFailure("ImagesListViewController.prepare: Failed to create ViewController or extract indexPath")
                 return
             }
-            let image = UIImage(named: "\(imagesNames[indexPath.row])")
+            let image = UIImage(resource: .imagesListStub)
             viewController.image = image
         } else {
             super.prepare(for: segue, sender: sender)
@@ -93,19 +135,18 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = UIImage(named: imagesNames[indexPath.row]) else {
-            assertionFailure("ImagesListViewController.tableView: Failed to extract image for calculating cell's height")
-            return tableView.rowHeight
-        }
+        let size = imagesListService.photos[indexPath.row].size
         let tableWidth = tableView.contentSize.width
         let imageViewWidth = tableWidth - 32
-        let imageViewHeight = imageViewWidth/(image.size.width)*(image.size.height)
+        let imageViewHeight = imageViewWidth/(size.width)*(size.height)
         let rowHeight = imageViewHeight + 8
         return rowHeight
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // TODO: load URLs for next photos
+        if indexPath.row >= imagesListService.photos.count - 1 {
+            imagesListService.fetchPhotosNextPage()
+        }
     }
     
 }
@@ -115,7 +156,7 @@ extension ImagesListViewController: UITableViewDelegate {
 extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        imagesNames.count
+        imagesListService.photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
