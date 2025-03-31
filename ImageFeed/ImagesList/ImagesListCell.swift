@@ -24,20 +24,20 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: - Private Methods
     
-    private var gradientLayer: CAGradientLayer?
+    private var gradientLayer = CAGradientLayer()
     
     // MARK: - Lifecycle
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        addGradient()
+        setupGradient()
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         let gradientStart = NSNumber(value: 1 - 30/Float(cellImageView.bounds.height))
-        gradientLayer?.locations = [gradientStart, 1]
-        gradientLayer?.frame = cellImageView.bounds
+        gradientLayer.locations = [gradientStart, 1]
+        gradientLayer.frame = cellImageView.bounds
     }
     
     override func prepareForReuse() {
@@ -59,12 +59,17 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: - Private Methods
     
-    private func addGradient() {
-        let gradient = CAGradientLayer()
-        gradient.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
-        gradient.locations = [1, 1]
-        cellImageView.layer.addSublayer(gradient)
-        gradientLayer = gradient
+    private func setupGradient() {
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
+        gradientLayer.locations = [1, 1]
+        cellImageView.layer.addSublayer(gradientLayer)
+        //remove animations on cell update
+        gradientLayer.actions = [
+            "position": NSNull(),
+            "bounds": NSNull(),
+            "opacity": NSNull(),
+            "contents": NSNull()
+        ]
     }
     
     // MARK: - IBActions
