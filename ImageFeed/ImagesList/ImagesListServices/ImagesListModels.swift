@@ -45,6 +45,7 @@ struct PhotoResult: Decodable {
         let raw: String
         let full: String
         let regular: String
+        let small: String
         let thumb: String
     }
     
@@ -58,8 +59,8 @@ extension Photo {
         createdAt = Self.dateFormatter.date(from: photoResult.createdAt)
         welcomeDescription = photoResult.description
         let urlResult = photoResult.urls
-        thumbImageURL = urlResult.thumb
-        largeImageURL = urlResult.full
+        thumbImageURL = urlResult.small
+        largeImageURL = urlResult.raw
         isLiked = photoResult.likedByUser
     }
 }
