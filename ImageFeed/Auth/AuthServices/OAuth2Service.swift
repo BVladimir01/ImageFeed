@@ -82,7 +82,7 @@ final class OAuth2Service: Fetcher<String, String> {
             return nil
         }
         var request = URLRequest(url: url)
-        request.httpMethod = HTTPMethod.post.rawValue
+        request.httpMethod = HTTPMethod.post
         return request
     }
     

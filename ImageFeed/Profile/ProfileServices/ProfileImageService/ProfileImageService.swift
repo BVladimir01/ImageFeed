@@ -74,7 +74,7 @@ final class ProfileImageService: Fetcher<String, String> {
         }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = HTTPMethod.get.rawValue
+        request.httpMethod = HTTPMethod.get
         return request
     }
 }

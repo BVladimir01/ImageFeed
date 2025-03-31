@@ -65,7 +65,7 @@ final class ProfileService: Fetcher<String, Profile> {
         }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = HTTPMethod.get.rawValue
+        request.httpMethod = HTTPMethod.get
         return request
     }
     
