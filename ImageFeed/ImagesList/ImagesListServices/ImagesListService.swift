@@ -97,6 +97,16 @@ final class ImagesListService {
         changeLikeTask?.resume()
     }
     
+    func cleanUpService() {
+        photos = []
+        photosSet = []
+        fetchPhotosTask?.cancel()
+        fetchPhotosTask = nil
+        changeLikeTask?.cancel()
+        changeLikeTask = nil
+        lastLoadedPage = nil
+    }
+    
     //MARK: - Private Methods
     
     private func assembleURLRequestForPhotos(page: Int) -> URLRequest? {

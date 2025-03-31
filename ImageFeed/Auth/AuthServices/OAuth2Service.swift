@@ -63,6 +63,12 @@ final class OAuth2Service: Fetcher<String, String> {
         task.resume()
     }
     
+    func cleanUpService() {
+        task?.cancel()
+        task = nil
+        latestCode = nil
+    }
+    
     //MARK: - Private Methods
     
     private func assembleURLRequest(from code: String) -> URLRequest? {

@@ -61,6 +61,13 @@ final class ProfileImageService: Fetcher<String, String> {
         task.resume()
     }
     
+    func cleanUpService() {
+        task?.cancel()
+        task = nil
+        avatarURL = nil
+        latestUsername = nil
+    }
+    
     // MARK: - Private Methods
     
     private func urlRequest(username: String) -> URLRequest? {

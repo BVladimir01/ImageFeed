@@ -56,6 +56,13 @@ final class ProfileService: Fetcher<String, Profile> {
         task.resume()
     }
     
+    func cleanUpService() {
+        profile = nil
+        task?.cancel()
+        task = nil
+        latestToken = nil
+    }
+    
     // MARK: - Private Methods
     
     private func urlRequest(for token: String) -> URLRequest? {

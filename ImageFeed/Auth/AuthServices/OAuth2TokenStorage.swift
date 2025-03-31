@@ -35,4 +35,10 @@ final class OAuth2TokenStorage {
     
     private init() { }
     
+    // MARK: - Internal Methods
+    
+    func removeToken() {
+        storage.removeObject(forKey: tokenKey)
+    }
+    
 }

@@ -20,8 +20,10 @@ final class ProfileViewController: UIViewController {
     private var logOutButton: UIButton!
     
     private var profileImageServiceObserver: NSObjectProtocol?
+    
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+    private let profileLogoutService = ProfileLogoutService.shared
     
     private struct SymbolNames {
         static let profileImage = "ProfilePicStubLarge"
@@ -38,6 +40,20 @@ final class ProfileViewController: UIViewController {
         setUpProfile()
         addProfileImageServiceObserver()
         updateProfileImage()
+    }
+    
+    // MARK: - Internal Methods()
+    
+    func cleanUpProfile() {
+        guard isViewLoaded else {
+            assertionFailure("ProfileViewController.clearProfile: Failed to clean profile: profile is not loaded yet")
+            return
+        }
+        profileImageView.image = nil
+        tagLabel.text = nil
+        nameLabel.text = nil
+        profileDescriptionLabel.text = nil
+        profileImageServiceObserver = nil
     }
     
     //MARK: - Private Methods - Configuration
@@ -177,8 +193,27 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func logOut() {
-        //TODO: log out implementation
-        OAuth2TokenStorage.shared.token = nil
+        let ac = UIAlertController(title: "Пока, пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "Да", style: .default) { [weak self] action in
+            //seems like it should be performed on main
+            DispatchQueue.main.async {
+                //just in case
+                self?.cleanProfile()
+                self?.profileLogoutService.logout()
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Нет", style: .cancel)
+        ac.addAction(confirmAction)
+        ac.addAction(cancelAction)
+        ac.preferredAction = cancelAction
+        present(ac, animated: true)
+    }
+    
+    private func cleanProfile() {
+        profileImageView.image = nil
+        tagLabel.text = nil
+        nameLabel.text = nil
+        profileDescriptionLabel.text = nil
     }
 
 }
