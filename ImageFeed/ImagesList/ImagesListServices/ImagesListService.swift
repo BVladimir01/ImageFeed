@@ -87,7 +87,6 @@ final class ImagesListService {
                 let alteringPhoto = self.photos[alteringPhotoIndex]
                 let alteredPhoto = Photo(id: alteringPhoto.id, size: alteringPhoto.size, createdAt: alteringPhoto.createdAt, welcomeDescription: alteringPhoto.welcomeDescription, thumbImageURL: alteringPhoto.thumbImageURL, largeImageURL: alteringPhoto.largeImageURL, isLiked: isLike)
                 self.photos[alteringPhotoIndex] = alteredPhoto
-                print("Changed like at photo \(photoID)")
                 self.changeLikeTask = nil
                 completion(.success(()))
             case .failure(let error):

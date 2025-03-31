@@ -19,7 +19,8 @@ final class ImagesListCell: UITableViewCell {
     // MARK: - Internal Properties
     
     static let reuseIdentifier = "ImagesListCell"
-    var imageIsLoaded = false
+    weak var delegate: ImagesListCellDelegate?
+    private(set) var imageIsLoaded = false
     
     // MARK: - Private Methods
     
@@ -45,14 +46,30 @@ final class ImagesListCell: UITableViewCell {
         imageIsLoaded = false
     }
     
+    // MARK: - Internal Methods
+    
+    func imageLoaded() {
+        imageIsLoaded = true
+    }
+    
+    func setIsLiked(_ isLiked: Bool) {
+        let image = isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive)
+        likeButton.setImage(image, for: .normal)
+    }
+    
     // MARK: - Private Methods
     
     private func addGradient() {
         let gradient = CAGradientLayer()
         gradient.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
-//        let gradientStart = NSNumber(value: 1 - 30/Float(cell.cellImageView.bounds.height))
         gradient.locations = [1, 1]
         cellImageView.layer.addSublayer(gradient)
         gradientLayer = gradient
+    }
+    
+    // MARK: - IBActions
+    
+    @IBAction private func likeButtonClicked() {
+        delegate?.imagesListCellDidTapLike(cell: self)
     }
 }

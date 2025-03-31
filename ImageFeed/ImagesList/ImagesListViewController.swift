@@ -76,7 +76,7 @@ final class ImagesListViewController: UIViewController {
         //configure image
         cell.cellImageView.kf.indicatorType = .activity
         cell.cellImageView.kf.setImage(with: thumbImageURL, placeholder: UIImage(resource: .imagesListStub)) { [weak self, weak cell] _ in
-            cell?.imageIsLoaded = true
+            cell?.imageLoaded()
             self?.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
         cell.layer.cornerRadius = 16
@@ -155,7 +155,35 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         configCell(cell, at: indexPath)
+        cell.delegate = self
         return cell
+    }
+    
+}
+
+
+// MARK: - ImagesListCellDelegate
+extension ImagesListViewController: ImagesListCellDelegate {
+    
+    func imagesListCellDidTapLike(cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            assertionFailure("ImagesListViewController.imagesListCellDidTapLike: Failed to fined index of (dis)liked cell")
+            return
+        }
+        // blocking UI
+        cell.likeButton.isEnabled = false
+        let photo = imagesListService.photos[indexPath.row]
+        let isLike = !photo.isLiked
+        imagesListService.changeLike(photoID: photo.id, isLike: isLike) { [weak cell] result in
+            switch result {
+            case .success:
+                cell?.setIsLiked(isLike)
+            case .failure:
+                // TODO: implement failure
+                break
+            }
+            cell?.likeButton.isEnabled = true
+        }
     }
     
 }
