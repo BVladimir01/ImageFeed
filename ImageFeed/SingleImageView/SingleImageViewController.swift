@@ -38,13 +38,12 @@ final class SingleImageViewController: UIViewController {
         UIBlockingHUD.show()
         imageView.kf.setImage(with: imageURL) { [weak self] result in
             guard let self else { return }
+            UIBlockingHUD.dismiss()
             switch result {
             case .success(let imageResult):
-                UIBlockingHUD.dismiss()
                 self.imageView.frame.size = imageResult.image.size
                 rescaleAndCenterImage()
             case .failure(let error):
-                UIBlockingHUD.dismiss()
                 print("SingleImageViewController.loadImage: Kingfisher error\n\(error)")
                 break
             }
