@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
@@ -17,41 +17,57 @@ final class SingleImageViewController: UIViewController {
     
     //MARK: - Internal Properties
     
-    var image: UIImage? {
-        didSet {
-            guard isViewLoaded, let image else { return }
-            imageView.image = image
-            imageView.frame.size = image.size
-            rescaleAndCenterImage()
-        }
-    }
+    var imageURL: URL?
     
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupScrollView()
-        setupImageView()
-        rescaleAndCenterImage()
+        loadImage()
     }
     
     //MARK: - Private Methods
     
     private func setupScrollView() {
-        scrollView.minimumZoomScale = 0.1
+        scrollView.minimumZoomScale = 0.05
         scrollView.maximumZoomScale = 1.25
     }
     
-    private func setupImageView() {
-        if let image {
-            imageView.frame.size = image.size
-            imageView.image = image
+    private func loadImage() {
+        UIBlockingHUD.show()
+        imageView.kf.setImage(with: imageURL) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let imageResult):
+                UIBlockingHUD.dismiss()
+                self.imageView.frame.size = imageResult.image.size
+                rescaleAndCenterImage()
+            case .failure(let error):
+                UIBlockingHUD.dismiss()
+                print("SingleImageViewController.loadImage: Kingfisher error\n\(error)")
+                break
+            }
         }
     }
     
+    private func showError() {
+        let ac = UIAlertController(title: "Что-то пошло не так", message: "Не удалось загрузить изображение", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "", style: .cancel) { [weak self] _ in
+            self?.backwardButtonTapped()
+        }
+        let reloadAction = UIAlertAction(title: "", style: .default) { [weak self] _ in
+            self?.loadImage()
+        }
+        ac.addAction(cancelAction)
+        ac.addAction(reloadAction)
+        ac.preferredAction = reloadAction
+        present(ac, animated: true)
+    }
+    
     private func rescaleAndCenterImage() {
-        guard let image else {
-            assertionFailure("SingleImageViewController.rescaleAndCenterImage: Tried to center image before assigning it")
+        guard let image = imageView.image else {
+            assertionFailure("SingleImageViewController.rescaleAndCenterImage: Tried to center non existing image")
             return
         }
         guard image.size.height != 0, image.size.width != 0 else {
@@ -76,7 +92,7 @@ final class SingleImageViewController: UIViewController {
     //MARK: - IBActions
     
     @IBAction private func shareButtonTapped() {
-        guard let image else {
+        guard let image = imageView.image else {
             assertionFailure("SingleImageViewController.shareButtonTapped: Failed to unwrap image")
             return
         }
@@ -85,6 +101,7 @@ final class SingleImageViewController: UIViewController {
     }
     
     @IBAction private func backwardButtonTapped() {
+        imageView.kf.cancelDownloadTask()
         dismiss(animated: true)
     }
     

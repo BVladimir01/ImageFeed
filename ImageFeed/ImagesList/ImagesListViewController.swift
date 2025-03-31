@@ -117,8 +117,8 @@ extension ImagesListViewController: UITableViewDelegate {
                 assertionFailure("ImagesListViewController.prepare: Failed to create ViewController or extract indexPath")
                 return
             }
-            let image = UIImage(resource: .imagesListStub)
-            viewController.image = image
+            let imageURLString = imagesListService.photos[indexPath.row].largeImageURL
+            viewController.imageURL = URL(string: imageURLString)
         } else {
             super.prepare(for: segue, sender: sender)
         }
