@@ -177,12 +177,13 @@ extension ImagesListViewController: ImagesListCellDelegate {
         imagesListService.changeLike(photoID: photo.id, isLike: isLike) { [weak cell] result in
             switch result {
             case .success:
+                cell?.likeButton.isEnabled = true
                 cell?.setIsLiked(isLike)
             case .failure:
+                cell?.likeButton.isEnabled = true
                 // TODO: implement failure
                 break
             }
-            cell?.likeButton.isEnabled = true
         }
     }
     
