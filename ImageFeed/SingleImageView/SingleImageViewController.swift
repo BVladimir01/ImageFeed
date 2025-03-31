@@ -24,6 +24,10 @@ final class SingleImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupScrollView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         loadImage()
     }
     
@@ -45,17 +49,17 @@ final class SingleImageViewController: UIViewController {
                 rescaleAndCenterImage()
             case .failure(let error):
                 print("SingleImageViewController.loadImage: Kingfisher error\n\(error)")
-                break
+                showError()
             }
         }
     }
     
     private func showError() {
         let ac = UIAlertController(title: "Что-то пошло не так", message: "Не удалось загрузить изображение", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "", style: .cancel) { [weak self] _ in
+        let cancelAction = UIAlertAction(title: "Не надо", style: .cancel) { [weak self] _ in
             self?.backwardButtonTapped()
         }
-        let reloadAction = UIAlertAction(title: "", style: .default) { [weak self] _ in
+        let reloadAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
             self?.loadImage()
         }
         ac.addAction(cancelAction)
