@@ -20,7 +20,6 @@ final class ImagesListCell: UITableViewCell {
     
     static let reuseIdentifier = "ImagesListCell"
     weak var delegate: ImagesListCellDelegate?
-    private(set) var imageIsLoaded = false
     
     // MARK: - Private Methods
     
@@ -31,26 +30,27 @@ final class ImagesListCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupGradient()
+        layer.cornerRadius = 16
+        layer.masksToBounds = true
+        cellImageView.layer.cornerRadius = 16
+        cellImageView.layer.masksToBounds = true
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        let gradientStart = NSNumber(value: 1 - 30/Float(cellImageView.bounds.height))
-        gradientLayer.locations = [gradientStart, 1]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 1 - 30/cellImageView.bounds.height)
         gradientLayer.frame = cellImageView.bounds
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         cellImageView.kf.cancelDownloadTask()
-        imageIsLoaded = false
+        cellImageView.image = nil
+        dateLabel.text = nil
+        likeButton.setImage(nil, for: .normal)
     }
     
     // MARK: - Internal Methods
-    
-    func imageLoaded() {
-        imageIsLoaded = true
-    }
     
     func setIsLiked(_ isLiked: Bool) {
         let image = isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive)
@@ -61,15 +61,10 @@ final class ImagesListCell: UITableViewCell {
     
     private func setupGradient() {
         gradientLayer.colors = [UIColor.clear.cgColor, UIColor.ypBlack.withAlphaComponent(0.2).cgColor]
-        gradientLayer.locations = [1, 1]
+        gradientLayer.locations = [0, 1]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 1)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
         cellImageView.layer.addSublayer(gradientLayer)
-        //remove animations on cell update
-        gradientLayer.actions = [
-            "position": NSNull(),
-            "bounds": NSNull(),
-            "opacity": NSNull(),
-            "contents": NSNull()
-        ]
     }
     
     // MARK: - IBActions

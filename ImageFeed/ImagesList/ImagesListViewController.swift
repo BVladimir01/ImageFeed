@@ -70,19 +70,8 @@ final class ImagesListViewController: UIViewController {
             assertionFailure("ImagesListViewController.configCell")
             return
         }
-        // prevent calling tableView.reloadRows recursively
-        if cell.imageIsLoaded { return }
-        // TODO: try to set up gradient
-        //configure image
         cell.cellImageView.kf.indicatorType = .activity
-        cell.cellImageView.kf.setImage(with: thumbImageURL, placeholder: UIImage(resource: .imagesListStub)) { [weak self, weak cell] _ in
-            cell?.imageLoaded()
-            self?.tableView.reloadRows(at: [indexPath], with: .automatic)
-        }
-        cell.layer.cornerRadius = 16
-        cell.cellImageView.layer.cornerRadius = 16
-        cell.cellImageView.layer.masksToBounds = true
-        //configure everything else
+        cell.cellImageView.kf.setImage(with: thumbImageURL, placeholder: UIImage(resource: .imagesListStub))
         if let photoDate = photo.createdAt {
             cell.dateLabel.text = dateFormatter.string(from: photoDate)
         } else {
