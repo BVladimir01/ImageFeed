@@ -160,10 +160,11 @@ extension ImagesListViewController: ImagesListCellDelegate {
             return
         }
         // blocking UI
+        // only blocking the button (why block whole screen?)
         cell.likeButton.isEnabled = false
         let photo = imagesListService.photos[indexPath.row]
         let isLike = !photo.isLiked
-        imagesListService.changeLike(photoID: photo.id, isLike: isLike) { [weak cell] result in
+        imagesListService.changeLike(atIndex: indexPath.row, isLike: isLike) { [weak cell] result in
             cell?.likeButton.isEnabled = true
             switch result {
             case .success:

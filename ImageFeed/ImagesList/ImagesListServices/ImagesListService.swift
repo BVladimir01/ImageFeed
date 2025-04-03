@@ -69,21 +69,18 @@ final class ImagesListService {
         fetchPhotosTask?.resume()
     }
     
-    func changeLike(photoID: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let alteringPhotoIndex = self.photos.firstIndex(where: { $0.id == photoID }) else {
-            assertionFailure("ImagesListService.changeLike: Failed to find altered photo")
-            return
-        }
-        guard let request = assembleURLRequestForLikeChange(photoID: photoID, isLike: isLike) else { return }
+    func changeLike(atIndex alteringPhotoIndex: Int, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        let alteringPhotoID = photos[alteringPhotoIndex].id
+        guard let request = assembleURLRequestForLikeChange(photoID: alteringPhotoID, isLike: isLike) else { return }
         if changeLikeTask != nil {
-            print("ImagesListService.changeLike: duplicating request for changing like for photo \(photoID)")
+            print("ImagesListService.changeLike: duplicating request for changing like for photo \(alteringPhotoID)")
             return
         }
         changeLikeTask?.cancel()
         changeLikeTask = urlSession.data(for: request) { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success(let success):
+            case .success:
                 let alteringPhoto = self.photos[alteringPhotoIndex]
                 let alteredPhoto = Photo(id: alteringPhoto.id, size: alteringPhoto.size, createdAt: alteringPhoto.createdAt, welcomeDescription: alteringPhoto.welcomeDescription, thumbImageURL: alteringPhoto.thumbImageURL, largeImageURL: alteringPhoto.largeImageURL, isLiked: isLike)
                 self.photos[alteringPhotoIndex] = alteredPhoto
