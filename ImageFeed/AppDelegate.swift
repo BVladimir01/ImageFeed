@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func setupProgressHUD() {
         ProgressHUD.animationType = .activityIndicator
-        ProgressHUD.colorHUD = .black
+        ProgressHUD.colorHUD = .black.withAlphaComponent(0.5)
         ProgressHUD.colorAnimation = .lightGray
     }
 
