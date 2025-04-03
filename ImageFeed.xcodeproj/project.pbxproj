@@ -183,9 +183,9 @@
 		E7B7003D2D48C72A00A60E57 /* ImagesList */ = {
 			isa = PBXGroup;
 			children = (
-				E738D4DA2D97EF17002ACA10 /* ImagesListServices */,
 				E7B7002B2D47DB4100A60E57 /* ImagesListViewController.swift */,
 				E7B7003E2D48C74700A60E57 /* ImagesListCell.swift */,
+				E738D4DA2D97EF17002ACA10 /* ImagesListServices */,
 			);
 			path = ImagesList;
 			sourceTree = "<group>";

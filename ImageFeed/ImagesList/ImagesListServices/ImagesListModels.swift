@@ -10,7 +10,7 @@ import Foundation
 
 struct Photo: Hashable {
     
-    static let dateFormatter = ISO8601DateFormatter()
+    private static let dateFormatter = ISO8601DateFormatter()
     
     let id: String
     let size: CGSize
@@ -34,7 +34,7 @@ struct Photo: Hashable {
 struct PhotoResult: Decodable {
     
     let id: String
-    let createdAt: String
+    let createdAt: String?
     let width: Double
     let height: Double
     let description: String?
@@ -56,7 +56,11 @@ extension Photo {
     init(photoResult: PhotoResult) {
         id = photoResult.id
         size = CGSize(width: photoResult.width, height: photoResult.height)
-        createdAt = Self.dateFormatter.date(from: photoResult.createdAt)
+        if let dateString = photoResult.createdAt {
+            createdAt = Self.dateFormatter.date(from: dateString)
+        } else {
+            createdAt = nil
+        }
         welcomeDescription = photoResult.description
         let urlResult = photoResult.urls
         thumbImageURL = urlResult.small
