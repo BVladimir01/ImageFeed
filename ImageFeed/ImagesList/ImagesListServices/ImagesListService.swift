@@ -37,7 +37,6 @@ final class ImagesListService {
     // MARK: - Internal Methods
     
     func fetchPhotosNextPage() {
-        //TODO: implement fetching photos
         let nextPageNumber = (lastLoadedPage ?? 0) + 1
         guard let request = assembleURLRequestForPhotos(page: nextPageNumber) else { return }
         if fetchPhotosTask != nil {
@@ -64,6 +63,7 @@ final class ImagesListService {
                 self.fetchPhotosTask = nil
             case .failure:
                 print("ImagesListService.fetchPhotosNextPage error")
+                self.fetchPhotosTask = nil
             }
         }
         fetchPhotosTask?.resume()
@@ -91,6 +91,7 @@ final class ImagesListService {
                 completion(.success(()))
             case .failure(let error):
                 print("ImagesListService.changeLike error")
+                self.changeLikeTask = nil
                 completion(.failure(error))
             }
         }
