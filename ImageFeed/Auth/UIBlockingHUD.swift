@@ -5,8 +5,8 @@
 //  Created by Vladimir on 25.03.2025.
 //
 
-import UIKit
 import ProgressHUD
+import UIKit
 
 
 final class UIBlockingHUD {

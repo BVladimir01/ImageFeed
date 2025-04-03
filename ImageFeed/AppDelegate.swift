@@ -5,8 +5,9 @@
 //  Created by Vladimir on 27.01.2025.
 //
 
-import UIKit
 import ProgressHUD
+import UIKit
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,6 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupProgressHUD()
         return true
     }
+    
+    // MARK: Private Methods
     
     private func setupProgressHUD() {
         ProgressHUD.animationType = .activityIndicator

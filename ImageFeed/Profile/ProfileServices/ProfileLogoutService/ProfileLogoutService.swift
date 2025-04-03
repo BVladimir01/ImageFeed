@@ -8,9 +8,14 @@
 import Foundation
 import WebKit
 
+
 final class ProfileLogoutService {
     
+    // MARK: - Internal Properties
+    
     static let shared = ProfileLogoutService()
+    
+    // MARK: - Private Properties
     
     private let tokenStorage = OAuth2TokenStorage.shared
     private let imagesListService = ImagesListService.shared
@@ -18,14 +23,19 @@ final class ProfileLogoutService {
     private let profileService = ProfileService.shared
     private let oAuth2Service = OAuth2Service.shared
     
+    // MARK: - Initializers
+    
     private init() { }
     
+    // MARK: - Internal Methods
     func logout() {
         cleanCookies()
         cleanServices()
         cleanTokens()
         switchToSplashScreen()
     }
+    
+    // MARK: - Private Methods
     
     private func switchToSplashScreen() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {

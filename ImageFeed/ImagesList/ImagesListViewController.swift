@@ -6,9 +6,11 @@
 //
 
 import Foundation
-import UIKit
 import Kingfisher
+import UIKit
 
+
+//MARK: - ImagesListViewController
 final class ImagesListViewController: UIViewController {
     
     //MARK: - IBOutlets

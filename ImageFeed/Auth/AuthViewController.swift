@@ -8,7 +8,7 @@
 import UIKit
 
 
-//MARK: - AuthViewContollerDelegate
+//MARK: - AuthViewControllerDelegate
 protocol AuthViewControllerDelegate: AnyObject {
     func didAuthenticate(_ vc: UIViewController)
 }

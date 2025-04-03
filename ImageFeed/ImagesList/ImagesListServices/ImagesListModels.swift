@@ -8,6 +8,29 @@
 import Foundation
 
 
+// MARK: - PhotoResult
+struct PhotoResult: Decodable {
+    
+    let id: String
+    let createdAt: String?
+    let width: Double
+    let height: Double
+    let description: String?
+    let likedByUser: Bool
+    let urls: URLResult
+    
+    struct URLResult: Decodable {
+        let raw: String
+        let full: String
+        let regular: String
+        let small: String
+        let thumb: String
+    }
+    
+}
+
+
+// MARK: - Photo
 struct Photo: Hashable {
     
     private static let dateFormatter = ISO8601DateFormatter()
@@ -26,27 +49,6 @@ struct Photo: Hashable {
     
     static func == (lhs: Photo, rhs: Photo) -> Bool {
         return lhs.id == rhs.id
-    }
-    
-}
-
-
-struct PhotoResult: Decodable {
-    
-    let id: String
-    let createdAt: String?
-    let width: Double
-    let height: Double
-    let description: String?
-    let likedByUser: Bool
-    let urls: URLResult
-    
-    struct URLResult: Decodable {
-        let raw: String
-        let full: String
-        let regular: String
-        let small: String
-        let thumb: String
     }
     
 }
