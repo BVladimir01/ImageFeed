@@ -14,6 +14,7 @@ final class ProfileLogoutService {
     // MARK: - Internal Properties
     
     static let shared = ProfileLogoutService()
+    weak var delegate: ProfileLogoutServiceDelegate? = nil
     
     // MARK: - Private Properties
     
@@ -32,19 +33,10 @@ final class ProfileLogoutService {
         cleanCookies()
         cleanServices()
         cleanTokens()
-        switchToSplashScreen()
+        delegate?.logoutServiceDidFinishCleanUp()
     }
     
     // MARK: - Private Methods
-    
-    private func switchToSplashScreen() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
-            assertionFailure("ProfileLogoutService.switchToSplashScreen: Failed to get windowScene or its window when switching to splashscreen on logout")
-            return
-        }
-        let splashScreen = SplashViewController()
-        window.rootViewController = splashScreen
-    }
     
     private func cleanCookies() {
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)

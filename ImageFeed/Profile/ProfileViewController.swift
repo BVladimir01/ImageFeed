@@ -36,6 +36,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypBlack
+        setUpLogoutService()
         configureSubViews()
         setUpProfile()
         addProfileImageServiceObserver()
@@ -189,6 +190,10 @@ final class ProfileViewController: UIViewController {
         profileImageView.image = newImage
     }
     
+    private func setUpLogoutService() {
+        profileLogoutService.delegate = self
+    }
+    
     //MARK: - Private Methods - UIActions
     
     @objc
@@ -216,4 +221,17 @@ final class ProfileViewController: UIViewController {
         profileDescriptionLabel.text = nil
     }
 
+}
+
+
+// MARK: - ProfileLogoutServiceDelegate
+extension ProfileViewController: ProfileLogoutServiceDelegate {
+    func logoutServiceDidFinishCleanUp() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
+            assertionFailure("ProfileLogoutService.switchToSplashScreen: Failed to get windowScene or its window when switching to splashscreen on logout")
+            return
+        }
+        let splashScreen = SplashViewController()
+        window.rootViewController = splashScreen
+    }
 }
