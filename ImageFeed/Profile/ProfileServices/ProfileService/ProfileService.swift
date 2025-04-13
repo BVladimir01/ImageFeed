@@ -56,6 +56,13 @@ final class ProfileService: Fetcher<String, Profile> {
         task.resume()
     }
     
+    func cleanUpService() {
+        profile = nil
+        task?.cancel()
+        task = nil
+        latestToken = nil
+    }
+    
     // MARK: - Private Methods
     
     private func urlRequest(for token: String) -> URLRequest? {
@@ -65,7 +72,7 @@ final class ProfileService: Fetcher<String, Profile> {
         }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = HTTPMethod.get.rawValue
+        request.httpMethod = HTTPMethod.get
         return request
     }
     

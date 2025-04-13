@@ -20,8 +20,10 @@ final class ProfileViewController: UIViewController {
     private var logOutButton: UIButton!
     
     private var profileImageServiceObserver: NSObjectProtocol?
+    
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+    private let profileLogoutService = ProfileLogoutService.shared
     
     private struct SymbolNames {
         static let profileImage = "ProfilePicStubLarge"
@@ -34,10 +36,25 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypBlack
+        setUpLogoutService()
         configureSubViews()
         setUpProfile()
         addProfileImageServiceObserver()
         updateProfileImage()
+    }
+    
+    // MARK: - Internal Methods()
+    
+    func cleanUpProfile() {
+        guard isViewLoaded else {
+            assertionFailure("ProfileViewController.clearProfile: Failed to clean profile: profile is not loaded yet")
+            return
+        }
+        profileImageView.image = nil
+        tagLabel.text = nil
+        nameLabel.text = nil
+        profileDescriptionLabel.text = nil
+        profileImageServiceObserver = nil
     }
     
     //MARK: - Private Methods - Configuration
@@ -173,12 +190,48 @@ final class ProfileViewController: UIViewController {
         profileImageView.image = newImage
     }
     
+    private func setUpLogoutService() {
+        profileLogoutService.delegate = self
+    }
+    
     //MARK: - Private Methods - UIActions
     
     @objc
     private func logOut() {
-        //TODO: log out implementation
-        OAuth2TokenStorage.shared.token = nil
+        let ac = UIAlertController(title: "Пока, пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "Да", style: .default) { [weak self] action in
+            //seems like it should be performed on main
+            DispatchQueue.main.async {
+                //just in case
+                self?.cleanProfile()
+                self?.profileLogoutService.logout()
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Нет", style: .cancel)
+        ac.addAction(confirmAction)
+        ac.addAction(cancelAction)
+        ac.preferredAction = cancelAction
+        present(ac, animated: true)
+    }
+    
+    private func cleanProfile() {
+        profileImageView.image = nil
+        tagLabel.text = nil
+        nameLabel.text = nil
+        profileDescriptionLabel.text = nil
     }
 
+}
+
+
+// MARK: - ProfileLogoutServiceDelegate
+extension ProfileViewController: ProfileLogoutServiceDelegate {
+    func logoutServiceDidFinishCleanUp() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
+            assertionFailure("ProfileLogoutService.switchToSplashScreen: Failed to get windowScene or its window when switching to splashscreen on logout")
+            return
+        }
+        let splashScreen = SplashViewController()
+        window.rootViewController = splashScreen
+    }
 }

@@ -7,6 +7,7 @@
 
 import SwiftKeychainWrapper
 
+
 final class OAuth2TokenStorage {
     
     //MARK: - Internal Properties
@@ -34,5 +35,11 @@ final class OAuth2TokenStorage {
     //MARK: - Initializers
     
     private init() { }
+    
+    // MARK: - Internal Methods
+    
+    func removeToken() {
+        storage.removeObject(forKey: tokenKey)
+    }
     
 }

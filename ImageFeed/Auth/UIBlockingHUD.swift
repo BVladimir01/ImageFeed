@@ -5,8 +5,8 @@
 //  Created by Vladimir on 25.03.2025.
 //
 
-import UIKit
 import ProgressHUD
+import UIKit
 
 
 final class UIBlockingHUD {
@@ -35,6 +35,12 @@ final class UIBlockingHUD {
     static func dismiss() {
         ProgressHUD.dismiss()
         window?.isUserInteractionEnabled = true
+    }
+    
+    static func setupProgressHUD() {
+        ProgressHUD.animationType = .activityIndicator
+        ProgressHUD.colorHUD = .black.withAlphaComponent(0.5)
+        ProgressHUD.colorAnimation = .lightGray
     }
     
 }

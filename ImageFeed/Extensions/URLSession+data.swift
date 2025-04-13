@@ -8,6 +8,7 @@
 import Foundation
 
 
+// MARK: - NetworkError
 enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
@@ -15,6 +16,7 @@ enum NetworkError: Error {
 }
 
 
+// MARK: - URLSession data
 extension URLSession {
     
     func data(for request: URLRequest, completion: @escaping (Result<Data,Error>) -> Void) -> URLSessionTask {
@@ -44,14 +46,20 @@ extension URLSession {
     
 }
 
+
+// MARK: - URLSession objectTask
 extension URLSession {
     
-    func objectTask<T: Decodable>(for request: URLRequest, completion: @escaping (Result<T, Error>) -> Void) -> URLSessionTask {
+    func objectTask<T: Decodable>(for request: URLRequest, convertFromSnakeCase: Bool = false, completion: @escaping (Result<T, Error>) -> Void) -> URLSessionTask {
+        let decoder = JSONDecoder()
+        if convertFromSnakeCase {
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+        }
         let task = data(for: request) { result in
             switch result {
             case .success(let data):
                 do {
-                    let object = try JSONDecoder().decode(T.self, from: data)
+                    let object = try decoder.decode(T.self, from: data)
                     completion(.success(object))
                 } catch {
                     print("URLSession.objectTask: decoding error - \(error)")

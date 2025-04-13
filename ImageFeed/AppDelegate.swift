@@ -5,7 +5,9 @@
 //  Created by Vladimir on 27.01.2025.
 //
 
+import ProgressHUD
 import UIKit
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +18,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let configuration = UISceneConfiguration(name: "Main", sessionRole: connectingSceneSession.role)
         configuration.delegateClass = SceneDelegate.self
         return configuration
+    }
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        UIBlockingHUD.setupProgressHUD()
+        return true
     }
 
 }
