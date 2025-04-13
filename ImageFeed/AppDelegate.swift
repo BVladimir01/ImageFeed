@@ -21,16 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        setupProgressHUD()
+        UIBlockingHUD.setupProgressHUD()
         return true
-    }
-    
-    // MARK: Private Methods
-    
-    private func setupProgressHUD() {
-        ProgressHUD.animationType = .activityIndicator
-        ProgressHUD.colorHUD = .black.withAlphaComponent(0.5)
-        ProgressHUD.colorAnimation = .lightGray
     }
 
 }
