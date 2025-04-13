@@ -21,7 +21,7 @@ final class ImagesListService {
     
     private var photosSet: Set<Photo> = []
     private var fetchPhotosTask: URLSessionTask?
-    private var lastLoadedPage: Int?
+    private var lastLoadedPage: Int = 0
     private var changeLikeTask: URLSessionTask?
     
     private let photoRequestPathString = "/photos"
@@ -37,7 +37,8 @@ final class ImagesListService {
     // MARK: - Internal Methods
     
     func fetchPhotosNextPage() {
-        let nextPageNumber = (lastLoadedPage ?? 0) + 1
+        print(lastLoadedPage)
+        let nextPageNumber = lastLoadedPage + 1
         guard let request = assembleURLRequestForPhotos(page: nextPageNumber) else { return }
         if fetchPhotosTask != nil {
             print("ImagesListService.fetchPhotosNextPage: duplicating request for photos")
@@ -102,7 +103,7 @@ final class ImagesListService {
         fetchPhotosTask = nil
         changeLikeTask?.cancel()
         changeLikeTask = nil
-        lastLoadedPage = nil
+        lastLoadedPage = 0
     }
     
     //MARK: - Private Methods
