@@ -44,12 +44,12 @@ final class ImagesListViewController: UIViewController {
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        tableView.contentInset = TableViewConstants.contentInset
         let stubImage = UIImage(resource: .imagesListStub)
         let tableWidth = tableView.frame.size.width
-        let imageViewWidth = tableWidth - 32
+        let imageViewWidth = tableWidth - TableViewConstants.cellLateralHalfSpacing*2
         let imageViewHeight = imageViewWidth/(stubImage.size.width)*(stubImage.size.height)
-        let rowHeight = imageViewHeight + 8
+        let rowHeight = imageViewHeight + TableViewConstants.cellVerticalHalfSpacing*2
         tableView.rowHeight = rowHeight
     }
     
@@ -118,9 +118,9 @@ extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let size = imagesListService.photos[indexPath.row].size
         let tableWidth = tableView.contentSize.width
-        let imageViewWidth = tableWidth - 32
+        let imageViewWidth = tableWidth - TableViewConstants.cellLateralHalfSpacing*2
         let imageViewHeight = imageViewWidth/(size.width)*(size.height)
-        let rowHeight = imageViewHeight + 8
+        let rowHeight = imageViewHeight + TableViewConstants.cellVerticalHalfSpacing*2
         return rowHeight
     }
     
@@ -178,4 +178,14 @@ extension ImagesListViewController: ImagesListCellDelegate {
         }
     }
     
+}
+
+
+extension ImagesListViewController {
+    private struct TableViewConstants {
+        private init() { }
+        static let contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        static let cellLateralHalfSpacing: CGFloat = 16
+        static let cellVerticalHalfSpacing: CGFloat  = 4
+    }
 }
