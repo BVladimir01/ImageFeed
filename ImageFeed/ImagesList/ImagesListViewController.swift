@@ -7,6 +7,7 @@
 
 import Foundation
 import Kingfisher
+import ProgressHUD
 import UIKit
 
 
@@ -161,19 +162,20 @@ extension ImagesListViewController: ImagesListCellDelegate {
             assertionFailure("ImagesListViewController.imagesListCellDidTapLike: Failed to fined index of (dis)liked cell")
             return
         }
-        // blocking UI
-        // only blocking the button (why block whole screen?)
+        ProgressHUD.animate()
         cell.likeButton.isEnabled = false
         let photo = imagesListService.photos[indexPath.row]
         let isLike = !photo.isLiked
         imagesListService.changeLike(atIndex: indexPath.row, isLike: isLike) { [weak cell] result in
-            cell?.likeButton.isEnabled = true
             switch result {
             case .success:
                 cell?.setIsLiked(isLike)
+                cell?.likeButton.isEnabled = true
+                ProgressHUD.dismiss()
             case .failure:
-                // TODO: implement failure
-                break
+                cell?.likeButton.isEnabled = true
+                ProgressHUD.dismiss()
+                SimpleAlertPresenter().presentAlert(SimpleAlertModel(title: "Что-то пошло не так(", message: "Не удалось выполнить действие", buttonText: "ОК"))
             }
         }
     }

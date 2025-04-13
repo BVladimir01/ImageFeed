@@ -37,7 +37,6 @@ final class ImagesListService {
     // MARK: - Internal Methods
     
     func fetchPhotosNextPage() {
-        print(lastLoadedPage)
         let nextPageNumber = lastLoadedPage + 1
         guard let request = assembleURLRequestForPhotos(page: nextPageNumber) else { return }
         if fetchPhotosTask != nil {
