@@ -207,7 +207,7 @@ final class ProfileViewController: UIViewController {
                 self?.profileLogoutService.logout()
             }
         }
-        let cancelAction = UIAlertAction(title: "Нет", style: .cancel)
+        let cancelAction = UIAlertAction(title: "Нет", style: .default)
         ac.addAction(confirmAction)
         ac.addAction(cancelAction)
         ac.preferredAction = cancelAction
