@@ -83,7 +83,13 @@ final class ImagesListService {
             switch result {
             case .success:
                 let alteringPhoto = self.photos[alteringPhotoIndex]
-                let alteredPhoto = Photo(id: alteringPhoto.id, size: alteringPhoto.size, createdAt: alteringPhoto.createdAt, welcomeDescription: alteringPhoto.welcomeDescription, thumbImageURL: alteringPhoto.thumbImageURL, largeImageURL: alteringPhoto.largeImageURL, isLiked: isLike)
+                let alteredPhoto = Photo(id: alteringPhoto.id, 
+                                         size: alteringPhoto.size,
+                                         createdAt: alteringPhoto.createdAt,
+                                         welcomeDescription: alteringPhoto.welcomeDescription,
+                                         thumbImageURL: alteringPhoto.thumbImageURL,
+                                         largeImageURL: alteringPhoto.largeImageURL,
+                                         isLiked: isLike)
                 self.photos[alteringPhotoIndex] = alteredPhoto
                 self.changeLikeTask = nil
                 completion(.success(()))
