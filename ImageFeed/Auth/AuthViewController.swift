@@ -43,7 +43,10 @@ final class AuthViewController: UIViewController {
                 assertionFailure("AuthViewController.prepare: Failed to create WebViewVC as a segue destination from AuthViewVC")
                 return
             }
+            let webViewPresenter = WebViewPresenter()
             webViewVC.delegate = self
+            webViewVC.presenter = webViewPresenter
+            webViewPresenter.view = webViewVC
         }
     }
     
