@@ -44,18 +44,10 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     
     //MARK: - Lifecycle
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setUpWebView()
         presenter?.viewDidLoad()
-        setActivityIndicator(active: false)
-        webView.navigationDelegate = self
-        estimatedProgressObservation = webView.observe(\.estimatedProgress, options: .new) { [weak self] _, change  in
-            guard let newValue = change.newValue else {
-                assertionFailure("WebViewViewController.viewWillAppear: failed to observe progress change -- no new value")
-                return
-            }
-            self?.presenter?.didUpdateProgressValue(newValue)
-        }
     }
     
     // MARK: - Internal Methods
@@ -72,13 +64,16 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
         progressView.isHidden = isHidden
     }
     
-    //MARK: - Private Methods
+    // MARK: - Private Methods
     
-    private func setActivityIndicator(active: Bool) {
-        if active {
-            activityIndicator.startAnimating()
-        } else {
-            activityIndicator.stopAnimating()
+    private func setUpWebView() {
+        webView.navigationDelegate = self
+        estimatedProgressObservation = webView.observe(\.estimatedProgress, options: .new) { [weak self] _, change  in
+            guard let newValue = change.newValue else {
+                assertionFailure("WebViewViewController.viewWillAppear: failed to observe progress change -- no new value")
+                return
+            }
+            self?.presenter?.didUpdateProgressValue(newValue)
         }
     }
     
@@ -91,7 +86,6 @@ extension WebViewViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let code = code(from: navigationAction) {
             decisionHandler(.cancel)
-            setActivityIndicator(active: true)
             self.delegate?.webViewViewController(self, didAuthenticateWith: code)
         } else {
             decisionHandler(.allow)

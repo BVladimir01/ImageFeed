@@ -23,15 +23,23 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     // MARK: - Internal Properties
     
     weak var view: WebViewViewControllerProtocol? = nil
+    var authHelper: AuthHelperProtocol
     
     // MARK: - Private Properties
     
     private let unsplashAuthorizeUrlString = "https://unsplash.com/oauth/authorize"
     
+    // MARK: - Initializers
+    
+    init(authHelper: AuthHelperProtocol) {
+        self.authHelper = authHelper
+    }
+    
     // MARK: - Internal Methods
     
     func viewDidLoad() {
-        loadRequest()
+        guard let request = authHelper.authRequest() else { return }
+        view?.load(request: request)
         didUpdateProgressValue(0)
     }
     
@@ -44,15 +52,7 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     }
     
     func code(from url: URL) -> String? {
-        if let urlComponents = URLComponents(string: url.absoluteString),
-           urlComponents.path == "/oauth/authorize/native",
-           let items = urlComponents.queryItems,
-           let codeItem = items.first(where: { $0.name == "code"} )
-        {
-            return codeItem.value
-        } else {
-            return nil
-        }
+        authHelper.code(from: url)
     }
     
     // MARK: - Private Methods
@@ -61,22 +61,4 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         return abs(value - 1) < 0.0001
     }
     
-    private func loadRequest() {
-        guard var urlComponents = URLComponents(string: unsplashAuthorizeUrlString) else {
-            assertionFailure("WebViewViewController.loadAuthView: Failed to create URLComponents for authorization")
-            return
-        }
-        urlComponents.queryItems = [
-            .init(name: "client_id", value: Constants.accessKey),
-            .init(name: "redirect_uri", value: Constants.redirectURI),
-            .init(name: "response_type", value: "code"),
-            .init(name: "scope", value: Constants.accessScope)
-        ]
-        guard let url = urlComponents.url else {
-            assertionFailure("WebViewViewController.loadAuthView: Faield to create URL from URLComponents for authorization")
-            return
-        }
-        let request = URLRequest(url: url)
-        view?.load(request: request)
-    }
 }
