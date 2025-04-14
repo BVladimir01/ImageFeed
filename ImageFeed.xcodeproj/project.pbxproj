@@ -232,6 +232,7 @@
 		E7D81AA82D9438C7003CBF81 /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				E7D81A932D92A16E003CBF81 /* UIBlockingHUD.swift */,
 				E7EBC64D2D71CC6B00311D2E /* Constants.swift */,
 				E7D81AA62D941716003CBF81 /* Fetcher.swift */,
 				E738D4D82D97D10A002ACA10 /* HTTPMethod.swift */,
@@ -268,7 +269,6 @@
 		E7EBC6742D75F12B00311D2E /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				E7D81A932D92A16E003CBF81 /* UIBlockingHUD.swift */,
 				E7EBC6752D75F15300311D2E /* AuthViewController.swift */,
 				E7EBC6772D75F26B00311D2E /* WebViewViewController.swift */,
 				E7DAE65D2D79D70A008E9D0F /* AuthServices */,
