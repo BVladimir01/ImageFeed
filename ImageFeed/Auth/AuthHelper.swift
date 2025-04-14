@@ -47,9 +47,7 @@ final class AuthHelper: AuthHelperProtocol {
         }
     }
     
-    // MARK: - Private Properties
-    
-    private func authURL() -> URL? {
+    func authURL() -> URL? {
         guard var urlComponents = URLComponents(string: configuration.unsplashAuthURLString) else {
             assertionFailure("AuthHelper.authURL: Failed to create URLComponents for authorization")
             return nil
