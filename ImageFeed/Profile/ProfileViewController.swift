@@ -9,13 +9,12 @@ import Kingfisher
 import UIKit
 
 
-
+// MARK: - ProfileViewControllerProtocol
 protocol ProfileViewControllerProtocol: AnyObject {
     var presenter: ProfilePresenterProtocol? { get set }
     func initiatedLogout()
     func setProfileDetails(profile: Profile)
     func setProfileImage(url: URL)
-    func cleanUpProfile()
     func injectPresenter(_ presenter: ProfilePresenterProtocol)
 }
 
@@ -27,6 +26,7 @@ extension ProfileViewControllerProtocol {
 }
 
 
+// MARK: - ProfileViewController
 final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
     
     // MARK: - Internal Properties
@@ -41,33 +41,16 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     private var profileDescriptionLabel: UILabel!
     private var logOutButton: UIButton!
     
-    private struct SymbolNames {
-        static let profileImage = "ProfilePicStubLarge"
-        static let logoutButton = "LogOut"
-        private init() {}
-    }
-    
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypBlack
+        view.backgroundColor = ViewConstants.backgroundColor
         configureSubViews()
         presenter?.viewDidLoad()
     }
     
     // MARK: - Internal Methods()
-    
-    func cleanUpProfile() {
-        guard isViewLoaded else {
-            assertionFailure("ProfileViewController.clearProfile: Failed to clean profile: profile is not loaded yet")
-            return
-        }
-        profileImageView.image = nil
-        tagLabel.text = nil
-        nameLabel.text = nil
-        profileDescriptionLabel.text = nil
-    }
     
     func setProfileDetails(profile: Profile) {
         nameLabel.text = profile.name
@@ -104,8 +87,8 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         guard let image = profileImageView.image, let cgImage = image.cgImage else { return }
         let width = image.size.width
         let height = image.size.height
-        let vScale = 70/height
-        let hScale = 70/width
+        let vScale = ViewConstants.profileImageViewHeight/height
+        let hScale = ViewConstants.profileImageViewWidth/width
         let trueScale = max(vScale, hScale)
         let newImage = UIImage(cgImage: cgImage, scale: 1/trueScale, orientation: .up)
         profileImageView.image = newImage
@@ -122,14 +105,17 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     }
     
     private func configureProfileImageView() {
-        let imageView = UIImageView(image: UIImage(named: SymbolNames.profileImage))
+        let imageView = UIImageView(image: UIImage(resource: .profilePicStubLarge))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 76),
-            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            imageView.heightAnchor.constraint(equalToConstant: 70),
-            imageView.widthAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 1)
+            imageView.topAnchor.constraint(equalTo: view.topAnchor, 
+                                           constant: ViewConstants.profileImageViewTopToViewTop),
+            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                               constant: ViewConstants.profileImageViewLeadingToViewLeading),
+            imageView.heightAnchor.constraint(equalToConstant: ViewConstants.profileImageViewHeight),
+            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor,
+                                             multiplier: ViewConstants.profileImageViewWidthToHeight)
         ])
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -141,14 +127,16 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     private func configureNameLabel() {
         let label = UILabel()
         label.text = "Name label"
-        label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 23, weight: .semibold)
-        label.textColor = .ypWhite
+        label.numberOfLines = ViewConstants.nameLabelNumberOfLines
+        label.font = .systemFont(ofSize: ViewConstants.nameLabelFontSize, weight: .semibold)
+        label.textColor = ViewConstants.nameLabelFontColor
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-            label.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                           constant: ViewConstants.nameLabelLeadingToViewLeading),
+            label.topAnchor.constraint(equalTo: profileImageView.bottomAnchor,
+                                       constant: ViewConstants.nameLabelTopToProfileImageViewBottom),
             label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
         nameLabel = label
@@ -157,14 +145,16 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     private func configureTagLabel() {
         let label = UILabel()
         label.text = "@Tag label"
-        label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .ypGray
+        label.numberOfLines = ViewConstants.tagLabelNumberOfLines
+        label.font = .systemFont(ofSize: ViewConstants.tagLabelFontSize, weight: .regular)
+        label.textColor = ViewConstants.tagLabelFontColor
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-            label.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                           constant: ViewConstants.tagLabelLeadingToViewLeading),
+            label.topAnchor.constraint(equalTo: nameLabel.bottomAnchor,
+                                       constant: ViewConstants.tagLabelTopToNameLabelBottom),
             label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
         tagLabel = label
@@ -173,14 +163,16 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     private func configureProfileDescriptionLabel() {
         let label = UILabel()
         label.text = "Profile description label"
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .ypWhite
+        label.numberOfLines = ViewConstants.profileDescriptionLabelNumberOfLines
+        label.font = .systemFont(ofSize: ViewConstants.profileDescriptionLabelFontSize, weight: .regular)
+        label.textColor = ViewConstants.profileDescriptionLabelFontColor
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-            label.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                           constant: ViewConstants.profileDescriptionLabelLeadingToViewLeading),
+            label.topAnchor.constraint(equalTo: tagLabel.bottomAnchor,
+                                       constant: ViewConstants.profileDescriptionLabelTopToTagLabelBottom),
             label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
         profileDescriptionLabel = label
@@ -188,17 +180,60 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     private func configureLogOutButton() {
         let button = UIButton()
-        button.setImage(UIImage(named: SymbolNames.logoutButton), for: .normal)
+        button.setImage(UIImage(resource: .logOut), for: .normal)
         button.addTarget(self, action: #selector(initiatedLogout), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
         NSLayoutConstraint.activate([
             button.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -14),
-            button.heightAnchor.constraint(equalToConstant: 44),
-            button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: 1)
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                             constant: ViewConstants.logoutTrailingToViewTrailing),
+            button.heightAnchor.constraint(equalToConstant: ViewConstants.logoutButtonHeight),
+            button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: ViewConstants.logoutButtonWidthToHeight)
         ])
         logOutButton = button
     }
 
+}
+
+
+// MARK: - ViewConstants
+extension ProfileViewController {
+    private struct ViewConstants {
+        
+        private init() { }
+        
+        static let backgroundColor: UIColor = .ypBlack
+        
+        static let profileImageViewTopToViewTop: CGFloat = 76
+        static let profileImageViewLeadingToViewLeading: CGFloat = 16
+        static let profileImageViewHeight: CGFloat = 70
+        static let profileImageViewWidthToHeight: CGFloat = 1
+        static var profileImageViewWidth: CGFloat {
+            profileImageViewHeight * profileImageViewWidthToHeight
+        }
+        
+        static let nameLabelNumberOfLines: Int = 1
+        static let nameLabelFontSize: CGFloat = 23
+        static let nameLabelFontColor: UIColor = .ypWhite
+        static let nameLabelLeadingToViewLeading: CGFloat = 16
+        static let nameLabelTopToProfileImageViewBottom: CGFloat = 8
+        
+        static let tagLabelNumberOfLines: Int = 1
+        static let tagLabelFontSize: CGFloat = 13
+        static let tagLabelFontColor: UIColor = .ypGray
+        static let tagLabelLeadingToViewLeading: CGFloat = 16
+        static let tagLabelTopToNameLabelBottom: CGFloat = 8
+        
+        static let profileDescriptionLabelNumberOfLines: Int = 1
+        static let profileDescriptionLabelFontSize: CGFloat = 13
+        static let profileDescriptionLabelFontColor: UIColor = .ypWhite
+        static let profileDescriptionLabelLeadingToViewLeading: CGFloat = 16
+        static let profileDescriptionLabelTopToTagLabelBottom: CGFloat = 8
+        
+        static let logoutTrailingToViewTrailing: CGFloat = -14
+        static let logoutButtonHeight: CGFloat = 44
+        static let logoutButtonWidthToHeight: CGFloat = 1
+        
+    }
 }

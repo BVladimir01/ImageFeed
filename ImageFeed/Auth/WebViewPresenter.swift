@@ -25,10 +25,6 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     weak var view: WebViewViewControllerProtocol? = nil
     var authHelper: AuthHelperProtocol
     
-    // MARK: - Private Properties
-    
-    private let unsplashAuthorizeUrlString = "https://unsplash.com/oauth/authorize"
-    
     // MARK: - Initializers
     
     init(authHelper: AuthHelperProtocol) {

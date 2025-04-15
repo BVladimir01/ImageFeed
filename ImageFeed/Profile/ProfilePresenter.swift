@@ -34,7 +34,6 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     // MARK: - Internal Methods
     
     func logOut() {
-        view?.cleanUpProfile()
         profileLogoutService.logout()
     }
     
@@ -80,7 +79,6 @@ extension ProfilePresenter: ProfileLogoutServiceDelegate {
             assertionFailure("ProfileLogoutService.switchToSplashScreen: Failed to get windowScene or its window when switching to splashscreen on logout")
             return
         }
-        print("did finish clean up")
         let splashScreen = SplashViewController()
         window.rootViewController = splashScreen
     }
