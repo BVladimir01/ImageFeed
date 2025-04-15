@@ -12,7 +12,7 @@ import UIKit
 // MARK: - ProfileViewControllerProtocol
 protocol ProfileViewControllerProtocol: AnyObject {
     var presenter: ProfilePresenterProtocol? { get set }
-    func initiatedLogout()
+    func showLogoutAlert()
     func setProfileDetails(profile: Profile)
     func setProfileImage(url: URL)
     func injectPresenter(_ presenter: ProfilePresenterProtocol)
@@ -65,13 +65,12 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         }
     }
     
-    @objc
-    func initiatedLogout() {
+    func showLogoutAlert() {
         let ac = UIAlertController(title: "Пока, пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
         let confirmAction = UIAlertAction(title: "Да", style: .default) { [weak self] action in
             //seems like it should be performed on main
             DispatchQueue.main.async {
-                self?.presenter?.logOut()
+                self?.presenter?.confirmLogout()
             }
         }
         let cancelAction = UIAlertAction(title: "Нет", style: .default)
@@ -79,6 +78,11 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         ac.addAction(cancelAction)
         ac.preferredAction = cancelAction
         present(ac, animated: true)
+    }
+    
+    @objc
+    private func initiateLogout() {
+        presenter?.logoutTapped()
     }
     
     // MARK: - Private Methods
@@ -181,7 +185,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     private func configureLogOutButton() {
         let button = UIButton()
         button.setImage(UIImage(resource: .logOut), for: .normal)
-        button.addTarget(self, action: #selector(initiatedLogout), for: .touchUpInside)
+        button.addTarget(self, action: #selector(initiateLogout), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
         NSLayoutConstraint.activate([

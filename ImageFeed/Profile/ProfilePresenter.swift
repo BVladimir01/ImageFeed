@@ -11,7 +11,8 @@ import UIKit
 // MARK: - ProfilePresenterProtocol
 protocol ProfilePresenterProtocol: AnyObject {
     var view: ProfileViewControllerProtocol? { get set }
-    func logOut()
+    func logoutTapped()
+    func confirmLogout()
     func viewDidLoad()
 }
 
@@ -33,7 +34,11 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     
     // MARK: - Internal Methods
     
-    func logOut() {
+    func logoutTapped() {
+        view?.showLogoutAlert()
+    }
+    
+    func confirmLogout() {
         profileLogoutService.logout()
     }
     
