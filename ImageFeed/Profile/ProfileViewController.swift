@@ -9,7 +9,29 @@ import Kingfisher
 import UIKit
 
 
-final class ProfileViewController: UIViewController {
+
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfilePresenterProtocol? { get set }
+    func initiatedLogout()
+    func setProfileDetails(profile: Profile)
+    func setProfileImage(url: URL)
+    func cleanUpProfile()
+    func injectPresenter(_ presenter: ProfilePresenterProtocol)
+}
+
+extension ProfileViewControllerProtocol {
+    func injectPresenter(_ presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        presenter.view = self
+    }
+}
+
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
+    
+    // MARK: - Internal Properties
+    
+    var presenter: ProfilePresenterProtocol?
 
     //MARK: - Private Properties
     
@@ -18,12 +40,6 @@ final class ProfileViewController: UIViewController {
     private var nameLabel: UILabel!
     private var profileDescriptionLabel: UILabel!
     private var logOutButton: UIButton!
-    
-    private var profileImageServiceObserver: NSObjectProtocol?
-    
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private let profileLogoutService = ProfileLogoutService.shared
     
     private struct SymbolNames {
         static let profileImage = "ProfilePicStubLarge"
@@ -36,11 +52,8 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypBlack
-        setUpLogoutService()
         configureSubViews()
-        setUpProfile()
-        addProfileImageServiceObserver()
-        updateProfileImage()
+        presenter?.viewDidLoad()
     }
     
     // MARK: - Internal Methods()
@@ -54,10 +67,51 @@ final class ProfileViewController: UIViewController {
         tagLabel.text = nil
         nameLabel.text = nil
         profileDescriptionLabel.text = nil
-        profileImageServiceObserver = nil
     }
     
-    //MARK: - Private Methods - Configuration
+    func setProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        tagLabel.text = profile.loginName
+        profileDescriptionLabel.text = profile.bio
+    }
+    
+    func setProfileImage(url: URL) {
+        profileImageView.kf.setImage(with: url) { [weak self] _ in
+            guard let self else { return }
+            self.adjustProfileImageSize()
+        }
+    }
+    
+    @objc
+    func initiatedLogout() {
+        let ac = UIAlertController(title: "Пока, пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "Да", style: .default) { [weak self] action in
+            //seems like it should be performed on main
+            DispatchQueue.main.async {
+                self?.presenter?.logOut()
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Нет", style: .default)
+        ac.addAction(confirmAction)
+        ac.addAction(cancelAction)
+        ac.preferredAction = cancelAction
+        present(ac, animated: true)
+    }
+    
+    // MARK: - Private Methods
+
+    private func adjustProfileImageSize() {
+        guard let image = profileImageView.image, let cgImage = image.cgImage else { return }
+        let width = image.size.width
+        let height = image.size.height
+        let vScale = 70/height
+        let hScale = 70/width
+        let trueScale = max(vScale, hScale)
+        let newImage = UIImage(cgImage: cgImage, scale: 1/trueScale, orientation: .up)
+        profileImageView.image = newImage
+    }
+    
+    //MARK: - Private Methods - Configuration / SubViews Layout
     
     private func configureSubViews() {
         configureProfileImageView()
@@ -135,7 +189,7 @@ final class ProfileViewController: UIViewController {
     private func configureLogOutButton() {
         let button = UIButton()
         button.setImage(UIImage(named: SymbolNames.logoutButton), for: .normal)
-        button.addTarget(self, action: #selector(logOut), for: .touchUpInside)
+        button.addTarget(self, action: #selector(initiatedLogout), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
         NSLayoutConstraint.activate([
@@ -146,92 +200,5 @@ final class ProfileViewController: UIViewController {
         ])
         logOutButton = button
     }
-    
-    private func setUpProfile() {
-        guard let profile = profileService.profile else {
-            assertionFailure("ProfileViewController.setUpProfile: Failed to get profile from service when setting up users profile")
-            return
-        }
-        updateProfileDetails(profile: profile)
-    }
-    
-    private func updateProfileDetails(profile: Profile) {
-        nameLabel.text = profile.name
-        tagLabel.text = profile.loginName
-        profileDescriptionLabel.text = profile.bio
-    }
-    
-    private func addProfileImageServiceObserver() {
-        let profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            self?.updateProfileImage()
-        }
-        self.profileImageServiceObserver = profileImageServiceObserver
-    }
-    
-    private func updateProfileImage() {
-        guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
-            print("ProfileViewController.updateProfileImage: Failed to get url for fetching avatar image")
-            return
-        }
-        profileImageView.kf.setImage(with: url) { [weak self] _ in
-            guard let self else { return }
-            self.adjustProfileImageSize()
-        }
-    }
-    
-    private func adjustProfileImageSize() {
-        guard let image = profileImageView.image, let cgImage = image.cgImage else { return }
-        let width = image.size.width
-        let height = image.size.height
-        let vScale = 70/height
-        let hScale = 70/width
-        let trueScale = max(vScale, hScale)
-        let newImage = UIImage(cgImage: cgImage, scale: 1/trueScale, orientation: .up)
-        profileImageView.image = newImage
-    }
-    
-    private func setUpLogoutService() {
-        profileLogoutService.delegate = self
-    }
-    
-    //MARK: - Private Methods - UIActions
-    
-    @objc
-    private func logOut() {
-        let ac = UIAlertController(title: "Пока, пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: "Да", style: .default) { [weak self] action in
-            //seems like it should be performed on main
-            DispatchQueue.main.async {
-                //just in case
-                self?.cleanProfile()
-                self?.profileLogoutService.logout()
-            }
-        }
-        let cancelAction = UIAlertAction(title: "Нет", style: .default)
-        ac.addAction(confirmAction)
-        ac.addAction(cancelAction)
-        ac.preferredAction = cancelAction
-        present(ac, animated: true)
-    }
-    
-    private func cleanProfile() {
-        profileImageView.image = nil
-        tagLabel.text = nil
-        nameLabel.text = nil
-        profileDescriptionLabel.text = nil
-    }
 
-}
-
-
-// MARK: - ProfileLogoutServiceDelegate
-extension ProfileViewController: ProfileLogoutServiceDelegate {
-    func logoutServiceDidFinishCleanUp() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
-            assertionFailure("ProfileLogoutService.switchToSplashScreen: Failed to get windowScene or its window when switching to splashscreen on logout")
-            return
-        }
-        let splashScreen = SplashViewController()
-        window.rootViewController = splashScreen
-    }
 }
