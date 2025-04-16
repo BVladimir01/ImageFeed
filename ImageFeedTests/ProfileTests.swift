@@ -9,7 +9,6 @@
 import XCTest
 
 
-
 final class ProfileTests: XCTestCase {
     
     final class ProfilePresenterSpy: ProfilePresenterProtocol {
@@ -92,6 +91,7 @@ final class ProfileTests: XCTestCase {
     func testConfirmLogout() {
         // given
         let presenter = ProfilePresenter()
+        OAuth2TokenStorage.shared.token = "testToken"
         
         // when
         presenter.confirmLogout()
