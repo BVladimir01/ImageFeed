@@ -14,6 +14,7 @@ import UIKit
 protocol ImagesListViewControllerProtocol: AnyObject {
     var presenter: ImagesListPresenterProtocol? { get set }
     func updateTableViewAnimated(at indexPaths: [IndexPath])
+    func configCell(_ cell: ImagesListCell, at indexPath: IndexPath, with viewModel: CellViewModel)
     func injectPresenter(_ presenter: ImagesListPresenterProtocol)
 }
 
@@ -39,13 +40,6 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
     //MARK: - Private Properties
     
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
     private var observation: NSObjectProtocol?
     private let imagesListService = ImagesListService.shared
     
@@ -71,20 +65,11 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         tableView.rowHeight = rowHeight
     }
     
-    private func configCell(_ cell: ImagesListCell, at indexPath: IndexPath) {
-        let photo = imagesListService.photos[indexPath.row]
-        guard let thumbImageURL = URL(string: photo.thumbImageURL) else {
-            assertionFailure("ImagesListViewController.configCell")
-            return
-        }
+    func configCell(_ cell: ImagesListCell, at indexPath: IndexPath, with viewModel: CellViewModel) {
         cell.cellImageView.kf.indicatorType = .activity
-        cell.cellImageView.kf.setImage(with: thumbImageURL, placeholder: UIImage(resource: .imagesListStub))
-        if let photoDate = photo.createdAt {
-            cell.dateLabel.text = dateFormatter.string(from: photoDate)
-        } else {
-            cell.dateLabel.text = ""
-        }
-        cell.likeButton.setImage(photo.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive), for: .normal)
+        cell.cellImageView.kf.setImage(with: viewModel.imageURL, placeholder: UIImage(resource: .imagesListStub))
+        cell.dateLabel.text = viewModel.dateString
+        cell.likeButton.setImage(viewModel.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive), for: .normal)
     }
     
     func updateTableViewAnimated(at indexPaths: [IndexPath]) {
@@ -138,7 +123,11 @@ extension ImagesListViewController: UITableViewDelegate {
 extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        imagesListService.photos.count
+        guard let photos = presenter?.photos else {
+            assertionFailure("ImagesListViewController.tableView: presenter is nil")
+            return 0
+        }
+        return photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -146,7 +135,12 @@ extension ImagesListViewController: UITableViewDataSource {
             assertionFailure("ImagesListViewController.tableView: Failed to dequeue ImagesListCell")
             return UITableViewCell()
         }
-        configCell(cell, at: indexPath)
+        guard let presenter else {
+            assertionFailure("ImagesListViewController.tableView: presenter is nil")
+            return UITableViewCell()
+        }
+        let cellViewModel = presenter.cellViewModel(at: indexPath.row)
+        configCell(cell, at: indexPath, with: cellViewModel)
         cell.delegate = self
         return cell
     }
