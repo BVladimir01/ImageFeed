@@ -11,21 +11,17 @@ import XCTest
 
 final class ProfileTests: XCTestCase {
     
+    // MARK: - Class Duplicates
+    
     final class ProfilePresenterSpy: ProfilePresenterProtocol {
         
         var viewDidLoadCalled = false
         var logoutInitiated = false
-        
         weak var view: ProfileViewControllerProtocol?
         
-        func logoutTapped() {
-            
-        }
+        func logoutTapped() { }
         
-        func confirmLogout() {
-            
-        }
-        
+        func confirmLogout() { }
         
         func viewDidLoad() {
             viewDidLoadCalled = true
@@ -36,8 +32,9 @@ final class ProfileTests: XCTestCase {
     final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
         
         var didCallShowLogoutAlert = false
-        var profileImageExpectation: XCTestExpectation?
         var didCallSetProfileImage = false
+        var didCallSetProfileImageExpectation: XCTestExpectation?
+        var didCallSetProfileDetails = false
         var presenter: ProfilePresenterProtocol?
         
         func showLogoutAlert() {
@@ -45,15 +42,47 @@ final class ProfileTests: XCTestCase {
         }
         
         func setProfileDetails(profile: ImageFeed.Profile) {
-            
+            didCallSetProfileDetails = true
         }
         
         func setProfileImage(url: URL) {
             didCallSetProfileImage = true
-            profileImageExpectation?.fulfill()
+            didCallSetProfileImageExpectation?.fulfill()
         }
 
     }
+    
+    final class ProfileImageServiceStub: ProfileImageServiceProtocol {
+        
+        var fetchSuccessful = false
+        var avatarURL: String?
+        
+        func fetchProfileImageURL(username: String, completion: @escaping (Result<String, any Error>) -> Void) { }
+        
+    }
+    
+    final class ProfileServiceStub: ProfileServiceProtocol {
+        
+        var fetchSuccessful = false
+        var profile: Profile? = nil
+        
+        func fetchProfile(for token: String, completion: @escaping (Result<ImageFeed.Profile, any Error>) -> Void) { }
+        
+    }
+    
+    final class ProfileLogoutServiceSpy: ProfileLogoutServiceProtocol {
+        
+        var logoutCalled = false
+        weak var delegate: ProfileLogoutServiceDelegate?
+        
+        func logout() {
+            logoutCalled = true
+        }
+        
+        
+    }
+    
+    // MARK: - Tests
     
     func testViewControllerCallsViewDidLoad() {
         // given
@@ -70,7 +99,9 @@ final class ProfileTests: XCTestCase {
     
     func testPresenterCallsAlertPopup() {
         // given
-        let presenter = ProfilePresenter()
+        let presenter = ProfilePresenter(profileService: ProfileServiceStub(),
+                                         profileImageService: ProfileImageServiceStub(),
+                                         profileLogoutService: ProfileLogoutService())
         let profileVCSpy = ProfileViewControllerSpy()
         profileVCSpy.injectPresenter(presenter)
         
@@ -81,38 +112,85 @@ final class ProfileTests: XCTestCase {
         XCTAssertTrue(profileVCSpy.didCallShowLogoutAlert)
     }
     
-    
-    // can not test ProfileViewController.setProfileDetails
-    // no access to text of labels
-    // will probably test in UI tests
-    
-    // can not test ProfileViewController.SetProfileImage
-    // no access to profile image
-    // will probably test in UI tests
-    
-    func testConfirmLogout() {
+    func testViewDidLoadCallSetProfile() {
         // given
-        let presenter = ProfilePresenter()
-        OAuth2TokenStorage.shared.token = "testToken"
+        let profileService = ProfileServiceStub()
+        profileService.profile = Profile(username: "", name: "", loginName: "", bio: "")
+        let presenter = ProfilePresenter(profileService: profileService,
+                                         profileImageService: ProfileImageServiceStub(),
+                                         profileLogoutService: ProfileLogoutService())
+        let profileVCSpy = ProfileViewControllerSpy()
+        profileVCSpy.injectPresenter(presenter)
+        
+        // when
+        presenter.viewDidLoad()
+        
+        // then
+        XCTAssertTrue(profileVCSpy.didCallSetProfileDetails)
+    }
+    
+    
+    func testConfirmLogoutCallLogout() {
+        // given
+        let profileLogoutService = ProfileLogoutServiceSpy()
+        let presenter = ProfilePresenter(profileService: ProfileServiceStub(),
+                                         profileImageService: ProfileImageServiceStub(),
+                                         profileLogoutService: profileLogoutService)
+        profileLogoutService.delegate = presenter
+        let profileVCSpy = ProfileViewControllerSpy()
+        profileVCSpy.injectPresenter(presenter)
         
         // when
         presenter.confirmLogout()
         
         // then
-        XCTAssertNil(OAuth2TokenStorage.shared.token)
-        XCTAssertNil(ProfileService.shared.profile)
-        XCTAssertNil(ProfileImageService.shared.avatarURL)
-        XCTAssertTrue(ImagesListService.shared.photos.isEmpty)
-        // critical part of logout that does not involve UI
-        // does not seem to be a valid test, services contain info
-        // only after real session
+        XCTAssertTrue(profileLogoutService.logoutCalled)
     }
     
+    func testSetProfileImageFromViewDidLoad() {
+        // given
+        let profileImageService = ProfileImageServiceStub()
+        profileImageService.avatarURL = "testURL"
+        let profileService = ProfileServiceStub()
+        profileService.profile = Profile(username: "", name: "", loginName: "", bio: "")
+        let presenter = ProfilePresenter(profileService: profileService,
+                                         profileImageService: profileImageService,
+                                         profileLogoutService: ProfileLogoutService())
+        let profileVCSpy = ProfileViewControllerSpy()
+        let expectation = XCTestExpectation(description: "didCallSetProfileImage")
+        profileVCSpy.didCallSetProfileImageExpectation = expectation
+        profileVCSpy.injectPresenter(presenter)
+        
+        // when
+        presenter.viewDidLoad()
+        
+        // then
+        wait(for: [expectation], timeout: 0.1)
+        XCTAssertTrue(profileVCSpy.didCallSetProfileImage)
+    }
     
-    // for proper testing of presenter and VC
-    // all services should be conforming protocols
-    // all services should be injected as dependancies
-    // not shared among all classes
-    // then stubs could be used for testing
+    func testNotificationCausesSetImage() {
+        // given
+        let profileImageService = ProfileImageServiceStub()
+        profileImageService.avatarURL = nil
+        let profileService = ProfileServiceStub()
+        profileService.profile = Profile(username: "", name: "", loginName: "", bio: "")
+        let presenter = ProfilePresenter(profileService: profileService,
+                                         profileImageService: profileImageService,
+                                         profileLogoutService: ProfileLogoutService())
+        let profileVCSpy = ProfileViewControllerSpy()
+        let expectation = XCTestExpectation(description: "didCallSetProfileImage")
+        profileVCSpy.didCallSetProfileImageExpectation = expectation
+        profileVCSpy.injectPresenter(presenter)
+        
+        // when
+        presenter.viewDidLoad()
+        profileImageService.avatarURL = "testURL"
+        NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: profileImageService)
+        
+        // then
+        wait(for: [expectation], timeout: 0.1)
+        XCTAssertTrue(profileVCSpy.didCallSetProfileImage)
+    }
     
 }
