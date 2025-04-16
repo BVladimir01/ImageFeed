@@ -8,28 +8,12 @@
 import UIKit
 
 
-// MARK: - ProfileImageServiceProtocol
-protocol ProfileImageServiceProtocol {
-    var didChangeNotification: Notification.Name { get }
-    var avatarURL: String? { get }
-    
-    func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void)
-    func cleanUpService()
-}
-
-extension ProfileImageServiceProtocol {
-    var didChangeNotification: Notification.Name {
-        Notification.Name("ProfileImageProviderDidChange")
-    }
-}
-
-
-// MARK: - ProfileImageService
-final class ProfileImageService: Fetcher<String, String>, ProfileImageServiceProtocol {
+final class ProfileImageService: Fetcher<String, String> {
     
     // MARK: - Internal Properties
     
     static let shared = ProfileImageService()
+    static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
     private(set) var avatarURL: String?
     
     // MARK: - Private Properties
@@ -66,7 +50,7 @@ final class ProfileImageService: Fetcher<String, String>, ProfileImageServicePro
                 let avatarURL = userResult.profileImage.large
                 self.avatarURL = avatarURL
                 completion(.success(avatarURL))
-                NotificationCenter.default.post(name: didChangeNotification, object: self, userInfo: ["URL": avatarURL])
+                NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self, userInfo: ["URL": avatarURL])
             case .failure(let error):
                 // other error details are printed in URLSession extension methods
                 print("ProfileImageService.fetchProfileImageURL error")

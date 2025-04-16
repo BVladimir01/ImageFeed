@@ -8,16 +8,8 @@
 import UIKit
 
 
-// MARK: - ProfileServiceProtocol
-protocol ProfileServiceProtocol: AnyObject {
-    var profile: Profile? { get }
-    func fetchProfile(for token: String, completion: @escaping (Result<Profile, Error>) -> Void)
-    func cleanUpService()
-}
-
-
 // MARK: - ProfileService
-final class ProfileService: Fetcher<String, Profile>, ProfileServiceProtocol {
+final class ProfileService: Fetcher<String, Profile> {
     
     // MARK: - Internal Properties
     static let shared = ProfileService()

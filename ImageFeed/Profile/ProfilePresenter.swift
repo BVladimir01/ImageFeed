@@ -28,8 +28,8 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
-    private let profileService: ProfileServiceProtocol = ProfileService.shared
-    private let profileImageService: ProfileImageServiceProtocol = ProfileImageService.shared
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     private let profileLogoutService = ProfileLogoutService.shared
     
     // MARK: - Internal Methods
