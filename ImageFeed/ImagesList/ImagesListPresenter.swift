@@ -109,7 +109,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     private func addObserver() {
         observation = NotificationCenter.default.addObserver(
             forName: ImagesListService.didChangeNotification,
-            object: nil,
+            object: imagesListService,
             queue: .main) { [weak self] notification in
                 guard let userInfo = notification.userInfo as? [String: [Photo]], let newPhotos = userInfo["newPhotos"] else {
                     assertionFailure("ImagesListViewController.addObserver: failed to get newPhotos from notification")

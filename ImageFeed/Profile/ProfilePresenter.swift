@@ -66,7 +66,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     // MARK: - Private Methods
     
     private func addProfileImageServiceObserver() {
-        let profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+        let profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: profileImageService, queue: .main) { [weak self] _ in
             self?.updateProfileImage()
         }
         self.profileImageServiceObserver = profileImageServiceObserver
