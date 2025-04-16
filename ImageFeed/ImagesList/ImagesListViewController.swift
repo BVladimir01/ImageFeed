@@ -11,11 +11,16 @@ import ProgressHUD
 import UIKit
 
 
+// MARK: - ImagesListViewControllerProtocol
 protocol ImagesListViewControllerProtocol: AnyObject {
     var presenter: ImagesListPresenterProtocol? { get set }
     func updateTableViewAnimated(at indexPaths: [IndexPath])
     func configCell(_ cell: ImagesListCell, at indexPath: IndexPath, with viewModel: CellViewModel)
     func injectPresenter(_ presenter: ImagesListPresenterProtocol)
+    func setProgressHUDActive(_ isActive: Bool)
+    func setLikeButton(at cell: ImagesListCell, active: Bool)
+    func setCellLiked(cell: ImagesListCell, liked: Bool)
+    func showLikeErrorAlert()
 }
 
 extension ImagesListViewControllerProtocol {
@@ -42,13 +47,53 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private var observation: NSObjectProtocol?
     private let imagesListService = ImagesListService.shared
+    private let alertPresenter = SimpleAlertPresenter()
     
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        alertPresenter.delegate = self
         presenter?.viewDidLoad()
+    }
+    
+    // MARK: - Internal Methods
+    
+    func showLikeErrorAlert() {
+        let alertModel = SimpleAlertModel(title: "Что-то пошло не так(",
+                                          message: "Не удалось выполнить действие",
+                                          buttonText: "ОК")
+        alertPresenter.presentAlert(alertModel)
+    }
+    
+    func setProgressHUDActive(_ isActive: Bool) {
+        if isActive {
+            ProgressHUD.animate()
+        } else {
+            ProgressHUD.dismiss()
+        }
+    }
+    
+    func setLikeButton(at cell: ImagesListCell, active: Bool) {
+        cell.likeButton.isEnabled = active
+    }
+    
+    func setCellLiked(cell: ImagesListCell, liked: Bool) {
+        cell.setIsLiked(liked)
+    }
+    
+    func configCell(_ cell: ImagesListCell, at indexPath: IndexPath, with viewModel: CellViewModel) {
+        cell.cellImageView.kf.indicatorType = .activity
+        cell.cellImageView.kf.setImage(with: viewModel.imageURL, placeholder: UIImage(resource: .imagesListStub))
+        cell.dateLabel.text = viewModel.dateString
+        cell.likeButton.setImage(viewModel.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive), for: .normal)
+    }
+    
+    func updateTableViewAnimated(at indexPaths: [IndexPath]) {
+        tableView.performBatchUpdates {
+            tableView.insertRows(at: indexPaths, with: .automatic)
+        }
     }
     
     //MARK: - Private Methods
@@ -63,19 +108,6 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         let imageViewHeight = imageViewWidth/(stubImage.size.width)*(stubImage.size.height)
         let rowHeight = imageViewHeight + TableViewConstants.cellVerticalHalfSpacing*2
         tableView.rowHeight = rowHeight
-    }
-    
-    func configCell(_ cell: ImagesListCell, at indexPath: IndexPath, with viewModel: CellViewModel) {
-        cell.cellImageView.kf.indicatorType = .activity
-        cell.cellImageView.kf.setImage(with: viewModel.imageURL, placeholder: UIImage(resource: .imagesListStub))
-        cell.dateLabel.text = viewModel.dateString
-        cell.likeButton.setImage(viewModel.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive), for: .normal)
-    }
-    
-    func updateTableViewAnimated(at indexPaths: [IndexPath]) {
-        tableView.performBatchUpdates {
-            tableView.insertRows(at: indexPaths, with: .automatic)
-        }
     }
     
 }
@@ -139,7 +171,7 @@ extension ImagesListViewController: UITableViewDataSource {
             assertionFailure("ImagesListViewController.tableView: presenter is nil")
             return UITableViewCell()
         }
-        let cellViewModel = presenter.cellViewModel(at: indexPath.row)
+        let cellViewModel = presenter.cellViewModel(for: indexPath.row)
         configCell(cell, at: indexPath, with: cellViewModel)
         cell.delegate = self
         return cell
@@ -153,25 +185,10 @@ extension ImagesListViewController: ImagesListCellDelegate {
     
     func imagesListCellDidTapLike(cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else {
-            assertionFailure("ImagesListViewController.imagesListCellDidTapLike: Failed to fined index of (dis)liked cell")
+            assertionFailure("ImagesListViewController.imagesListCellDidTapLike error: failed to find index of cell")
             return
         }
-        ProgressHUD.animate()
-        cell.likeButton.isEnabled = false
-        let photo = imagesListService.photos[indexPath.row]
-        let isLike = !photo.isLiked
-        imagesListService.changeLike(atIndex: indexPath.row, isLike: isLike) { [weak cell] result in
-            switch result {
-            case .success:
-                cell?.setIsLiked(isLike)
-                cell?.likeButton.isEnabled = true
-                ProgressHUD.dismiss()
-            case .failure:
-                cell?.likeButton.isEnabled = true
-                ProgressHUD.dismiss()
-                SimpleAlertPresenter().presentAlert(SimpleAlertModel(title: "Что-то пошло не так(", message: "Не удалось выполнить действие", buttonText: "ОК"))
-            }
-        }
+        presenter?.likeButtonTapped(cell: cell, index: indexPath.row)
     }
     
 }

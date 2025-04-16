@@ -12,7 +12,8 @@ protocol ImagesListPresenterProtocol: AnyObject {
     var view: ImagesListViewControllerProtocol? { get set }
     var photos: [Photo] { get }
     func viewDidLoad()
-    func cellViewModel(at index: Int) -> CellViewModel 
+    func cellViewModel(for index: Int) -> CellViewModel 
+    func likeButtonTapped(cell: ImagesListCell, index: Int)
 }
 
 
@@ -56,7 +57,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         imagesListService.fetchPhotosNextPage()
     }
     
-    func cellViewModel(at index: Int) -> CellViewModel {
+    func cellViewModel(for index: Int) -> CellViewModel {
         let photo = photos[index]
         let imageURL = URL(string: photo.thumbImageURL)
         let dateString: String
@@ -65,9 +66,26 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         } else {
             dateString = ""
         }
-        return CellViewModel(imageURL: imageURL,
-                             dateString: dateString,
-                             isLiked: photo.isLiked)
+        return CellViewModel(imageURL: imageURL, dateString: dateString, isLiked: photo.isLiked)
+    }
+    
+    func likeButtonTapped(cell: ImagesListCell, index: Int) {
+        view?.setProgressHUDActive(true)
+        view?.setLikeButton(at: cell, active: false)
+        let photo = photos[index]
+        let isLike = !photo.isLiked
+        imagesListService.changeLike(atIndex: index, isLike: isLike) { [weak self] result in
+            switch result {
+            case .success:
+                self?.view?.setCellLiked(cell: cell, liked: isLike)
+                self?.view?.setLikeButton(at: cell, active: true)
+                self?.view?.setProgressHUDActive(false)
+            case .failure:
+                self?.view?.setLikeButton(at: cell, active: true)
+                self?.view?.setProgressHUDActive(false)
+                self?.view?.showLikeErrorAlert()
+            }
+        }
     }
     
 }
