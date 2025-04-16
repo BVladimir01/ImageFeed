@@ -20,9 +20,8 @@ protocol ImagesListViewControllerProtocol: AnyObject {
     func setProgressHUDActive(_ isActive: Bool)
     func setLikeButton(at cell: ImagesListCell, active: Bool)
     func setCellLiked(cell: ImagesListCell, liked: Bool)
-    func configCell(_ cell: ImagesListCell, at indexPath: IndexPath, with viewModel: CellViewModel)
     func showLikeErrorAlert()
-    func showSingleImage(url: URL?)
+    func showSingleImageViewController(imageURL: URL?)
 }
 
 
@@ -98,21 +97,14 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         cell.setIsLiked(liked)
     }
     
-    func configCell(_ cell: ImagesListCell, at indexPath: IndexPath, with viewModel: CellViewModel) {
-        cell.cellImageView.kf.indicatorType = .activity
-        cell.cellImageView.kf.setImage(with: viewModel.imageURL, placeholder: UIImage(resource: .imagesListStub))
-        cell.dateLabel.text = viewModel.dateString
-        cell.likeButton.setImage(viewModel.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive), for: .normal)
-    }
-    
     func updateTableViewAnimated(at indexPaths: [IndexPath]) {
         tableView.performBatchUpdates {
             tableView.insertRows(at: indexPaths, with: .automatic)
         }
     }
     
-    func showSingleImage(url: URL?) {
-        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: url)
+    func showSingleImageViewController(imageURL: URL?) {
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: imageURL)
     }
     
     //MARK: - Private Methods
@@ -191,7 +183,7 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         let cellViewModel = presenter.cellViewModel(for: indexPath.row)
-        configCell(cell, at: indexPath, with: cellViewModel)
+        cell.configure(with: cellViewModel)
         cell.delegate = self
         return cell
     }

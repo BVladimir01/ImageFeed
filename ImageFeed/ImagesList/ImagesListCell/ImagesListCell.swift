@@ -58,6 +58,13 @@ final class ImagesListCell: UITableViewCell {
         likeButton.setImage(image, for: .normal)
     }
     
+    func configure(with viewModel: CellViewModel) {
+        cellImageView.kf.indicatorType = .activity
+        cellImageView.kf.setImage(with: viewModel.imageURL, placeholder: UIImage(resource: .imagesListStub))
+        dateLabel.text = viewModel.dateString
+        likeButton.setImage(viewModel.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive), for: .normal)
+    }
+    
     // MARK: - Private Methods
     
     private func setupGradient() {
