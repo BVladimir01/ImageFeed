@@ -11,9 +11,12 @@ import Foundation
 protocol ImagesListPresenterProtocol: AnyObject {
     var view: ImagesListViewControllerProtocol? { get set }
     var photos: [Photo] { get }
+    
     func viewDidLoad()
     func cellViewModel(for index: Int) -> CellViewModel 
     func likeButtonTapped(cell: ImagesListCell, index: Int)
+    func cellTapped(at index: Int)
+    func didScrollToBottom()
 }
 
 
@@ -88,6 +91,14 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         }
     }
     
+    func cellTapped(at index: Int) {
+        let imageURL = URL(string: photos[index].largeImageURL)
+        view?.showSingleImage(url: imageURL)
+    }
+    
+    func didScrollToBottom() {
+        imagesListService.fetchPhotosNextPage()
+    }
 }
 
 

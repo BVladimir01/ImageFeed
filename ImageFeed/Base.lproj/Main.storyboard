@@ -98,7 +98,7 @@
         <!--Single Image View Controller-->
         <scene sceneID="aMy-g8-ftS">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="bPy-FP-Jwf" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SingleImageVC" modalPresentationStyle="fullScreen" id="bPy-FP-Jwf" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleAspectFit" id="YId-Dq-W0H">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

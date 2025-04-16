@@ -14,14 +14,17 @@ import UIKit
 // MARK: - ImagesListViewControllerProtocol
 protocol ImagesListViewControllerProtocol: AnyObject {
     var presenter: ImagesListPresenterProtocol? { get set }
-    func updateTableViewAnimated(at indexPaths: [IndexPath])
-    func configCell(_ cell: ImagesListCell, at indexPath: IndexPath, with viewModel: CellViewModel)
+    
     func injectPresenter(_ presenter: ImagesListPresenterProtocol)
+    func updateTableViewAnimated(at indexPaths: [IndexPath])
     func setProgressHUDActive(_ isActive: Bool)
     func setLikeButton(at cell: ImagesListCell, active: Bool)
     func setCellLiked(cell: ImagesListCell, liked: Bool)
+    func configCell(_ cell: ImagesListCell, at indexPath: IndexPath, with viewModel: CellViewModel)
     func showLikeErrorAlert()
+    func showSingleImage(url: URL?)
 }
+
 
 extension ImagesListViewControllerProtocol {
     func injectPresenter(_ presenter: ImagesListPresenterProtocol) {
@@ -56,6 +59,18 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         setupTableView()
         alertPresenter.delegate = self
         presenter?.viewDidLoad()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showSingleImageSegueIdentifier {
+            guard let viewController = segue.destination as? SingleImageViewController, let imageURL = sender as? URL? else {
+                assertionFailure("ImagesListViewController.prepare: Failed to create ViewController or extract url from sender")
+                return
+            }
+            viewController.imageURL = imageURL
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
     }
     
     // MARK: - Internal Methods
@@ -96,6 +111,10 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         }
     }
     
+    func showSingleImage(url: URL?) {
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: url)
+    }
+    
     //MARK: - Private Methods
     
     private func setupTableView() {
@@ -117,37 +136,37 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
 extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showSingleImageSegueIdentifier {
-            guard let viewController = segue.destination as? SingleImageViewController, let indexPath = sender as? IndexPath else {
-                assertionFailure("ImagesListViewController.prepare: Failed to create ViewController or extract indexPath")
-                return
-            }
-            let imageURLString = imagesListService.photos[indexPath.row].largeImageURL
-            viewController.imageURL = URL(string: imageURLString)
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
+        presenter?.cellTapped(at: indexPath.row)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let size = imagesListService.photos[indexPath.row].size
+        guard let presenter else {
+            assertionFailure("ImagesListViewController.tableView error: failed to get presenter")
+            return tableView.rowHeight
+        }
+        let size = presenter.photos[indexPath.row].size
         let tableWidth = tableView.contentSize.width
         let imageViewWidth = tableWidth - TableViewConstants.cellLateralHalfSpacing*2
         let imageViewHeight = imageViewWidth/(size.width)*(size.height)
         let rowHeight = imageViewHeight + TableViewConstants.cellVerticalHalfSpacing*2
         return rowHeight
     }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row >= imagesListService.photos.count - 1 {
-            imagesListService.fetchPhotosNextPage()
+}
+
+
+//MARK: - UIScrollViewDelegate
+extension ImagesListViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // there will be a lot of duplicated task requests for fetching photos
+        // but now viewController is ignorant of number of photos
+        // feels more separated
+        let yOffset = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.height
+        if yOffset > contentHeight - frameHeight * 2{
+            presenter?.didScrollToBottom()
         }
     }
-    
 }
 
 
