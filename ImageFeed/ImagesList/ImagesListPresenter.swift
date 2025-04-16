@@ -35,10 +35,10 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     // MARK: - Private Properties
     
     private var observation: NSObjectProtocol?
-    private var imagesListService = ImagesListService.shared
     private var photos: [Photo] {
         imagesListService.photos
     }
+    private let imagesListService: ImagesListServiceProtocol
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ru_RU")
@@ -46,6 +46,12 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         formatter.timeStyle = .none
         return formatter
     }()
+    
+    // MARK: - Initializers
+    
+    init(imagesListService: ImagesListServiceProtocol) {
+        self.imagesListService = imagesListService
+    }
     
     // MARK: - Internal Methods
     

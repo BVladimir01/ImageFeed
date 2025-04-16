@@ -8,7 +8,15 @@
 import Foundation
 
 
-final class ImagesListService {
+// MARK: - ImagesListServiceProtocol
+protocol ImagesListServiceProtocol: AnyObject {
+    var photos: [Photo] { get }
+    func fetchPhotosNextPage()
+    func changeLike(atIndex alteringPhotoIndex: Int, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void)
+    func cleanUpService()
+}
+
+final class ImagesListService: ImagesListServiceProtocol {
     
     // MARK: - Internal Properties
     
