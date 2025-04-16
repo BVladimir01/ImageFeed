@@ -11,10 +11,11 @@ import Foundation
 // MARK: - ImagesListPresenterProtocol
 protocol ImagesListPresenterProtocol: AnyObject {
     var view: ImagesListViewControllerProtocol? { get set }
-    var photos: [Photo] { get }
+    var feedLength: Int { get }
     
     func viewDidLoad()
-    func cellViewModel(for index: Int) -> CellViewModel 
+    func cellViewModel(for index: Int) -> CellViewModel
+    func imageSize(at index: Int) -> CGSize
     func likeButtonTapped(cell: ImagesListCell, index: Int)
     func cellTapped(at index: Int)
     func didScrollToBottom()
@@ -25,15 +26,19 @@ protocol ImagesListPresenterProtocol: AnyObject {
 final class ImagesListPresenter: ImagesListPresenterProtocol {
     
     // MARK: - Internal Properties
+    
     weak var view: ImagesListViewControllerProtocol?
-    var photos: [Photo] {
-        imagesListService.photos
+    var feedLength: Int {
+        photos.count
     }
     
     // MARK: - Private Properties
     
     private var observation: NSObjectProtocol?
     private var imagesListService = ImagesListService.shared
+    private var photos: [Photo] {
+        imagesListService.photos
+    }
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ru_RU")
@@ -59,6 +64,10 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
             dateString = ""
         }
         return CellViewModel(imageURL: imageURL, dateString: dateString, isLiked: photo.isLiked)
+    }
+    
+    func imageSize(at index: Int) -> CGSize {
+        photos[index].size
     }
     
     func likeButtonTapped(cell: ImagesListCell, index: Int) {

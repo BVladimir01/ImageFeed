@@ -136,7 +136,7 @@ extension ImagesListViewController: UITableViewDelegate {
             assertionFailure("ImagesListViewController.tableView error: failed to get presenter")
             return tableView.rowHeight
         }
-        let size = presenter.photos[indexPath.row].size
+        let size = presenter.imageSize(at: indexPath.row)
         let tableWidth = tableView.contentSize.width
         let imageViewWidth = tableWidth - TableViewConstants.cellLateralHalfSpacing*2
         let imageViewHeight = imageViewWidth/(size.width)*(size.height)
@@ -166,11 +166,7 @@ extension ImagesListViewController: UIScrollViewDelegate {
 extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let photos = presenter?.photos else {
-            assertionFailure("ImagesListViewController.tableView: presenter is nil")
-            return 0
-        }
-        return photos.count
+        presenter?.feedLength ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
