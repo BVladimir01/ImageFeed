@@ -56,16 +56,13 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     // MARK: - Private Methods
     
     private func addProfileImageServiceObserver() {
-        print("observer creating")
         let profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
             self?.updateProfileImage()
         }
         self.profileImageServiceObserver = profileImageServiceObserver
-        print("observer attached")
     }
     
     private func updateProfileImage() {
-        print("updateProfileImage called")
         guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
             print("ProfileViewController.updateProfileImage: Failed to get url for fetching avatar image")
             return

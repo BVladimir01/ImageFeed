@@ -11,8 +11,26 @@ import ProgressHUD
 import UIKit
 
 
+protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImagesListPresenterProtocol? { get set }
+    func updateTableViewAnimated(at indexPaths: [IndexPath])
+    func injectPresenter(_ presenter: ImagesListPresenterProtocol)
+}
+
+extension ImagesListViewControllerProtocol {
+    func injectPresenter(_ presenter: ImagesListPresenterProtocol) {
+        self.presenter = presenter
+        presenter.view = self
+    }
+}
+
+
 //MARK: - ImagesListViewController
-final class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
+    
+    // MARK: - Internal Properties
+    
+    var presenter: ImagesListPresenterProtocol?
     
     //MARK: - IBOutlets
     
@@ -36,8 +54,7 @@ final class ImagesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
-        addObserver()
-        imagesListService.fetchPhotosNextPage()
+        presenter?.viewDidLoad()
     }
     
     //MARK: - Private Methods
@@ -52,19 +69,6 @@ final class ImagesListViewController: UIViewController {
         let imageViewHeight = imageViewWidth/(stubImage.size.width)*(stubImage.size.height)
         let rowHeight = imageViewHeight + TableViewConstants.cellVerticalHalfSpacing*2
         tableView.rowHeight = rowHeight
-    }
-    
-    private func addObserver() {
-        observation = NotificationCenter.default.addObserver(
-            forName: ImagesListService.didChangeNotification,
-            object: nil,
-            queue: .main) { [weak self] notification in
-                guard let userInfo = notification.userInfo as? [String: [Photo]], let newPhotos = userInfo["newPhotos"] else {
-                    assertionFailure("ImagesListViewController.addObserver: failed to get newPhotos from notification")
-                    return
-                }
-                self?.updateTableViewAnimated(with: newPhotos)
-        }
     }
     
     private func configCell(_ cell: ImagesListCell, at indexPath: IndexPath) {
@@ -83,11 +87,7 @@ final class ImagesListViewController: UIViewController {
         cell.likeButton.setImage(photo.isLiked ? UIImage(resource: .favouritesActive) : UIImage(resource: .favouritesNonActive), for: .normal)
     }
     
-    private func updateTableViewAnimated(with newPhotos: [Photo]) {
-        let newCount = imagesListService.photos.count
-        let oldCount = newCount - newPhotos.count
-        let range = oldCount..<newCount
-        let indexPaths = range.map({ IndexPath(row: $0, section: 0)})
+    func updateTableViewAnimated(at indexPaths: [IndexPath]) {
         tableView.performBatchUpdates {
             tableView.insertRows(at: indexPaths, with: .automatic)
         }
