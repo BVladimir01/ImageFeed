@@ -8,7 +8,16 @@
 import UIKit
 
 
-final class ProfileImageService: Fetcher<String, String> {
+// MARK: - ProfileImageServiceProtocol
+protocol ProfileImageServiceProtocol: AnyObject {
+    var avatarURL: String? { get }
+    func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void)
+    func cleanUpService()
+}
+
+
+// MARK: - ProfileImageService
+final class ProfileImageService: Fetcher<String, String>, ProfileImageServiceProtocol {
     
     // MARK: - Internal Properties
     

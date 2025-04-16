@@ -9,7 +9,15 @@ import Foundation
 import WebKit
 
 
-final class ProfileLogoutService {
+// MARK: - ProfileLogoutServiceProtocol
+protocol ProfileLogoutServiceProtocol: AnyObject {
+    var delegate: ProfileLogoutServiceDelegate? { get set }
+    func logout()
+}
+
+
+// MARK: - ProfileLogoutService
+final class ProfileLogoutService: ProfileLogoutServiceProtocol {
     
     // MARK: - Internal Properties
     

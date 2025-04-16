@@ -36,6 +36,7 @@ final class ProfileTests: XCTestCase {
     final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
         
         var didCallShowLogoutAlert = false
+        var profileImageExpectation: XCTestExpectation?
         var didCallSetProfileImage = false
         var presenter: ProfilePresenterProtocol?
         
@@ -49,6 +50,7 @@ final class ProfileTests: XCTestCase {
         
         func setProfileImage(url: URL) {
             didCallSetProfileImage = true
+            profileImageExpectation?.fulfill()
         }
 
     }
@@ -105,6 +107,7 @@ final class ProfileTests: XCTestCase {
         // does not seem to be a valid test, services contain info
         // only after real session
     }
+    
     
     // for proper testing of presenter and VC
     // all services should be conforming protocols
