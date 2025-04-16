@@ -21,7 +21,6 @@ final class ProfileImageService: Fetcher<String, String>, ProfileImageServicePro
     
     // MARK: - Internal Properties
     
-    static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
     private(set) var avatarURL: String?
     
@@ -32,10 +31,6 @@ final class ProfileImageService: Fetcher<String, String>, ProfileImageServicePro
     private let urlSession = URLSession.shared
     private var latestUsername: String?
     private var task: URLSessionTask?
-    
-    // MARK: - Initializers
-    
-    override private init() { }
     
     // MARK: - Internal Methods
     

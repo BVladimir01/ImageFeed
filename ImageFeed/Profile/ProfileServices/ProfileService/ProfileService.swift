@@ -20,7 +20,6 @@ protocol ProfileServiceProtocol: AnyObject {
 final class ProfileService: Fetcher<String, Profile>, ProfileServiceProtocol {
     
     // MARK: - Internal Properties
-    static let shared = ProfileService()
     private(set) var profile: Profile? = nil
     
     // MARK: - Private Properties
@@ -29,10 +28,6 @@ final class ProfileService: Fetcher<String, Profile>, ProfileServiceProtocol {
     private let urlSession = URLSession.shared
     private var task: URLSessionTask? = nil
     private var latestToken: String?
-    
-    // MARK: - Initializers
-    
-    override private init () { }
     
     // MARK: - Internal Methods
     

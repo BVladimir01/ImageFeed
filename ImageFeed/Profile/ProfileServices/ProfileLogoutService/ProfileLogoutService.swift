@@ -21,17 +21,12 @@ final class ProfileLogoutService: ProfileLogoutServiceProtocol {
     
     // MARK: - Internal Properties
     
-    static let shared = ProfileLogoutService()
     weak var delegate: ProfileLogoutServiceDelegate? = nil
     
     // MARK: - Private Properties
     
     private let tokenStorage = OAuth2TokenStorage.shared
     private let oAuth2Service = OAuth2Service.shared
-    
-    // MARK: - Initializers
-    
-    private init() { }
     
     // MARK: - Internal Methods
     func logout() {

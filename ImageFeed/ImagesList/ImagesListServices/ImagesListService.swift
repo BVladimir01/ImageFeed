@@ -21,7 +21,6 @@ final class ImagesListService: ImagesListServiceProtocol {
     // MARK: - Internal Properties
     
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
-    static let shared = ImagesListService()
     
     private(set) var photos: [Photo] = []
     
@@ -37,10 +36,6 @@ final class ImagesListService: ImagesListServiceProtocol {
     private let itemsPerPage = 10
     private let tokenStorage = OAuth2TokenStorage.shared
     private let urlSession = URLSession.shared
-    
-    // MARK: - Initializers
-    
-    private init() { }
     
     // MARK: - Internal Methods
     

@@ -27,9 +27,9 @@ final class TabBarViewController: UITabBarController {
     
     private func setUpProfileAndReturnVC() -> UIViewController {
         let profileVC = ProfileViewController()
-        let presenter = ProfilePresenter(profileService: ProfileService.shared,
-                                         profileImageService: ProfileImageService.shared,
-                                         profileLogoutService: ProfileLogoutService.shared)
+        let presenter = ProfilePresenter(profileService: ProfileService(),
+                                         profileImageService: ProfileImageService(),
+                                         profileLogoutService: ProfileLogoutService())
         profileVC.injectPresenter(presenter)
         profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(resource: .tabProfileNonActive), selectedImage: UIImage(resource: .tabProfileActive))
         return profileVC
@@ -45,7 +45,7 @@ final class TabBarViewController: UITabBarController {
             assertionFailure("TabBarViewController.awakeFromNib failed to typecast ImagesListViewController as ImagesListViewControllerProtocol")
             return nil
         }
-        let presenter = ImagesListPresenter(imagesListService: ImagesListService.shared)
+        let presenter = ImagesListPresenter(imagesListService: ImagesListService())
         imagesListVC.injectPresenter(presenter)
         return imagesListNavigation
     }
