@@ -13,7 +13,6 @@ protocol ImagesListServiceProtocol: AnyObject {
     var photos: [Photo] { get }
     func fetchPhotosNextPage()
     func changeLike(atIndex alteringPhotoIndex: Int, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void)
-    func cleanUpService()
 }
 
 final class ImagesListService: ImagesListServiceProtocol {
@@ -103,17 +102,7 @@ final class ImagesListService: ImagesListServiceProtocol {
         }
         changeLikeTask?.resume()
     }
-    
-    func cleanUpService() {
-        photos = []
-        photosSet = []
-        fetchPhotosTask?.cancel()
-        fetchPhotosTask = nil
-        changeLikeTask?.cancel()
-        changeLikeTask = nil
-        lastLoadedPage = 0
-    }
-    
+
     //MARK: - Private Methods
     
     private func assembleURLRequestForPhotos(page: Int) -> URLRequest? {

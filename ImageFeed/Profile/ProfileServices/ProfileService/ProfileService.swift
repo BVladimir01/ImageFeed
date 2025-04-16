@@ -12,7 +12,6 @@ import UIKit
 protocol ProfileServiceProtocol: AnyObject {
     var profile: Profile? { get }
     func fetchProfile(for token: String, completion: @escaping (Result<Profile, Error>) -> Void)
-    func cleanUpService()
 }
 
 
@@ -58,13 +57,6 @@ final class ProfileService: Fetcher<String, Profile>, ProfileServiceProtocol {
         }
         self.task = task
         task.resume()
-    }
-    
-    func cleanUpService() {
-        profile = nil
-        task?.cancel()
-        task = nil
-        latestToken = nil
     }
     
     // MARK: - Private Methods

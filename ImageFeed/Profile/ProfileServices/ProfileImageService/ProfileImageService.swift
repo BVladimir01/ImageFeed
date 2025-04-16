@@ -12,7 +12,6 @@ import UIKit
 protocol ProfileImageServiceProtocol: AnyObject {
     var avatarURL: String? { get }
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void)
-    func cleanUpService()
 }
 
 
@@ -63,13 +62,6 @@ final class ProfileImageService: Fetcher<String, String>, ProfileImageServicePro
         }
         self.task = task
         task.resume()
-    }
-    
-    func cleanUpService() {
-        task?.cancel()
-        task = nil
-        avatarURL = nil
-        latestUsername = nil
     }
     
     // MARK: - Private Methods
