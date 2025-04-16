@@ -28,8 +28,8 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
+    private let profileService: ProfileServiceProtocol = ProfileService.shared
+    private let profileImageService: ProfileImageServiceProtocol = ProfileImageService.shared
     private let profileLogoutService = ProfileLogoutService.shared
     
     // MARK: - Internal Methods
@@ -56,13 +56,16 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     // MARK: - Private Methods
     
     private func addProfileImageServiceObserver() {
+        print("observer creating")
         let profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
             self?.updateProfileImage()
         }
         self.profileImageServiceObserver = profileImageServiceObserver
+        print("observer attached")
     }
     
     private func updateProfileImage() {
+        print("updateProfileImage called")
         guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
             print("ProfileViewController.updateProfileImage: Failed to get url for fetching avatar image")
             return
