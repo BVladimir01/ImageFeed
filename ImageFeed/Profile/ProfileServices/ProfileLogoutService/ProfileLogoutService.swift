@@ -27,9 +27,6 @@ final class ProfileLogoutService: ProfileLogoutServiceProtocol {
     // MARK: - Private Properties
     
     private let tokenStorage = OAuth2TokenStorage.shared
-    private let imagesListService = ImagesListService.shared
-    private let profileImageService = ProfileImageService.shared
-    private let profileService = ProfileService.shared
     private let oAuth2Service = OAuth2Service.shared
     
     // MARK: - Initializers
@@ -40,7 +37,6 @@ final class ProfileLogoutService: ProfileLogoutServiceProtocol {
     func logout() {
         cleanCookies()
         cleanServices()
-        cleanTokens()
         delegate?.logoutServiceDidFinishCleanUp()
     }
     
@@ -56,13 +52,7 @@ final class ProfileLogoutService: ProfileLogoutServiceProtocol {
     }
     
     private func cleanServices() {
-        imagesListService.cleanUpService()
-        profileImageService.cleanUpService()
-        profileService.cleanUpService()
         oAuth2Service.cleanUpService()
-    }
-    
-    private func cleanTokens() {
         tokenStorage.removeToken()
     }
     
