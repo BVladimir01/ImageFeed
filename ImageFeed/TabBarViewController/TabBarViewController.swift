@@ -10,25 +10,32 @@ import UIKit
 
 final class TabBarViewController: UITabBarController {
     
+    // MARK: - Internal Properties
+    
+    var profileService: ProfileServiceProtocol?
+    var profileImageService: ProfileImageServiceProtocol?
+    
     // MARK: - Private Properties
 
     let imagesListNavigationControllerID = "ImagesListNavigationViewController"
 
-    // MARK: - Lifecycle
+    // MARK: - Internal Methods
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        guard let imagesListNavigation = setUpImagesListAndReturnVC() else { return }
-        let profileVC = setUpProfileAndReturnVC()
+    func attachViewControllers() {
+        guard let imagesListNavigation = setUpImagesListAndReturnVC(), let profileVC = setUpProfileAndReturnVC() else { return }
         viewControllers = [imagesListNavigation, profileVC]
     }
     
     // MARK: - Private Methods
     
-    private func setUpProfileAndReturnVC() -> UIViewController {
+    private func setUpProfileAndReturnVC() -> UIViewController? {
+        guard let profileService, let profileImageService else {
+            assertionFailure("TabBarViewController.setUpProfileAndReturnVC error: profileService or profileImageService are nil")
+            return nil
+        }
         let profileVC = ProfileViewController()
-        let presenter = ProfilePresenter(profileService: ProfileService(),
-                                         profileImageService: ProfileImageService(),
+        let presenter = ProfilePresenter(profileService: profileService,
+                                         profileImageService: profileImageService,
                                          profileLogoutService: ProfileLogoutService())
         profileVC.injectPresenter(presenter)
         profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(resource: .tabProfileNonActive), selectedImage: UIImage(resource: .tabProfileActive))

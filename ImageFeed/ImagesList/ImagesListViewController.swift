@@ -48,7 +48,6 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
     
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private var observation: NSObjectProtocol?
-    private let imagesListService = ImagesListService.shared
     private let alertPresenter = SimpleAlertPresenter()
     
     //MARK: - Lifecycle

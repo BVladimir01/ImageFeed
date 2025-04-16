@@ -16,8 +16,6 @@ final class SplashViewController: UIViewController {
     private let showAuthSegueID = "ShowAuthVC"
     private let authNavigationControllerID = "AuthRootViewController"
     private let tokenStorage = OAuth2TokenStorage.shared
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
     
     //MARK: - Lifecycle
     
@@ -45,13 +43,20 @@ final class SplashViewController: UIViewController {
         view.backgroundColor = .ypBlack
     }
     
-    private func switchToTabBarViewController() {
+    private func switchToTabBarViewController(profileService: ProfileServiceProtocol,
+                                              profileImageService: ProfileImageServiceProtocol) {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
             assertionFailure("SplashViewController.switchToTabBarViewController: Failed to get windowScene or its window when switching to TabBarVC from splashscreen")
             return
         }
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        let tabBarVC = storyboard.instantiateViewController(withIdentifier: tabBarStoryboardID)
+        guard let tabBarVC = storyboard.instantiateViewController(withIdentifier: tabBarStoryboardID) as? TabBarViewController else {
+            assertionFailure("SplashViewController.switchToTabBarViewController error: Failed to typecast TabBarViewController")
+            return
+        }
+        tabBarVC.profileService = profileService
+        tabBarVC.profileImageService = profileImageService
+        tabBarVC.attachViewControllers()
         window.rootViewController = tabBarVC
     }
     
@@ -100,15 +105,20 @@ extension SplashViewController: AuthViewControllerDelegate {
     
     private func fetchProfile(for token: String) {
         UIBlockingHUD.show()
+        let profileService = ProfileService()
+        let profileImageService = ProfileImageService()
         profileService.fetchProfile(for: token) { [weak self] result in
             switch result {
             case .success(let profile):
                 UIBlockingHUD.dismiss()
-                self?.profileImageService.fetchProfileImageURL(username: profile.username, completion: { _ in })
-                self?.switchToTabBarViewController()
+                profileImageService.fetchProfileImageURL(username: profile.username, completion: { _ in })
+                self?.switchToTabBarViewController(profileService: profileService, profileImageService: profileImageService)
             case .failure(let error):
                 UIBlockingHUD.dismiss()
-                //TODO: implement failure
+                // wonder if this recurrent call is ok here
+                // much better to show alert here
+                // may be later not for praktikum
+                self?.fetchProfile(for: token)
                 break
             }
         }
