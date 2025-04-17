@@ -42,36 +42,88 @@ final class ImagesListTests: XCTestCase {
     final class ImagesListViewControllerSpy: ImagesListViewControllerProtocol {
         
         var presenter: ImagesListPresenterProtocol?
+        
         var didCallUpdateTable = false
         var didCallUpdateTableExpectation: XCTestExpectation?
+        var didCallSetCellLiked = false
+        var didSetCellToLike = false
+        var didCallShowLikeErrorAlert = false
+        var didCallShowSingleImageViewController = false
+        var urlOfSingleImageViewController: URL?
         
         func updateTableViewAnimated(at indexPaths: [IndexPath]) {
             didCallUpdateTable = true
             didCallUpdateTableExpectation?.fulfill()
         }
         
-        func setProgressHUDActive(_ isActive: Bool) {
-                
-        }
+        func setProgressHUDActive(_ isActive: Bool) { }
         
-        func setLikeButton(at cell: ImageFeed.ImagesListCell, active: Bool) {
-                
-        }
+        func setLikeButton(at cell: ImageFeed.ImagesListCell, active: Bool) { }
         
         func setCellLiked(cell: ImageFeed.ImagesListCell, liked: Bool) {
-                
+            didCallSetCellLiked = true
+            didSetCellToLike = liked
         }
         
         func showLikeErrorAlert() {
-                
+            didCallShowLikeErrorAlert = true
         }
         
         func showSingleImageViewController(imageURL: URL?) {
-                
+            didCallShowSingleImageViewController = true
+            urlOfSingleImageViewController = imageURL
         }
         
     }
     
+    final class ImagesListServiceMock: ImagesListServiceProtocol {
+        
+        var changeLikeSuccessful = false
+        var didCallFetchPhotos = false
+        
+        var photos: [Photo] = [
+            Photo(id: "testID",
+                  size: CGSize(width: 10, height: 10),
+                  createdAt: ISO8601DateFormatter().date(from: "2025-04-17T00:00:00Z"),
+                  welcomeDescription: "welcome",
+                  thumbImageURL: "testThumbURL",
+                  largeImageURL: "testLargeURL",
+                  isLiked: true),
+            Photo(id: "",
+                  size: .zero,
+                  createdAt: .distantPast,
+                  welcomeDescription: "",
+                  thumbImageURL: "",
+                  largeImageURL: "",
+                  isLiked: false)
+        ]
+        
+        func fetchPhotosNextPage() {
+            didCallFetchPhotos = true
+        }
+        
+        func changeLike(atIndex alteringPhotoIndex: Int, isLike: Bool, _ completion: @escaping (Result<Void, any Error>) -> Void) {
+            if changeLikeSuccessful {
+                let oldPhoto = photos[alteringPhotoIndex]
+                let newPhoto = Photo(id: oldPhoto.id,
+                                     size: oldPhoto.size,
+                                     createdAt: oldPhoto.createdAt,
+                                     welcomeDescription: oldPhoto.welcomeDescription,
+                                     thumbImageURL: oldPhoto.thumbImageURL,
+                                     largeImageURL: oldPhoto.largeImageURL,
+                                     isLiked: isLike)
+                photos[alteringPhotoIndex] = newPhoto
+                completion(.success(()))
+            } else {
+                completion(.failure(TestError.testError))
+            }
+        }
+        
+    }
+    
+    enum TestError: Error {
+        case testError
+    }
     
     func testViewControllerCallsViewDidLoad() {
         // given
@@ -87,23 +139,107 @@ final class ImagesListTests: XCTestCase {
         XCTAssertTrue(presenterSpy.viewDidLoadCalled)
     }
     
-    
-    func testDidScrollToBottomCallsDataUpdate() {
+    func testCellViewModel() {
         // given
-        let imagesListVCSpy = ImagesListViewControllerSpy()
-        let presenter = ImagesListPresenter()
-        imagesListVCSpy.injectPresenter(presenter)
-        let expectation = XCTestExpectation(description: "didCallUpdateTable")
-        imagesListVCSpy.didCallUpdateTableExpectation = expectation
-        OAuth2TokenStorage.shared.token = "testToken"
+        let imagesListService = ImagesListServiceMock()
+        let presenter = ImagesListPresenter(imagesListService: imagesListService)
+        
+        // when
+        let viewModel = presenter.cellViewModel(for: 0)
+        
+        // then
+        XCTAssertEqual(viewModel.dateString, "17 апреля 2025 г.")
+        XCTAssertEqual(viewModel.imageURL, URL(string: "testThumbURL"))
+        XCTAssertEqual(viewModel.isLiked, true)
+    }
+    
+    func testImageSize() {
+        // given
+        let imagesListService = ImagesListServiceMock()
+        let presenter = ImagesListPresenter(imagesListService: imagesListService)
+        
+        // when
+        let imageSize = presenter.imageSize(at: 0)
+        
+        // then
+        XCTAssertEqual(imageSize, CGSize(width: 10, height: 10))
+    }
+    
+    func testLikeButtonTappedSuccess() {
+        // given
+        let imagesListService = ImagesListServiceMock()
+        imagesListService.changeLikeSuccessful = true
+        let presenter = ImagesListPresenter(imagesListService: imagesListService)
+        let imagesListVC = ImagesListViewControllerSpy()
+        imagesListVC.injectPresenter(presenter)
+        
+        // when
+        presenter.likeButtonTapped(cell: ImagesListCell(), index: 0)
+        
+        // then
+        XCTAssertTrue(imagesListVC.didCallSetCellLiked)
+        XCTAssertEqual(imagesListVC.didSetCellToLike, false)
+    }
+    
+    func testLikeButtonDoubleTappedSuccess() {
+        // given
+        let imagesListService = ImagesListServiceMock()
+        imagesListService.changeLikeSuccessful = true
+        let presenter = ImagesListPresenter(imagesListService: imagesListService)
+        let imagesListVC = ImagesListViewControllerSpy()
+        imagesListVC.injectPresenter(presenter)
+        
+        // when
+        presenter.likeButtonTapped(cell: ImagesListCell(), index: 0)
+        presenter.likeButtonTapped(cell: ImagesListCell(), index: 0)
+        
+        // then
+        XCTAssertTrue(imagesListVC.didCallSetCellLiked)
+        XCTAssertEqual(imagesListVC.didSetCellToLike, true)
+    }
+    
+    func testLikeButtonTappedFailure() {
+        // given
+        let imagesListService = ImagesListServiceMock()
+        imagesListService.changeLikeSuccessful = false
+        let presenter = ImagesListPresenter(imagesListService: imagesListService)
+        let imagesListVC = ImagesListViewControllerSpy()
+        imagesListVC.injectPresenter(presenter)
+        
+        // when
+        presenter.likeButtonTapped(cell: ImagesListCell(), index: 0)
+        
+        // then
+        XCTAssertTrue(imagesListVC.didCallShowLikeErrorAlert)
+    }
+    
+    func testCellTapped() {
+        // given
+        let imagesListService = ImagesListServiceMock()
+        let presenter = ImagesListPresenter(imagesListService: imagesListService)
+        let imagesListVC = ImagesListViewControllerSpy()
+        imagesListVC.injectPresenter(presenter)
+        
+        // when
+        presenter.cellTapped(at: 0)
+        
+        // then
+        XCTAssertTrue(imagesListVC.didCallShowSingleImageViewController)
+        XCTAssertEqual(imagesListVC.urlOfSingleImageViewController, URL(string: "testLargeURL"))
+    }
+    
+    func testDidScrollToBottom() {
+        // given
+        let imagesListService = ImagesListServiceMock()
+        let presenter = ImagesListPresenter(imagesListService: imagesListService)
+        let imagesListVC = ImagesListViewControllerSpy()
+        imagesListVC.injectPresenter(presenter)
         
         // when
         presenter.didScrollToBottom()
         
         // then
-        wait(for: [expectation], timeout: 5)
-        XCTAssertTrue(imagesListVCSpy.didCallUpdateTable)
-        
+        XCTAssertTrue(imagesListService.didCallFetchPhotos)
     }
     
 }
