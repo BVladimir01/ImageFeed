@@ -11,6 +11,10 @@ import XCTest
 
 final class ProfileTests: XCTestCase {
     
+    override class func tearDown() {
+        OAuth2TokenStorage.shared.removeToken()
+    }
+    
     // MARK: - Class Duplicates
     
     final class ProfilePresenterSpy: ProfilePresenterProtocol {

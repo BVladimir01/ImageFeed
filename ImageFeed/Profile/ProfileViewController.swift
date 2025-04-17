@@ -125,6 +125,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = imageView.frame.width/2
         imageView.layer.masksToBounds = true
+        imageView.accessibilityIdentifier = "ProfileImageView"
         profileImageView = imageView
     }
     
@@ -143,6 +144,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
                                        constant: ViewConstants.nameLabelTopToProfileImageViewBottom),
             label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
+        label.accessibilityIdentifier = "NameLabel"
         nameLabel = label
     }
     
@@ -161,6 +163,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
                                        constant: ViewConstants.tagLabelTopToNameLabelBottom),
             label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
+        label.accessibilityIdentifier = "TagLabel"
         tagLabel = label
     }
     
@@ -179,6 +182,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
                                        constant: ViewConstants.profileDescriptionLabelTopToTagLabelBottom),
             label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
+        label.accessibilityIdentifier = "ProfileDescriptionLabel"
         profileDescriptionLabel = label
     }
     
@@ -195,6 +199,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
             button.heightAnchor.constraint(equalToConstant: ViewConstants.logoutButtonHeight),
             button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: ViewConstants.logoutButtonWidthToHeight)
         ])
+        button.accessibilityIdentifier = "LogoutButton"
         logOutButton = button
     }
 

@@ -7,6 +7,7 @@
 
 import ProgressHUD
 import UIKit
+import WebKit
 
 
 @main
@@ -21,8 +22,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        if CommandLine.arguments.contains("--uitest-reset-token") { removeTokenAndClearCookies() }
         UIBlockingHUD.setupProgressHUD()
         return true
+    }
+    
+    private func removeTokenAndClearCookies() {
+        OAuth2TokenStorage.shared.removeToken()
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            records.forEach { record in
+                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: { })
+            }
+        }
     }
 
 }

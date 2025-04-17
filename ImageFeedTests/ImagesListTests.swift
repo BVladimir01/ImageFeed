@@ -11,6 +11,10 @@ import XCTest
 
 final class ImagesListTests: XCTestCase {
     
+    override class func tearDown() {
+        OAuth2TokenStorage.shared.removeToken()
+    }
+    
     final class ImagesListPresenterSpy: ImagesListPresenterProtocol {
         
         var view: ImagesListViewControllerProtocol?

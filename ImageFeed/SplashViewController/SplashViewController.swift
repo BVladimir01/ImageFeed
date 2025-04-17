@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import WebKit
 
 
-// MARK: - SplachViewController
+// MARK: - SplashViewController
 final class SplashViewController: UIViewController {
     
     //MARK: - Private Properties
@@ -17,16 +18,14 @@ final class SplashViewController: UIViewController {
     private let showAuthSegueID = "ShowAuthVC"
     private let authNavigationControllerID = "AuthRootViewController"
     private let tokenStorage = OAuth2TokenStorage.shared
+    private let alertPresenter = SimpleAlertPresenter()
     
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupImageView()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        alertPresenter.delegate = self
         checkToken()
     }
     
@@ -46,6 +45,7 @@ final class SplashViewController: UIViewController {
     
     private func switchToTabBarViewController(profileService: ProfileServiceProtocol,
                                               profileImageService: ProfileImageServiceProtocol) {
+        print("SplashViewController.switchToTabBarViewController")
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
             assertionFailure("SplashViewController.switchToTabBarViewController: Failed to get windowScene or its window when switching to TabBarVC from splashscreen")
@@ -73,7 +73,9 @@ final class SplashViewController: UIViewController {
         }
         authVC.delegate = self
         authNavigationController.modalPresentationStyle = .fullScreen
-        present(authNavigationController, animated: true)
+        DispatchQueue.main.async { [weak self] in
+            self?.present(authNavigationController, animated: true)
+        }
     }
     
     private func checkToken() {
@@ -116,10 +118,10 @@ extension SplashViewController: AuthViewControllerDelegate {
                 self?.switchToTabBarViewController(profileService: profileService, profileImageService: profileImageService)
             case .failure(let error):
                 UIBlockingHUD.dismiss()
-                // wonder if this recurrent call is ok here
-                // much better to show alert here
-                // may be later not for praktikum
-                self?.fetchProfile(for: token)
+                let alertModel = SimpleAlertModel(title: "Что-то пошло не так!", message: "Профиль недоступен. \(error)", buttonText: "Перезагрузить") { [weak self] in
+                    self?.fetchProfile(for: token)
+                }
+                self?.alertPresenter.presentAlert(alertModel, cancelable: true)
                 break
             }
         }

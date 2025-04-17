@@ -67,6 +67,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     // MARK: - Private Methods
     
     private func setUpWebView() {
+        webView.accessibilityIdentifier = "UnsplashWebView"
         webView.navigationDelegate = self
         estimatedProgressObservation = webView.observe(\.estimatedProgress, options: .new) { [weak self] _, change  in
             guard let newValue = change.newValue else {

@@ -29,6 +29,7 @@ final class AuthViewController: UIViewController {
     //MARK: - Lifecycle
 
     override func viewDidLoad() {
+        print("AuthViewController.viewDidLoad")
         super.viewDidLoad()
         setupNavigationBar()
         setupAlertPresenter()
