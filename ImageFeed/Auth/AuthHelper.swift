@@ -53,10 +53,10 @@ final class AuthHelper: AuthHelperProtocol {
             return nil
         }
         urlComponents.queryItems = [
-            .init(name: "client_id", value: Constants.accessKey),
-            .init(name: "redirect_uri", value: Constants.redirectURI),
+            .init(name: "client_id", value: configuration.accessKey),
+            .init(name: "redirect_uri", value: configuration.redirectURI),
             .init(name: "response_type", value: "code"),
-            .init(name: "scope", value: Constants.accessScope)
+            .init(name: "scope", value: configuration.accessScope)
         ]
         return urlComponents.url
     }
