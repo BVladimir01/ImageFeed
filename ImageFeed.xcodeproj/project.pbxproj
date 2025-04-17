@@ -12,9 +12,7 @@
 		E738D4D92D97D10A002ACA10 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D4D82D97D10A002ACA10 /* HTTPMethod.swift */; };
 		E738D4DC2D97EF32002ACA10 /* ImagesListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D4DB2D97EF32002ACA10 /* ImagesListService.swift */; };
 		E738D4DE2D97EFCB002ACA10 /* ImagesListModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D4DD2D97EFCB002ACA10 /* ImagesListModels.swift */; };
-		E738D4FA2D9A6E01002ACA10 /* ImagesListCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D4F92D9A6E01002ACA10 /* ImagesListCellDelegate.swift */; };
 		E738D4FD2D9A97F9002ACA10 /* ProfileLogoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D4FC2D9A97F9002ACA10 /* ProfileLogoutService.swift */; };
-		E738D5032DABC425002ACA10 /* ProfileLogoutServiceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D5022DABC425002ACA10 /* ProfileLogoutServiceDelegate.swift */; };
 		E738D5052DACF76F002ACA10 /* WebViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D5042DACF76F002ACA10 /* WebViewPresenter.swift */; };
 		E738D5072DAD4A85002ACA10 /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D5062DAD4A85002ACA10 /* AuthHelper.swift */; };
 		E738D5112DAD5894002ACA10 /* WebViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E738D5102DAD5894002ACA10 /* WebViewTests.swift */; };
@@ -66,9 +64,7 @@
 		E738D4D82D97D10A002ACA10 /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		E738D4DB2D97EF32002ACA10 /* ImagesListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListService.swift; sourceTree = "<group>"; };
 		E738D4DD2D97EFCB002ACA10 /* ImagesListModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListModels.swift; sourceTree = "<group>"; };
-		E738D4F92D9A6E01002ACA10 /* ImagesListCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCellDelegate.swift; sourceTree = "<group>"; };
 		E738D4FC2D9A97F9002ACA10 /* ProfileLogoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileLogoutService.swift; sourceTree = "<group>"; };
-		E738D5022DABC425002ACA10 /* ProfileLogoutServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileLogoutServiceDelegate.swift; sourceTree = "<group>"; };
 		E738D5042DACF76F002ACA10 /* WebViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewPresenter.swift; sourceTree = "<group>"; };
 		E738D5062DAD4A85002ACA10 /* AuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
 		E738D50E2DAD5894002ACA10 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -148,7 +144,6 @@
 			isa = PBXGroup;
 			children = (
 				E738D4FC2D9A97F9002ACA10 /* ProfileLogoutService.swift */,
-				E738D5022DABC425002ACA10 /* ProfileLogoutServiceDelegate.swift */,
 			);
 			path = ProfileLogoutService;
 			sourceTree = "<group>";
@@ -167,7 +162,6 @@
 			isa = PBXGroup;
 			children = (
 				E7B7003E2D48C74700A60E57 /* ImagesListCell.swift */,
-				E738D4F92D9A6E01002ACA10 /* ImagesListCellDelegate.swift */,
 				E738D5202DAFA941002ACA10 /* CellViewModel.swift */,
 			);
 			path = ImagesListCell;
@@ -459,7 +453,6 @@
 				E79889492D50B8E200608B34 /* ProfileViewController.swift in Sources */,
 				E7D81A992D92D04D003CBF81 /* ProfileModels.swift in Sources */,
 				E738D4FD2D9A97F9002ACA10 /* ProfileLogoutService.swift in Sources */,
-				E738D4FA2D9A6E01002ACA10 /* ImagesListCellDelegate.swift in Sources */,
 				E738D5182DAD8FE8002ACA10 /* ProfilePresenter.swift in Sources */,
 				E738D4D72D96A022002ACA10 /* TabBarViewController.swift in Sources */,
 				E7D81A962D92BC9C003CBF81 /* ProfileService.swift in Sources */,
@@ -474,7 +467,6 @@
 				E7D81AA22D93DFF1003CBF81 /* ProfileImageModels.swift in Sources */,
 				E7DAE65A2D78B008008E9D0F /* SplashViewController.swift in Sources */,
 				E738D4DC2D97EF32002ACA10 /* ImagesListService.swift in Sources */,
-				E738D5032DABC425002ACA10 /* ProfileLogoutServiceDelegate.swift in Sources */,
 				E738D5072DAD4A85002ACA10 /* AuthHelper.swift in Sources */,
 				E7EBC64E2D71CC6B00311D2E /* AuthConfiguration.swift in Sources */,
 				E7DAE6532D788E7E008E9D0F /* URLSession+data.swift in Sources */,

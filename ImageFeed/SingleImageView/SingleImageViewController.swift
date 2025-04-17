@@ -9,6 +9,7 @@ import Kingfisher
 import UIKit
 
 
+// MARK: - SingleImageViewController
 final class SingleImageViewController: UIViewController {
     
     //MARK: - IBOutlets

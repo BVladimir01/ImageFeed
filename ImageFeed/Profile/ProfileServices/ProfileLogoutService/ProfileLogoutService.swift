@@ -52,3 +52,9 @@ final class ProfileLogoutService: ProfileLogoutServiceProtocol {
     }
     
 }
+
+
+// MARK: - ProfileLogoutServiceDelegate
+protocol ProfileLogoutServiceDelegate: AnyObject {
+    func logoutServiceDidFinishCleanUp()
+}

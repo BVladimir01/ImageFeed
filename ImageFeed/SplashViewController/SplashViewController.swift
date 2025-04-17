@@ -8,6 +8,7 @@
 import UIKit
 
 
+// MARK: - SplachViewController
 final class SplashViewController: UIViewController {
     
     //MARK: - Private Properties

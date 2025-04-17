@@ -9,6 +9,7 @@ import Kingfisher
 import UIKit
 
 
+// MARK: - ImagesListCell
 final class ImagesListCell: UITableViewCell {
     
     // MARK: - IBOutlets
@@ -80,4 +81,10 @@ final class ImagesListCell: UITableViewCell {
     @IBAction private func likeButtonClicked() {
         delegate?.imagesListCellDidTapLike(cell: self)
     }
+}
+
+
+// MARK: - ImageListCellDelegate
+protocol ImagesListCellDelegate: AnyObject {
+    func imagesListCellDidTapLike(cell: ImagesListCell)
 }
