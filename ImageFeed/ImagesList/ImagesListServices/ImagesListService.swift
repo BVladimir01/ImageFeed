@@ -8,12 +8,18 @@
 import Foundation
 
 
-final class ImagesListService {
+// MARK: - ImagesListServiceProtocol
+protocol ImagesListServiceProtocol: AnyObject {
+    var photos: [Photo] { get }
+    func fetchPhotosNextPage()
+    func changeLike(atIndex alteringPhotoIndex: Int, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void)
+}
+
+final class ImagesListService: ImagesListServiceProtocol {
     
     // MARK: - Internal Properties
     
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
-    static let shared = ImagesListService()
     
     private(set) var photos: [Photo] = []
     
@@ -29,10 +35,6 @@ final class ImagesListService {
     private let itemsPerPage = 10
     private let tokenStorage = OAuth2TokenStorage.shared
     private let urlSession = URLSession.shared
-    
-    // MARK: - Initializers
-    
-    private init() { }
     
     // MARK: - Internal Methods
     
@@ -100,17 +102,7 @@ final class ImagesListService {
         }
         changeLikeTask?.resume()
     }
-    
-    func cleanUpService() {
-        photos = []
-        photosSet = []
-        fetchPhotosTask?.cancel()
-        fetchPhotosTask = nil
-        changeLikeTask?.cancel()
-        changeLikeTask = nil
-        lastLoadedPage = 0
-    }
-    
+
     //MARK: - Private Methods
     
     private func assembleURLRequestForPhotos(page: Int) -> URLRequest? {

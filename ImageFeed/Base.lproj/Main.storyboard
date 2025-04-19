@@ -41,6 +41,7 @@
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5fW-l8-eBK" userLabel="Like Button">
                                                     <rect key="frame" x="333" y="4" width="44" height="44"/>
+                                                    <accessibility key="accessibilityConfiguration" identifier="LikeButton"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="44" id="boD-TF-Ezb"/>
                                                         <constraint firstAttribute="height" constant="44" id="dw8-mo-ZLc"/>
@@ -98,7 +99,7 @@
         <!--Single Image View Controller-->
         <scene sceneID="aMy-g8-ftS">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="bPy-FP-Jwf" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SingleImageVC" modalPresentationStyle="fullScreen" id="bPy-FP-Jwf" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleAspectFit" id="YId-Dq-W0H">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -131,6 +132,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yZo-D2-YZX">
                                 <rect key="frame" x="-1" y="45" width="44" height="44"/>
+                                <accessibility key="accessibilityConfiguration" identifier="BackButton"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="yZo-D2-YZX" secondAttribute="height" multiplier="1:1" id="DJZ-YZ-l6U"/>
                                     <constraint firstAttribute="width" constant="44" id="ogm-U1-c1T"/>
@@ -183,6 +185,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DVm-uK-Zhi">
                                 <rect key="frame" x="25" y="640" width="343" height="48"/>
                                 <color key="backgroundColor" name="YP White"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authenticate"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="0HI-ed-mZp"/>
                                     <constraint firstAttribute="width" constant="343" id="1ZO-F5-b8N"/>
@@ -292,7 +295,7 @@
         <!--Web View View Controller-->
         <scene sceneID="WLP-Xc-JYc">
             <objects>
-                <viewController id="xas-Wh-fVT" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="xas-Wh-fVT" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="BSN-vb-2c0">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

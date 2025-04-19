@@ -9,30 +9,29 @@ import Foundation
 import WebKit
 
 
-final class ProfileLogoutService {
+// MARK: - ProfileLogoutServiceProtocol
+protocol ProfileLogoutServiceProtocol: AnyObject {
+    var delegate: ProfileLogoutServiceDelegate? { get set }
+    func logout()
+}
+
+
+// MARK: - ProfileLogoutService
+final class ProfileLogoutService: ProfileLogoutServiceProtocol {
     
     // MARK: - Internal Properties
     
-    static let shared = ProfileLogoutService()
     weak var delegate: ProfileLogoutServiceDelegate? = nil
     
     // MARK: - Private Properties
     
     private let tokenStorage = OAuth2TokenStorage.shared
-    private let imagesListService = ImagesListService.shared
-    private let profileImageService = ProfileImageService.shared
-    private let profileService = ProfileService.shared
     private let oAuth2Service = OAuth2Service.shared
-    
-    // MARK: - Initializers
-    
-    private init() { }
     
     // MARK: - Internal Methods
     func logout() {
         cleanCookies()
         cleanServices()
-        cleanTokens()
         delegate?.logoutServiceDidFinishCleanUp()
     }
     
@@ -48,14 +47,14 @@ final class ProfileLogoutService {
     }
     
     private func cleanServices() {
-        imagesListService.cleanUpService()
-        profileImageService.cleanUpService()
-        profileService.cleanUpService()
         oAuth2Service.cleanUpService()
-    }
-    
-    private func cleanTokens() {
         tokenStorage.removeToken()
     }
     
+}
+
+
+// MARK: - ProfileLogoutServiceDelegate
+protocol ProfileLogoutServiceDelegate: AnyObject {
+    func logoutServiceDidFinishCleanUp()
 }

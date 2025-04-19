@@ -9,7 +9,29 @@ import Kingfisher
 import UIKit
 
 
-final class ProfileViewController: UIViewController {
+// MARK: - ProfileViewControllerProtocol
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfilePresenterProtocol? { get set }
+    func showLogoutAlert()
+    func setProfileDetails(profile: Profile)
+    func setProfileImage(url: URL)
+    func injectPresenter(_ presenter: ProfilePresenterProtocol)
+}
+
+extension ProfileViewControllerProtocol {
+    func injectPresenter(_ presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        presenter.view = self
+    }
+}
+
+
+// MARK: - ProfileViewController
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
+    
+    // MARK: - Internal Properties
+    
+    var presenter: ProfilePresenterProtocol?
 
     //MARK: - Private Properties
     
@@ -19,45 +41,64 @@ final class ProfileViewController: UIViewController {
     private var profileDescriptionLabel: UILabel!
     private var logOutButton: UIButton!
     
-    private var profileImageServiceObserver: NSObjectProtocol?
-    
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private let profileLogoutService = ProfileLogoutService.shared
-    
-    private struct SymbolNames {
-        static let profileImage = "ProfilePicStubLarge"
-        static let logoutButton = "LogOut"
-        private init() {}
-    }
-    
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypBlack
-        setUpLogoutService()
+        view.backgroundColor = ViewConstants.backgroundColor
         configureSubViews()
-        setUpProfile()
-        addProfileImageServiceObserver()
-        updateProfileImage()
+        presenter?.viewDidLoad()
     }
     
     // MARK: - Internal Methods()
     
-    func cleanUpProfile() {
-        guard isViewLoaded else {
-            assertionFailure("ProfileViewController.clearProfile: Failed to clean profile: profile is not loaded yet")
-            return
-        }
-        profileImageView.image = nil
-        tagLabel.text = nil
-        nameLabel.text = nil
-        profileDescriptionLabel.text = nil
-        profileImageServiceObserver = nil
+    func setProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        tagLabel.text = profile.loginName
+        profileDescriptionLabel.text = profile.bio
     }
     
-    //MARK: - Private Methods - Configuration
+    func setProfileImage(url: URL) {
+        profileImageView.kf.setImage(with: url) { [weak self] _ in
+            guard let self else { return }
+            self.adjustProfileImageSize()
+        }
+    }
+    
+    func showLogoutAlert() {
+        let ac = UIAlertController(title: "Пока, пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "Да", style: .default) { [weak self] action in
+            //seems like it should be performed on main
+            DispatchQueue.main.async {
+                self?.presenter?.confirmLogout()
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Нет", style: .default)
+        ac.addAction(confirmAction)
+        ac.addAction(cancelAction)
+        ac.preferredAction = cancelAction
+        present(ac, animated: true)
+    }
+    
+    @objc
+    private func initiateLogout() {
+        presenter?.logoutTapped()
+    }
+    
+    // MARK: - Private Methods
+
+    private func adjustProfileImageSize() {
+        guard let image = profileImageView.image, let cgImage = image.cgImage else { return }
+        let width = image.size.width
+        let height = image.size.height
+        let vScale = ViewConstants.profileImageViewHeight/height
+        let hScale = ViewConstants.profileImageViewWidth/width
+        let trueScale = max(vScale, hScale)
+        let newImage = UIImage(cgImage: cgImage, scale: 1/trueScale, orientation: .up)
+        profileImageView.image = newImage
+    }
+    
+    //MARK: - Private Methods - Configuration / SubViews Layout
     
     private func configureSubViews() {
         configureProfileImageView()
@@ -68,170 +109,140 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureProfileImageView() {
-        let imageView = UIImageView(image: UIImage(named: SymbolNames.profileImage))
+        let imageView = UIImageView(image: UIImage(resource: .profilePicStubLarge))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 76),
-            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            imageView.heightAnchor.constraint(equalToConstant: 70),
-            imageView.widthAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 1)
+            imageView.topAnchor.constraint(equalTo: view.topAnchor, 
+                                           constant: ViewConstants.profileImageViewTopToViewTop),
+            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                               constant: ViewConstants.profileImageViewLeadingToViewLeading),
+            imageView.heightAnchor.constraint(equalToConstant: ViewConstants.profileImageViewHeight),
+            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor,
+                                             multiplier: ViewConstants.profileImageViewWidthToHeight)
         ])
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = imageView.frame.width/2
         imageView.layer.masksToBounds = true
+        imageView.accessibilityIdentifier = "ProfileImageView"
         profileImageView = imageView
     }
     
     private func configureNameLabel() {
         let label = UILabel()
         label.text = "Name label"
-        label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 23, weight: .semibold)
-        label.textColor = .ypWhite
+        label.numberOfLines = ViewConstants.nameLabelNumberOfLines
+        label.font = .systemFont(ofSize: ViewConstants.nameLabelFontSize, weight: .semibold)
+        label.textColor = ViewConstants.nameLabelFontColor
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-            label.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                           constant: ViewConstants.nameLabelLeadingToViewLeading),
+            label.topAnchor.constraint(equalTo: profileImageView.bottomAnchor,
+                                       constant: ViewConstants.nameLabelTopToProfileImageViewBottom),
             label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
+        label.accessibilityIdentifier = "NameLabel"
         nameLabel = label
     }
     
     private func configureTagLabel() {
         let label = UILabel()
         label.text = "@Tag label"
-        label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .ypGray
+        label.numberOfLines = ViewConstants.tagLabelNumberOfLines
+        label.font = .systemFont(ofSize: ViewConstants.tagLabelFontSize, weight: .regular)
+        label.textColor = ViewConstants.tagLabelFontColor
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-            label.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                           constant: ViewConstants.tagLabelLeadingToViewLeading),
+            label.topAnchor.constraint(equalTo: nameLabel.bottomAnchor,
+                                       constant: ViewConstants.tagLabelTopToNameLabelBottom),
             label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
+        label.accessibilityIdentifier = "TagLabel"
         tagLabel = label
     }
     
     private func configureProfileDescriptionLabel() {
         let label = UILabel()
         label.text = "Profile description label"
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .ypWhite
+        label.numberOfLines = ViewConstants.profileDescriptionLabelNumberOfLines
+        label.font = .systemFont(ofSize: ViewConstants.profileDescriptionLabelFontSize, weight: .regular)
+        label.textColor = ViewConstants.profileDescriptionLabelFontColor
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-            label.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8),
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                           constant: ViewConstants.profileDescriptionLabelLeadingToViewLeading),
+            label.topAnchor.constraint(equalTo: tagLabel.bottomAnchor,
+                                       constant: ViewConstants.profileDescriptionLabelTopToTagLabelBottom),
             label.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
         ])
+        label.accessibilityIdentifier = "ProfileDescriptionLabel"
         profileDescriptionLabel = label
     }
     
     private func configureLogOutButton() {
         let button = UIButton()
-        button.setImage(UIImage(named: SymbolNames.logoutButton), for: .normal)
-        button.addTarget(self, action: #selector(logOut), for: .touchUpInside)
+        button.setImage(UIImage(resource: .logOut), for: .normal)
+        button.addTarget(self, action: #selector(initiateLogout), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
         NSLayoutConstraint.activate([
             button.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
-            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -14),
-            button.heightAnchor.constraint(equalToConstant: 44),
-            button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: 1)
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                             constant: ViewConstants.logoutTrailingToViewTrailing),
+            button.heightAnchor.constraint(equalToConstant: ViewConstants.logoutButtonHeight),
+            button.widthAnchor.constraint(equalTo: button.heightAnchor, multiplier: ViewConstants.logoutButtonWidthToHeight)
         ])
+        button.accessibilityIdentifier = "LogoutButton"
         logOutButton = button
-    }
-    
-    private func setUpProfile() {
-        guard let profile = profileService.profile else {
-            assertionFailure("ProfileViewController.setUpProfile: Failed to get profile from service when setting up users profile")
-            return
-        }
-        updateProfileDetails(profile: profile)
-    }
-    
-    private func updateProfileDetails(profile: Profile) {
-        nameLabel.text = profile.name
-        tagLabel.text = profile.loginName
-        profileDescriptionLabel.text = profile.bio
-    }
-    
-    private func addProfileImageServiceObserver() {
-        let profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            self?.updateProfileImage()
-        }
-        self.profileImageServiceObserver = profileImageServiceObserver
-    }
-    
-    private func updateProfileImage() {
-        guard let avatarURL = profileImageService.avatarURL, let url = URL(string: avatarURL) else {
-            print("ProfileViewController.updateProfileImage: Failed to get url for fetching avatar image")
-            return
-        }
-        profileImageView.kf.setImage(with: url) { [weak self] _ in
-            guard let self else { return }
-            self.adjustProfileImageSize()
-        }
-    }
-    
-    private func adjustProfileImageSize() {
-        guard let image = profileImageView.image, let cgImage = image.cgImage else { return }
-        let width = image.size.width
-        let height = image.size.height
-        let vScale = 70/height
-        let hScale = 70/width
-        let trueScale = max(vScale, hScale)
-        let newImage = UIImage(cgImage: cgImage, scale: 1/trueScale, orientation: .up)
-        profileImageView.image = newImage
-    }
-    
-    private func setUpLogoutService() {
-        profileLogoutService.delegate = self
-    }
-    
-    //MARK: - Private Methods - UIActions
-    
-    @objc
-    private func logOut() {
-        let ac = UIAlertController(title: "Пока, пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: "Да", style: .default) { [weak self] action in
-            //seems like it should be performed on main
-            DispatchQueue.main.async {
-                //just in case
-                self?.cleanProfile()
-                self?.profileLogoutService.logout()
-            }
-        }
-        let cancelAction = UIAlertAction(title: "Нет", style: .default)
-        ac.addAction(confirmAction)
-        ac.addAction(cancelAction)
-        ac.preferredAction = cancelAction
-        present(ac, animated: true)
-    }
-    
-    private func cleanProfile() {
-        profileImageView.image = nil
-        tagLabel.text = nil
-        nameLabel.text = nil
-        profileDescriptionLabel.text = nil
     }
 
 }
 
 
-// MARK: - ProfileLogoutServiceDelegate
-extension ProfileViewController: ProfileLogoutServiceDelegate {
-    func logoutServiceDidFinishCleanUp() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
-            assertionFailure("ProfileLogoutService.switchToSplashScreen: Failed to get windowScene or its window when switching to splashscreen on logout")
-            return
+// MARK: - ViewConstants
+extension ProfileViewController {
+    private struct ViewConstants {
+        
+        private init() { }
+        
+        static let backgroundColor: UIColor = .ypBlack
+        
+        static let profileImageViewTopToViewTop: CGFloat = 76
+        static let profileImageViewLeadingToViewLeading: CGFloat = 16
+        static let profileImageViewHeight: CGFloat = 70
+        static let profileImageViewWidthToHeight: CGFloat = 1
+        static var profileImageViewWidth: CGFloat {
+            profileImageViewHeight * profileImageViewWidthToHeight
         }
-        let splashScreen = SplashViewController()
-        window.rootViewController = splashScreen
+        
+        static let nameLabelNumberOfLines: Int = 1
+        static let nameLabelFontSize: CGFloat = 23
+        static let nameLabelFontColor: UIColor = .ypWhite
+        static let nameLabelLeadingToViewLeading: CGFloat = 16
+        static let nameLabelTopToProfileImageViewBottom: CGFloat = 8
+        
+        static let tagLabelNumberOfLines: Int = 1
+        static let tagLabelFontSize: CGFloat = 13
+        static let tagLabelFontColor: UIColor = .ypGray
+        static let tagLabelLeadingToViewLeading: CGFloat = 16
+        static let tagLabelTopToNameLabelBottom: CGFloat = 8
+        
+        static let profileDescriptionLabelNumberOfLines: Int = 1
+        static let profileDescriptionLabelFontSize: CGFloat = 13
+        static let profileDescriptionLabelFontColor: UIColor = .ypWhite
+        static let profileDescriptionLabelLeadingToViewLeading: CGFloat = 16
+        static let profileDescriptionLabelTopToTagLabelBottom: CGFloat = 8
+        
+        static let logoutTrailingToViewTrailing: CGFloat = -14
+        static let logoutButtonHeight: CGFloat = 44
+        static let logoutButtonWidthToHeight: CGFloat = 1
+        
     }
 }

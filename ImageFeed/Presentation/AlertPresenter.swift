@@ -17,14 +17,18 @@ final class SimpleAlertPresenter {
     
     // MARK: - Internal Methods
     
-    func presentAlert(_ alert: SimpleAlertModel) {
+    func presentAlert(_ alert: SimpleAlertModel, cancelable: Bool = false) {
         let ac = UIAlertController(title: alert.title, message: alert.message, preferredStyle: .alert)
-        let handler = { (alertAction: UIAlertAction) in
-            if let action = alert.action { action() }
+        let action = UIAlertAction(title: alert.buttonText, style: .default) { _ in
+            alert.action()
         }
-        let action = UIAlertAction(title: alert.buttonText, style: .default, handler: handler)
         ac.addAction(action)
         ac.preferredAction = action
+        if cancelable {
+            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+            ac.addAction(cancelAction)
+            ac.preferredAction = cancelAction
+        }
         delegate?.present(ac, animated: true, completion: nil)
     }
 }
@@ -35,5 +39,12 @@ struct SimpleAlertModel {
     let title: String
     let message: String
     let buttonText: String
-    let action: (() -> ())? = nil
+    let action: (() -> ())
+    
+    init(title: String, message: String, buttonText: String, action: @escaping () -> Void = { }) {
+        self.title = title
+        self.message = message
+        self.buttonText = buttonText
+        self.action = action
+    }
 }

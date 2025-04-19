@@ -29,6 +29,7 @@ final class AuthViewController: UIViewController {
     //MARK: - Lifecycle
 
     override func viewDidLoad() {
+        print("AuthViewController.viewDidLoad")
         super.viewDidLoad()
         setupNavigationBar()
         setupAlertPresenter()
@@ -43,7 +44,11 @@ final class AuthViewController: UIViewController {
                 assertionFailure("AuthViewController.prepare: Failed to create WebViewVC as a segue destination from AuthViewVC")
                 return
             }
+            let authHelper = AuthHelper(configuration: .standard)
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
             webViewVC.delegate = self
+            webViewVC.presenter = webViewPresenter
+            webViewPresenter.view = webViewVC
         }
     }
     
@@ -73,7 +78,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
         OAuth2Service.shared.fetchOAuthToken(from: code) { [weak self] result in
             guard let self else { return }
             guard let delegate = self.delegate else {
-                assertionFailure("AuthViewController.webViewViewCotroller: Failed to get AuthVC's delegate")
+                assertionFailure("AuthViewController.webViewViewController: Failed to get AuthVC's delegate")
                 return
             }
             switch result {

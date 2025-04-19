@@ -8,11 +8,18 @@
 import UIKit
 
 
-final class ProfileImageService: Fetcher<String, String> {
+// MARK: - ProfileImageServiceProtocol
+protocol ProfileImageServiceProtocol: AnyObject {
+    var avatarURL: String? { get }
+    func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void)
+}
+
+
+// MARK: - ProfileImageService
+final class ProfileImageService: Fetcher<String, String>, ProfileImageServiceProtocol {
     
     // MARK: - Internal Properties
     
-    static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
     private(set) var avatarURL: String?
     
@@ -23,10 +30,6 @@ final class ProfileImageService: Fetcher<String, String> {
     private let urlSession = URLSession.shared
     private var latestUsername: String?
     private var task: URLSessionTask?
-    
-    // MARK: - Initializers
-    
-    override private init() { }
     
     // MARK: - Internal Methods
     
@@ -59,13 +62,6 @@ final class ProfileImageService: Fetcher<String, String> {
         }
         self.task = task
         task.resume()
-    }
-    
-    func cleanUpService() {
-        task?.cancel()
-        task = nil
-        avatarURL = nil
-        latestUsername = nil
     }
     
     // MARK: - Private Methods

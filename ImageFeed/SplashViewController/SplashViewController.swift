@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import WebKit
 
 
+// MARK: - SplashViewController
 final class SplashViewController: UIViewController {
     
     //MARK: - Private Properties
@@ -16,18 +18,14 @@ final class SplashViewController: UIViewController {
     private let showAuthSegueID = "ShowAuthVC"
     private let authNavigationControllerID = "AuthRootViewController"
     private let tokenStorage = OAuth2TokenStorage.shared
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
+    private let alertPresenter = SimpleAlertPresenter()
     
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupImageView()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        alertPresenter.delegate = self
         checkToken()
     }
     
@@ -45,13 +43,21 @@ final class SplashViewController: UIViewController {
         view.backgroundColor = .ypBlack
     }
     
-    private func switchToTabBarViewController() {
+    private func switchToTabBarViewController(profileService: ProfileServiceProtocol,
+                                              profileImageService: ProfileImageServiceProtocol) {
+        print("SplashViewController.switchToTabBarViewController")
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
             assertionFailure("SplashViewController.switchToTabBarViewController: Failed to get windowScene or its window when switching to TabBarVC from splashscreen")
             return
         }
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        let tabBarVC = storyboard.instantiateViewController(withIdentifier: tabBarStoryboardID)
+        guard let tabBarVC = storyboard.instantiateViewController(withIdentifier: tabBarStoryboardID) as? TabBarViewController else {
+            assertionFailure("SplashViewController.switchToTabBarViewController error: Failed to typecast TabBarViewController")
+            return
+        }
+        tabBarVC.profileService = profileService
+        tabBarVC.profileImageService = profileImageService
+        tabBarVC.attachViewControllers()
         window.rootViewController = tabBarVC
     }
     
@@ -67,7 +73,9 @@ final class SplashViewController: UIViewController {
         }
         authVC.delegate = self
         authNavigationController.modalPresentationStyle = .fullScreen
-        present(authNavigationController, animated: true)
+        DispatchQueue.main.async { [weak self] in
+            self?.present(authNavigationController, animated: true)
+        }
     }
     
     private func checkToken() {
@@ -100,15 +108,20 @@ extension SplashViewController: AuthViewControllerDelegate {
     
     private func fetchProfile(for token: String) {
         UIBlockingHUD.show()
+        let profileService = ProfileService()
+        let profileImageService = ProfileImageService()
         profileService.fetchProfile(for: token) { [weak self] result in
             switch result {
             case .success(let profile):
                 UIBlockingHUD.dismiss()
-                self?.profileImageService.fetchProfileImageURL(username: profile.username, completion: { _ in })
-                self?.switchToTabBarViewController()
+                profileImageService.fetchProfileImageURL(username: profile.username, completion: { _ in })
+                self?.switchToTabBarViewController(profileService: profileService, profileImageService: profileImageService)
             case .failure(let error):
                 UIBlockingHUD.dismiss()
-                //TODO: implement failure
+                let alertModel = SimpleAlertModel(title: "Что-то пошло не так!", message: "Профиль недоступен. \(error)", buttonText: "Перезагрузить") { [weak self] in
+                    self?.fetchProfile(for: token)
+                }
+                self?.alertPresenter.presentAlert(alertModel, cancelable: true)
                 break
             }
         }

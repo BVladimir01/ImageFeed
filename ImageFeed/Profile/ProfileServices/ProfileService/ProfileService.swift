@@ -8,10 +8,17 @@
 import UIKit
 
 
-final class ProfileService: Fetcher<String, Profile> {
+// MARK: - ProfileServiceProtocol
+protocol ProfileServiceProtocol: AnyObject {
+    var profile: Profile? { get }
+    func fetchProfile(for token: String, completion: @escaping (Result<Profile, Error>) -> Void)
+}
+
+
+// MARK: - ProfileService
+final class ProfileService: Fetcher<String, Profile>, ProfileServiceProtocol {
     
     // MARK: - Internal Properties
-    static let shared = ProfileService()
     private(set) var profile: Profile? = nil
     
     // MARK: - Private Properties
@@ -20,10 +27,6 @@ final class ProfileService: Fetcher<String, Profile> {
     private let urlSession = URLSession.shared
     private var task: URLSessionTask? = nil
     private var latestToken: String?
-    
-    // MARK: - Initializers
-    
-    override private init () { }
     
     // MARK: - Internal Methods
     
@@ -54,13 +57,6 @@ final class ProfileService: Fetcher<String, Profile> {
         }
         self.task = task
         task.resume()
-    }
-    
-    func cleanUpService() {
-        profile = nil
-        task?.cancel()
-        task = nil
-        latestToken = nil
     }
     
     // MARK: - Private Methods
