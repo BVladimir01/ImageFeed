@@ -10,8 +10,8 @@ import Foundation
 
 // MARK: - AuthHelperProtocol
 protocol AuthHelperProtocol {
-    func authRequest() -> URLRequest?
-    func code(from url: URL) -> String?
+    func createAuthRequest() -> URLRequest?
+    func getCode(from url: URL) -> String?
 }
 
 
@@ -30,12 +30,12 @@ final class AuthHelper: AuthHelperProtocol {
     
     // MARK: - Internal Methods
     
-    func authRequest() -> URLRequest? {
+    func createAuthRequest() -> URLRequest? {
         guard let url = authURL() else { return nil }
         return URLRequest(url: url)
     }
     
-    func code(from url: URL) -> String? {
+    func getCode(from url: URL) -> String? {
         if let urlComponents = URLComponents(string: url.absoluteString),
            urlComponents.path == "/oauth/authorize/native",
            let items = urlComponents.queryItems,

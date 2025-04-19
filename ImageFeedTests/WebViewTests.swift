@@ -139,7 +139,7 @@ final class WebViewTests: XCTestCase {
         
         print(url)
         // when
-        let resultCode = helper.code(from: url)
+        let resultCode = helper.getCode(from: url)
         
         //then
         XCTAssertEqual(resultCode, "test code")
