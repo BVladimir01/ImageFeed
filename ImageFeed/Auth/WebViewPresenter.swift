@@ -22,7 +22,7 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     
     // MARK: - Internal Properties
     
-    weak var view: WebViewViewControllerProtocol? = nil
+    weak var view: WebViewViewControllerProtocol?
     var authHelper: AuthHelperProtocol
     
     // MARK: - Initializers
@@ -54,7 +54,7 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     // MARK: - Private Methods
     
     private func shouldHideProgress(for value: Float) -> Bool {
-        return abs(value - 1) < 0.0001
+        abs(value - 1) < 0.0001
     }
     
 }
