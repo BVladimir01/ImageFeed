@@ -11,7 +11,7 @@ An app for viewing infinite feed of iamges from Unsplash
 ## Tech Stack
 - **Language:** Swift
 - **Architecture:** MVP + MVC
-- **Frameworks & Libraries** UIKit, Kingfisher, ProgressHUD, SwiftKeyChainWrapper
+- **Frameworks & Libraries:** UIKit, Kingfisher, ProgressHUD, SwiftKeyChainWrapper
 - **Tools:** SPM
 
 ## Installation
