@@ -30,7 +30,15 @@ struct AuthConfiguration {
     let defaultBaseURLString: String
     let unsplashAuthURLString: String
     
-    init(accessKey: String, secretKey: String, redirectURI: String, accessScope: String, defaultBaseURL: URL?, defaultBaseURLString: String, unsplashAuthURLString: String) {
+	init(
+		accessKey: String,
+		secretKey: String,
+		redirectURI: String,
+		accessScope: String,
+		defaultBaseURL: URL?,
+		defaultBaseURLString: String,
+		unsplashAuthURLString: String
+	) {
         self.accessKey = accessKey
         self.secretKey = secretKey
         self.redirectURI = redirectURI
@@ -41,13 +49,15 @@ struct AuthConfiguration {
     }
     
     static var standard: AuthConfiguration {
-        AuthConfiguration(accessKey: Constants.accessKey,
-                          secretKey: Constants.secretKey,
-                          redirectURI: Constants.redirectURI,
-                          accessScope: Constants.accessScope,
-                          defaultBaseURL: Constants.defaultBaseURL,
-                          defaultBaseURLString: Constants.defaultBaseURLString,
-                          unsplashAuthURLString: Constants.unsplashAuthURLString)
+		AuthConfiguration(
+			accessKey: Constants.accessKey,
+			secretKey: Constants.secretKey,
+			redirectURI: Constants.redirectURI,
+			accessScope: Constants.accessScope,
+			defaultBaseURL: Constants.defaultBaseURL,
+			defaultBaseURLString: Constants.defaultBaseURLString,
+			unsplashAuthURLString: Constants.unsplashAuthURLString
+		)
     }
     
 }

@@ -142,21 +142,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E738D4D52D969FFA002ACA10 /* TabBarViewController */ = {
-			isa = PBXGroup;
-			children = (
-				E738D4D62D96A022002ACA10 /* TabBarViewController.swift */,
-			);
-			path = TabBarViewController;
-			sourceTree = "<group>";
-		};
-		E738D4DA2D97EF17002ACA10 /* ImagesListServices */ = {
+		E738D4DA2D97EF17002ACA10 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				E738D4DB2D97EF32002ACA10 /* ImagesListService.swift */,
 				E738D4DD2D97EFCB002ACA10 /* ImagesListModels.swift */,
 			);
-			path = ImagesListServices;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		E738D4FB2D9A97DC002ACA10 /* ProfileLogoutService */ = {
@@ -200,17 +192,9 @@
 			children = (
 				E79889482D50B8E200608B34 /* ProfileViewController.swift */,
 				E738D5172DAD8FE8002ACA10 /* ProfilePresenter.swift */,
-				E7D81A9C2D93DF58003CBF81 /* ProfileServices */,
+				E7D81A9C2D93DF58003CBF81 /* Services */,
 			);
 			path = Profile;
-			sourceTree = "<group>";
-		};
-		E798894C2D50F09500608B34 /* SingleImageView */ = {
-			isa = PBXGroup;
-			children = (
-				E798894A2D50E04D00608B34 /* SingleImageViewController.swift */,
-			);
-			path = SingleImageView;
 			sourceTree = "<group>";
 		};
 		E7B7001B2D47DB4100A60E57 = {
@@ -236,18 +220,12 @@
 		E7B700262D47DB4100A60E57 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				E7EBC6742D75F12B00311D2E /* Auth */,
-				E7DAE6512D788E63008E9D0F /* Extensions */,
+				E7D02E1A2ECE094300150FF8 /* App */,
+				E7EBC6742D75F12B00311D2E /* Authorization */,
 				E7B7003D2D48C72A00A60E57 /* ImagesList */,
-				E7D81AA32D940F7D003CBF81 /* Presentation */,
 				E79889472D50B8BD00608B34 /* Profile */,
-				E798894C2D50F09500608B34 /* SingleImageView */,
-				E7DAE65E2D7F233C008E9D0F /* SplashViewController */,
-				E7D81AA82D9438C7003CBF81 /* Support */,
-				E738D4D52D969FFA002ACA10 /* TabBarViewController */,
-				E7B700272D47DB4100A60E57 /* AppDelegate.swift */,
-				E7B700292D47DB4100A60E57 /* SceneDelegate.swift */,
-				E7B7002D2D47DB4100A60E57 /* Main.storyboard */,
+				E7D02E1C2ECE09E200150FF8 /* UIComponents */,
+				E7D02E1B2ECE09DA00150FF8 /* Networking */,
 				E7B7003B2D480B0700A60E57 /* Resources */,
 			);
 			path = ImageFeed;
@@ -269,19 +247,60 @@
 				E7B7002B2D47DB4100A60E57 /* ImagesListViewController.swift */,
 				E738D51B2DAF9774002ACA10 /* ImagesListPresenter.swift */,
 				E738D51D2DAF97AC002ACA10 /* ImagesListCell */,
-				E738D4DA2D97EF17002ACA10 /* ImagesListServices */,
+				E738D4DA2D97EF17002ACA10 /* Services */,
 			);
 			path = ImagesList;
 			sourceTree = "<group>";
 		};
-		E7D81A9C2D93DF58003CBF81 /* ProfileServices */ = {
+		E7D02E1A2ECE094300150FF8 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				E7B700272D47DB4100A60E57 /* AppDelegate.swift */,
+				E7B700292D47DB4100A60E57 /* SceneDelegate.swift */,
+				E7DAE6592D78B008008E9D0F /* SplashViewController.swift */,
+				E738D4D62D96A022002ACA10 /* TabBarViewController.swift */,
+				E7B7002D2D47DB4100A60E57 /* Main.storyboard */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		E7D02E1B2ECE09DA00150FF8 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				E7DAE6522D788E7E008E9D0F /* URLSession+data.swift */,
+				E7D81AA62D941716003CBF81 /* Fetcher.swift */,
+				E738D4D82D97D10A002ACA10 /* HTTPMethod.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		E7D02E1C2ECE09E200150FF8 /* UIComponents */ = {
+			isa = PBXGroup;
+			children = (
+				E798894A2D50E04D00608B34 /* SingleImageViewController.swift */,
+				E7D81A932D92A16E003CBF81 /* UIBlockingHUD.swift */,
+				E7D81AA42D940F9F003CBF81 /* AlertPresenter.swift */,
+			);
+			path = UIComponents;
+			sourceTree = "<group>";
+		};
+		E7D02E202ECE0D4100150FF8 /* WebView */ = {
+			isa = PBXGroup;
+			children = (
+				E7EBC6772D75F26B00311D2E /* WebViewViewController.swift */,
+				E738D5042DACF76F002ACA10 /* WebViewPresenter.swift */,
+			);
+			path = WebView;
+			sourceTree = "<group>";
+		};
+		E7D81A9C2D93DF58003CBF81 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				E738D4FB2D9A97DC002ACA10 /* ProfileLogoutService */,
 				E7D81AA02D93DFDE003CBF81 /* ProfileImageService */,
 				E7D81A9F2D93DFC7003CBF81 /* ProfileService */,
 			);
-			path = ProfileServices;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		E7D81A9F2D93DFC7003CBF81 /* ProfileService */ = {
@@ -302,61 +321,26 @@
 			path = ProfileImageService;
 			sourceTree = "<group>";
 		};
-		E7D81AA32D940F7D003CBF81 /* Presentation */ = {
+		E7DAE65D2D79D70A008E9D0F /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				E7D81AA42D940F9F003CBF81 /* AlertPresenter.swift */,
-			);
-			path = Presentation;
-			sourceTree = "<group>";
-		};
-		E7D81AA82D9438C7003CBF81 /* Support */ = {
-			isa = PBXGroup;
-			children = (
-				E7D81A932D92A16E003CBF81 /* UIBlockingHUD.swift */,
 				E7EBC64D2D71CC6B00311D2E /* AuthConfiguration.swift */,
-				E7D81AA62D941716003CBF81 /* Fetcher.swift */,
-				E738D4D82D97D10A002ACA10 /* HTTPMethod.swift */,
-			);
-			path = Support;
-			sourceTree = "<group>";
-		};
-		E7DAE6512D788E63008E9D0F /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				E7DAE6522D788E7E008E9D0F /* URLSession+data.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		E7DAE65D2D79D70A008E9D0F /* AuthServices */ = {
-			isa = PBXGroup;
-			children = (
 				E7DAE64F2D787DDA008E9D0F /* OAuth2Service.swift */,
 				E7DAE6572D789957008E9D0F /* OAuth2TokenStorage.swift */,
 				E7D81A9A2D92D095003CBF81 /* AuthModels.swift */,
+				E738D5062DAD4A85002ACA10 /* AuthHelper.swift */,
 			);
-			path = AuthServices;
+			path = Services;
 			sourceTree = "<group>";
 		};
-		E7DAE65E2D7F233C008E9D0F /* SplashViewController */ = {
-			isa = PBXGroup;
-			children = (
-				E7DAE6592D78B008008E9D0F /* SplashViewController.swift */,
-			);
-			path = SplashViewController;
-			sourceTree = "<group>";
-		};
-		E7EBC6742D75F12B00311D2E /* Auth */ = {
+		E7EBC6742D75F12B00311D2E /* Authorization */ = {
 			isa = PBXGroup;
 			children = (
 				E7EBC6752D75F15300311D2E /* AuthViewController.swift */,
-				E7EBC6772D75F26B00311D2E /* WebViewViewController.swift */,
-				E738D5042DACF76F002ACA10 /* WebViewPresenter.swift */,
-				E738D5062DAD4A85002ACA10 /* AuthHelper.swift */,
-				E7DAE65D2D79D70A008E9D0F /* AuthServices */,
+				E7D02E202ECE0D4100150FF8 /* WebView */,
+				E7DAE65D2D79D70A008E9D0F /* Services */,
 			);
-			path = Auth;
+			path = Authorization;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
