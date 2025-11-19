@@ -1,14 +1,12 @@
 # ImageFeed App
 
 ## Overview
-An app for viewin infinite feed of iamges from Unsplash
+An app for viewing infinite feed of iamges from Unsplash
 
 ## Features
 - Scroll through feed of images
 - Add images to favourites
 - Visit profile
-- Dark theme support
-- Languge support (English, Russian)
 
 ## Tech Stack
 - **Language:** Swift
@@ -50,6 +48,8 @@ open ImageFeed.xcodeproj
 ## Future plan
 - [ ] Make full MVP (delete legacy MVC)
 - [ ] Refactor Network layer
+- [ ] Localize
+- [ ] Add light/dark theme support
 - [ ] Remove Storyboards
 - [ ] Increase tests coverage
 - [ ] Add documentation
