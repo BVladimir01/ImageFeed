@@ -10,13 +10,13 @@ An app for viewing infinite feed of iamges from Unsplash
 
 ## Tech Stack
 - **Language:** Swift
-- **Architecture:** MVP + MVC
+- **Architecture:** MVP + MVC(legacy)
 - **Frameworks & Libraries:** UIKit, Kingfisher, ProgressHUD, SwiftKeyChainWrapper
 - **Tools:** SPM
 
 ## Installation
 ```bash
-git clone https://github.com/BVladimir01/ImageFeed
+git clone https://github.com/BVladimir01/ImageFeed.git
 cd ImageFeed
 open ImageFeed.xcodeproj
 ```
